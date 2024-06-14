@@ -42,7 +42,9 @@ Overview of the features in Red Hat OpenShift 2.9 with dependencies.
     1. Ability to run distributed workloads from data science pipelines, from Jupyter notebooks, or from Microsoft Visual Studio Code files.
 
 ## Default Operations
+
 RHOAI creates 4x OCP Projects
+
 1. `redhat-ods-operator` project contains the Red Hat OpenShift AI Operator.
 1. `redhat-ods-applications` project installs the dashboard and other required components of OpenShift AI.
 1. `redhat-ods-monitoring` project contains services for monitoring.
@@ -51,55 +53,29 @@ RHOAI creates 4x OCP Projects
 > Do not install independent software vendor (ISV) applications in namespaces associated with OpenShift AI.
 
 ## Tips
+
 - Your cluster must have at least 2 worker nodes with at least 8 CPUs and 32 GiB RAM available for OpenShift AI to use when you install the Operator.
 - A default storage class that can be dynamically provisioned must be configured.
 - Access to the cluster as a user with the `cluster-admin` role; the `kubeadmin` user is not allowed.
 - Data Science Pipelines (DSP) 2.0  
-    - contains an installation of Argo Workflows. 
-    - OpenShift AI does not support direct customer usage of this installation of Argo Workflows. 
+  - contains an installation of Argo Workflows.
+  - OpenShift AI does not support direct customer usage of this installation of Argo Workflows.
     Before installing OpenShift AI, ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by DSP.
-    - If there is an existing installation of Argo Workflows that is not installed by DSP on your cluster, data science pipelines will be disabled after you install OpenShift AI.
-    - store your pipeline artifacts in an S3-compatible object storage bucket so that you do not consume local storage.
+  - If there is an existing installation of Argo Workflows that is not installed by DSP on your cluster, data science pipelines will be disabled after you install OpenShift AI.
+  - store your pipeline artifacts in an S3-compatible object storage bucket so that you do not consume local storage.
 - KServe
-    - you must also install Operators for Red Hat OpenShift Serverless and Red Hat OpenShift Service Mesh and perform additional configuration. 
-    - If you want to add an authorization provider for the single-model serving platform, you must install the Red Hat - Authorino Operator
+  - you must also install Operators for Red Hat OpenShift Serverless and Red Hat OpenShift Service Mesh and perform additional configuration.
+  - If you want to add an authorization provider for the single-model serving platform, you must install the Red Hat - Authorino Operator
 
 Cluster Size (for installation):
 |Qty|vCPU|Memory|Qty|GPU Arch |Notes|
 |---|----|------|---|---------|-----|
 | 3 | 4  | 16   | 0 |---------|not enough resources|
 | 4 | 4  | 16   | 0 |---------|minimum required to install all the components|
+| 1 | 16 | 64   | 0 |---------|minimum required to install all the components|
 | 5 | 4  | 16   | 0 |---------|minimum required to create a data science project with a `small` workbench container size|
+| 1 | 16 | 64   | 0 |---------|minimum required to create a data science project with a `small` workbench container size|
 | 6 | 4  | 16   | 0 |---------|minimum required to run the distributed workloads demo `0_basic_ray.ipynb`|
 | 6 | 4  | 16   | 1 |nvidia t4|minimum required to run the distributed workloads demo `1_cluster_job_client.ipynb`|
-
-## Links
-
-- [Docs - Link]()
-- [Blog - Link]()
-
-## Checklist
-
-- [ ] Step 1
-  - [ ] Step 1.a
-
-## Details / Notes
-
-```sh
-# run shell commands
-
-```
-
-### Issues
-
-[Reference](ISSUES.md) - [Jira](linktojira)
-
-### Kustomized Code
-
-[Code](../../components/configs/kustomized/rhods-config/)
-
-### Rollback / Uninstall
-
-```sh
-oc delete -k components/configs/kustomized/rhods-config
-```
+| 1 | 16 | 64   | 2 |nvidia t4|minimum required to run the distributed workloads demo `2_basic_interactive.ipynb`|
+| 1 | 16 | 64   | 2 |nvidia t4|minimum required to run the distributed workloads demo `2_basic_interactive.ipynb`|
