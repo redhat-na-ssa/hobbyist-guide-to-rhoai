@@ -2,9 +2,9 @@
 
 This is the Hobbyist Guide to Installing and Configuring RHOAI for customers. Bring your towel.
 
-OCP Instance: AWS with OpenShift Open Environment
-OCP Version: 4.14.27
-RHOAI Version: 2.9.1
+- OCP Instance: AWS with OpenShift Open Environment
+- OCP Version: 4.14.27
+- RHOAI Version: 2.9.1
 
 ```shell
 .
