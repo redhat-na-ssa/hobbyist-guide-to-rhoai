@@ -1,6 +1,6 @@
 # Notes - Template
 
-State your goal
+Notes for the Fraud Detection demo
 
 per [docs](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.9/html/openshift_ai_tutorial_-_fraud_detection_example)
 

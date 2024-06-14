@@ -1,6 +1,6 @@
 # Notes - Template
 
-Demonstrate Distributed Workloads
+Notes for the  Distributed Workloads Demonstration
 
 ## Running distributed data science workloads from notebooks
 [source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.9/html/working_with_distributed_workloads/running-distributed-workloads_distributed-workloads)

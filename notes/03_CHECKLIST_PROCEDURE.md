@@ -1,5 +1,7 @@
 # Installing the Red Hat OpenShift AI Operator
 
+These are the detailed steps that accompany the CHECKLIST.md all in one doc.
+
 Login to cluster via terminal
 `oc login <openshift_cluster_url> -u <admin_username> -p <password>`
 
