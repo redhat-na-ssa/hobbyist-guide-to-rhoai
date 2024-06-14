@@ -1,0 +1,8 @@
+spec:
+  techPreview:
+    meshConfig:
+      extensionProviders:
+      - name: redhat-ods-applications-auth-provider
+        envoyExtAuthzGrpc:
+          service: authorino-authorino-authorization.redhat-ods-applicatiions-auth-provider.svc.cluster.local
+          port: 50051
