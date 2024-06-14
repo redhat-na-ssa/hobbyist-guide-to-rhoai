@@ -14,8 +14,8 @@ spec:
             - name: ENABLE_SECRET_INFORMER_FILTERING_BY_CERT_UID
               value: 'true'
     - annotations:
-        sidecar.istio.io/inject: "true" 
-        sidecar.istio.io/rewriteAppHTTPProbers: "true" 
+        sidecar.istio.io/inject: "true"
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
       name: activator
     - annotations:
         sidecar.istio.io/inject: "true"

@@ -33,4 +33,3 @@ data:
     mcad: {}
     metrics:
       bindAddress: :8080
-

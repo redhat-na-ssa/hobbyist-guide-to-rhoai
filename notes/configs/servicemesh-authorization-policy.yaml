@@ -5,15 +5,15 @@ metadata:
 spec:
   action: CUSTOM
   provider:
-     name: redhat-ods-applications-auth-provider 
+    name: redhat-ods-applications-auth-provider
   rules:
-     - to:
-          - operation:
-               notPaths:
-                  - /healthz
-                  - /debug/pprof/
-                  - /metrics
-                  - /wait-for-drain
+    - to:
+      - operation:
+          notPaths:
+            - /healthz
+            - /debug/pprof/
+            - /metrics
+            - /wait-for-drain
   selector:
-     matchLabels:
-        component: predictor
+    matchLabels:
+      component: predictor

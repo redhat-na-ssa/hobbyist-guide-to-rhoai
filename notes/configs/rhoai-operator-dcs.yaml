@@ -26,4 +26,4 @@ spec:
             secretName: knative-serving-cert
             type: SelfSigned
         managementState: Unmanaged
-        name: knative-serving       
+        name: knative-serving

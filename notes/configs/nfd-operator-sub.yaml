@@ -6,6 +6,6 @@ metadata:
 spec:
   channel: stable
   name: nfd
-  source: redhat-operators 
-  sourceNamespace: openshift-marketplace 
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
   installPlanApproval: Automatic
