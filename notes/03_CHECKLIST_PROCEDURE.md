@@ -249,7 +249,7 @@ Verify the `odh-trusted-ca-bundle` configmap for your root signed cert in the `o
 Run the following command to verify that all non-reserved namespaces contain the odh-trusted-ca-bundle ConfigMap
 `oc get configmaps --all-namespaces -l app.kubernetes.io/part-of=opendatahub-operator | grep odh-trusted-ca-bundle`
 
-### Installing KServe dependencies (~3min)
+## Installing KServe dependencies (~3min)
 
 [Section 3.3.1 source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.9/html/serving_models/serving-large-models_serving-large-models#manually-installing-kserve_serving-large-models)
 
@@ -1321,11 +1321,11 @@ Recommended to keep default. If needed, apply the configuration to update the ob
 
 Access the RHOAI Dashboard > Settings.
 
-1. Notebook Images
+Notebook Images
 
 - Import new notebook images  
 
-1. Cluster Settings
+Cluster Settings
 
 - Model serving platforms
 - PVC size (see Backing up data)
@@ -1333,11 +1333,11 @@ Access the RHOAI Dashboard > Settings.
 - Usage data collection
 - Notebook pod tolerations
 
-1. Accelerator Profiles
+Accelerator Profiles
 
 - Manage accelerator profile settings for users in your organization (see Add a new Accelerator Profile)
 
-1. Serving Runtimes
+Serving Runtimes
 
 - Single-model serving platform
   - Caikit TGIS ServingRuntime for KServe
@@ -1345,13 +1345,13 @@ Access the RHOAI Dashboard > Settings.
   - TGIS Standalone ServingRuntime for KServe
 - Multi-model serving platform
   - OpenVINO Model Server
-
-1. User Management
+  
+User Management
 
 - Data scientists
 - Administrators
 
-### Backing up data
+### (Review) Backing up data
 
 Refer to [A Guide to High Availability/Disaster Recovery for Applications on OpenShift](https://www.redhat.com/en/blog/a-guide-to-high-availability/disaster-recovery-for-applications-on-openshift)
 
