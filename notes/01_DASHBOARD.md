@@ -57,11 +57,11 @@ Deep dive into the Red Hat OpenShift AI 2.9 Dashboard
     1. Schedule
         1. Max concurrent runs
         1. Time frame
-        1. Catchup if behind schedule
+        1. Catch up if behind schedule
     1. Review the pipeline success
         1. Graph
         1. YAML
-1. Distributed Workload Metrics - 
+1. Distributed Workload Metrics -
     1. Distributed Workloads - train complex machine-learning models or process data more quickly, by distributing  jobs on multiple worker nodes in parallel
         1. In 2.9 release of OpenShift AI, the only accelerators supported for distributed workloads are NVIDIA GPUs.
 1. Model Serving - each project/workbench, you can specify only one model serving platform
@@ -79,13 +79,13 @@ Deep dive into the Red Hat OpenShift AI 2.9 Dashboard
         1. Allow collection of usage data
         1. Notebook pod tolerations on tainted nodes
     1. Accelerator Profiles
-        1. Details - An identifier is a unique string that names a specific hardware accelerator resource "nvidia.com/gpu" maps to 
+        1. Details - An identifier is a unique string that names a specific hardware accelerator resource "nvidia.com/gpu" maps to
         1. Tolerations - applied to pods and allow the scheduler to schedule pods with matching taints (key=nvidia-gpu-only) found on the MachineSets labels (cluster-api/accelerator=nvidia-gpu)
     1. Serving Runtimes - supports REST and gRPC API protocols
         1. Caikit TGIS ServingRuntimes for KServe for REST
             1. Serialized models:
-                1. caitkit
-        1. OpenVINO Model Server (single-model, multi-model) for REST 
+                1. caikit
+        1. OpenVINO Model Server (single-model, multi-model) for REST
             1. Serialized models:
                 1. openvino v1
                 1. onnx v1
@@ -98,35 +98,3 @@ Deep dive into the Red Hat OpenShift AI 2.9 Dashboard
     1. User Management
         1. admin groups
         1. user groups
-
-
-## Links
-
-- [Docs - Link]()
-- [Blog - Link]()
-
-## Checklist
-
-- [ ] Step 1
-  - [ ] Step 1.a
-
-## Details / Notes
-
-```sh
-# run shell commands
-
-```
-
-### Issues
-
-[Reference](ISSUES.md) - [Jira](linktojira)
-
-### Kustomized Code
-
-[Code](../../components/configs/kustomized/rhods-config/)
-
-### Rollback / Uninstall
-
-```sh
-oc delete -k components/configs/kustomized/rhods-config
-```

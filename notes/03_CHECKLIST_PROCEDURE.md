@@ -1,6 +1,6 @@
 # Installing the Red Hat OpenShift AI Operator
 
-These are the detailed steps that accompany the CHECKLIST.md all in one doc.
+These are the detailed steps that accompany the `CHECKLIST.md` all in one doc.
 
 Login to cluster via terminal
 `oc login <openshift_cluster_url> -u <admin_username> -p <password>`
@@ -897,7 +897,7 @@ metadata:
   name: nvidia-gpu-operator
 ```
 
-Apply the Namepsace object YAML file
+Apply the Namespace object YAML file
 `oc apply -f docs/notes/configs/nvidia-gpu-operator-ns.yaml`
 
 Create an OperatorGroup CR
@@ -1034,7 +1034,7 @@ oc create configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed -
 Label the config map to expose the dashboard in the Administrator perspective of the web console
 `oc label configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed "console.openshift.io/dashboard=true"`
 
-Optional: Label the config map to expose the dashboard in the Developer perspecitive of the web console:
+Optional: Label the config map to expose the dashboard in the Developer perspective of the web console:
 `oc label configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed "console.openshift.io/odc-dashboard=true"`
 
 View the created resource and verify the labels
@@ -1166,13 +1166,13 @@ Update the `ClusterPolicy` in the NVIDIA GPU Operator under the `nvidia-gpu-oper
       key: nvidia-gpu-only
 ```
 
-Cordon the GPU node, drain the GPU tained nodes and terminate workloads
+Cordon the GPU node, drain the GPU tainted nodes and terminate workloads
 
 ```shell
 oc adm drain -l node-role.kubernetes.io/gpu --ignore-daemonsets --delete-emptydir-data
 ```
 
-Allow the GPU node to be scheduleable again per tolerations
+Allow the GPU node to be schedulable again per tolerations
 
 ```shell
 oc adm uncordon -l node-role.kubernetes.io/gpu
@@ -1342,7 +1342,7 @@ Access the RHOAI Dashboard > Settings.
 - Single-model serving platform
   - Caikit TGIS ServingRuntime for KServe
   - OpenVINO Model Server
-  - TGIS Standalone ServingRunetime for KServe
+  - TGIS Standalone ServingRuntime for KServe
 - Multi-model serving platform
   - OpenVINO Model Server
 
