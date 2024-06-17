@@ -1202,7 +1202,7 @@ Tolerations will be set in the RHOAI accelerator profiles that match the Taint k
 
 [source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.9/html/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads)
 
-### Components required for Distributed Workloads
+Components required for Distributed Workloads
 
 1. dashboard
 1. workbenches
@@ -1214,7 +1214,7 @@ Tolerations will be set in the RHOAI accelerator profiles that match the Taint k
 Verify the necessary pods are running - When the status of the codeflare-operator-manager-<pod-id>, kuberay-operator-<pod-id>, and kueue-controller-manager-<pod-id> pods is Running, the pods are ready to use.
 `oc get pods -n redhat-ods-applications | grep -E 'codeflare|kuberay|kueue'`
 
-#### Configuring quota management for distributed workloads (~5min)
+### Configuring quota management for distributed workloads (~5min)
 
 Create an empty Kueue resource flavor
 Why? Resources in a cluster are typically not homogeneous. A ResourceFlavor is an object that represents these resource variations (i.e. Nvidia A100 versus T4 GPUs) and allows you to associate them with cluster nodes through labels, taints and tolerations.
@@ -1319,13 +1319,15 @@ Recommended to keep default. If needed, apply the configuration to update the ob
 
 ## Administrative Configurations for RHOAI
 
+### Review RHOAI Dashboard Settings
+
 Access the RHOAI Dashboard > Settings.
 
-Notebook Images
+#### Notebook Images
 
 - Import new notebook images  
 
-Cluster Settings
+#### Cluster Settings
 
 - Model serving platforms
 - PVC size (see Backing up data)
@@ -1333,39 +1335,11 @@ Cluster Settings
 - Usage data collection
 - Notebook pod tolerations
 
-Accelerator Profiles
+#### Accelerator Profiles
 
-- Manage accelerator profile settings for users in your organization (see Add a new Accelerator Profile)
+- Manage accelerator profile settings for users in your organization 
 
-Serving Runtimes
-
-- Single-model serving platform
-  - Caikit TGIS ServingRuntime for KServe
-  - OpenVINO Model Server
-  - TGIS Standalone ServingRuntime for KServe
-- Multi-model serving platform
-  - OpenVINO Model Server
-  
-User Management
-
-- Data scientists
-- Administrators
-
-### (Review) Backing up data
-
-Refer to [A Guide to High Availability/Disaster Recovery for Applications on OpenShift](https://www.redhat.com/en/blog/a-guide-to-high-availability/disaster-recovery-for-applications-on-openshift)
-
-#### Control plane backup and restore operations
-
-You must [back up etcd](https://docs.openshift.com/container-platform/4.15/backup_and_restore/control_plane_backup_and_restore/backing-up-etcd.html#backup-etcd) data before shutting down a cluster; etcd is the key-value store for OpenShift Container Platform, which persists the state of all resource objects.
-
-#### Application backup and restore operations
-
-The OpenShift API for Data Protection (OADP) product safeguards customer applications on OpenShift Container Platform. It offers comprehensive disaster recovery protection, covering OpenShift Container Platform applications, application-related cluster resources, persistent volumes, and internal images. OADP is also capable of backing up both containerized applications and virtual machines (VMs).
-
-However, OADP does not serve as a disaster recovery solution for [etcd](https://docs.openshift.com/container-platform/4.15/backup_and_restore/control_plane_backup_and_restore/backing-up-etcd.html#backup-etcd) or OpenShift Operators.
-
-### Add a new Accelerator Profile (~3min)
+#### Add a new Accelerator Profile (~3min)
 
 [Enabling GPU support in OpenShift AI](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.9/html/installing_and_uninstalling_openshift_ai_self-managed/enabling-gpu-support_install)
 
@@ -1385,3 +1359,31 @@ Review the acceleratorprofile configuration
 `oc describe acceleratorprofile -n redhat-ods-applications`
 
 Verify the `taints` key set in your Node/MachineSets match your Accelerator Profile.
+
+#### Serving Runtimes
+
+- Single-model serving platform
+  - Caikit TGIS ServingRuntime for KServe
+  - OpenVINO Model Server
+  - TGIS Standalone ServingRuntime for KServe
+- Multi-model serving platform
+  - OpenVINO Model Server
+  
+#### User Management
+
+- Data scientists
+- Administrators
+
+### Review Backing up data
+
+Refer to [A Guide to High Availability/Disaster Recovery for Applications on OpenShift](https://www.redhat.com/en/blog/a-guide-to-high-availability/disaster-recovery-for-applications-on-openshift)
+
+#### Control plane backup and restore operations
+
+You must [back up etcd](https://docs.openshift.com/container-platform/4.15/backup_and_restore/control_plane_backup_and_restore/backing-up-etcd.html#backup-etcd) data before shutting down a cluster; etcd is the key-value store for OpenShift Container Platform, which persists the state of all resource objects.
+
+#### Application backup and restore operations
+
+The OpenShift API for Data Protection (OADP) product safeguards customer applications on OpenShift Container Platform. It offers comprehensive disaster recovery protection, covering OpenShift Container Platform applications, application-related cluster resources, persistent volumes, and internal images. OADP is also capable of backing up both containerized applications and virtual machines (VMs).
+
+However, OADP does not serve as a disaster recovery solution for [etcd](https://docs.openshift.com/container-platform/4.15/backup_and_restore/control_plane_backup_and_restore/backing-up-etcd.html#backup-etcd) or OpenShift Operators.
