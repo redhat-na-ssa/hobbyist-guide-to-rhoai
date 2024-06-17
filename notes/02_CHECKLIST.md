@@ -11,19 +11,19 @@ This is checklist of the technical steps needed to complete the installation and
   - [ ] Adding a CA bundle (~5min)
   - [ ] Installing KServe dependencies (~3min)
     - [ ] Creating a Knative Serving instance
-    - [ ] Creating secure gateways for Knative Serving (4min)
+    - [ ] Creating secure gateways for Knative Serving (~4min)
   - [ ] Manually adding an authorization provider (~4min)
     - [ ] Configuring an OpenShift Service Mesh instance to use Authorino (~6min)
     - [ ] Configuring authorization for KServe (~3min)
   - [ ] Enabling GPU support in OpenShift AI
-    - [ ] Adding a GPU node to an existing OpenShift Container Platform cluster (12min)
-    - [ ] Deploying the Node Feature Discovery Operator (12-30min)
-    - [ ] Installing the NVIDIA GPU Operator (10min)
-    - [ ] (Optional) Running a sample GPU Application (1min)
+    - [ ] Adding a GPU node to an existing OpenShift Container Platform cluster (~12min)
+    - [ ] Deploying the Node Feature Discovery Operator (~12-30min)
+    - [ ] Installing the NVIDIA GPU Operator (~10min)
+    - [ ] (Optional) Running a sample GPU Application (~1min)
     - [ ] Enabling the GPU Monitoring Dashboard (3min)
-    - [ ] Installing the NVIDIA GPU administration dashboard (5min)
-    - [ ] Configuring GPUs with time slicing (3min)
-    - [ ] Configure Taints and Tolerations (3min)
+    - [ ] Installing the NVIDIA GPU administration dashboard (~5min)
+    - [ ] Configuring GPUs with time slicing (~3min)
+    - [ ] Configure Taints and Tolerations (~3min)
     - [ ] (Optional) Configuring the cluster autoscaler
   - [ ] Configuring distributed workloads
     - [ ] Configuring quota management for distributed workloads (~5min)
@@ -48,7 +48,6 @@ This is checklist of the technical steps needed to complete the installation and
 - [ ] Review Backing up data
   - [ ] Control plane backup and restore operations
   - [ ] Application backup and restore operations
-
 
 ## Tutorials
 

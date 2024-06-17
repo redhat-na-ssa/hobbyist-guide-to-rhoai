@@ -43,7 +43,7 @@ spec:
 
 Apply the resource to the default OAuth configuration to add the identity provider
 
-`oc apply -f docs/notes/configs/htpass-cr.yaml`
+`oc apply -f configs/htpass-cr.yaml`
 
 > You will have to a few minutes for the account to resolve.
 
@@ -70,7 +70,7 @@ metadata:
 
 Create the namespace in your OpenShift Container Platform cluster
 
-`oc create -f docs/notes/configs/rhoai-operator-ns.yaml`
+`oc create -f configs/rhoai-operator-ns.yaml`
 
 Create an OperatorGroup object custom resource (CR) file, for example, rhoai-operator-group.yaml
 
@@ -84,7 +84,7 @@ metadata:
 
 Create the OperatorGroup in your OpenShift Container Platform cluster
 
-`oc create -f docs/notes/configs/rhoai-operator-group.yaml`
+`oc create -f configs/rhoai-operator-group.yaml`
 
 Create a Subscription object CR file, for example, rhoai-operator-subscription.yaml
 
@@ -103,7 +103,7 @@ spec:
 
 Create the Subscription object in your OpenShift Container Platform cluster
 
-`oc create -f docs/notes/configs/rhoai-operator-subscription.yaml`
+`oc create -f configs/rhoai-operator-subscription.yaml`
 
 Verification
 
@@ -153,7 +153,7 @@ spec:
 
 Apply the DSC object
 
-`oc create -f docs/notes/configs/rhoai-operator-dcs.yaml`
+`oc create -f configs/rhoai-operator-dcs.yaml`
 
 ## Adding a CA bundle (~5min)
 
@@ -275,7 +275,7 @@ spec:
 
 Apply the Service Mesh subscription to install the operator
 
-`oc create -f docs/notes/configs/servicemesh-subscription.yaml`
+`oc create -f configs/servicemesh-subscription.yaml`
 
 Define a ServiceMeshControlPlane object in a YAML file for example, servicemesh-subscription.yaml
 
@@ -326,7 +326,7 @@ spec:
 
 Apply the servicemesh control plane object
 
-`oc create -f docs/notes/configs/servicemesh-scmp.yaml`
+`oc create -f configs/servicemesh-scmp.yaml`
 
 Verify the pods are running for the service mesh control plane, ingress gateway, and egress gateway
 
@@ -378,7 +378,7 @@ spec:
 
 Install the Serverless Operator objects
 
-`oc create -f docs/notes/configs/serverless-operator.yaml`
+`oc create -f configs/serverless-operator.yaml`
 
 Define a ServiceMeshMember object in a YAML file called serverless-smm.yaml
 
@@ -396,7 +396,7 @@ spec:
 
 Apply the ServiceMeshMember object in the istio-system namespace
 
-`oc project -n istio-system && oc apply -f docs/notes/configs/serverless-smm.yaml`
+`oc project -n istio-system && oc apply -f configs/serverless-smm.yaml`
 
 Define a KnativeServing object in a YAML file called serverless-istio.yaml
 
@@ -441,7 +441,7 @@ spec:
 
 Apply the KnativeServing object in the specified knative-serving namespace
 
-`oc create -f docs/notes/configs/serverless-istio.yaml`
+`oc create -f configs/serverless-istio.yaml`
 
 (Optional) use a TLS certificate to secure the mapped service from [source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.9/html/serving_models/serving-large-models_serving-large-models#creating-a-knative-serving-instance_serving-large-models)
 
@@ -536,7 +536,7 @@ spec:
 ```
 
 Apply the serverless-gateways.yaml file to create the defined resources
-`oc apply -f docs/notes/configs/serverless-gateway.yaml`
+`oc apply -f configs/serverless-gateway.yaml`
 
 Review the gateways that you created
 `oc get gateway --all-namespaces`
@@ -565,7 +565,7 @@ spec:
 ```
 
 Apply the Authorino operator
-`oc create -f docs/notes/configs/authorino-subscription.yaml`
+`oc create -f configs/authorino-subscription.yaml`
 
 Create a namespace to install the Authorino instance
 `oc create ns redhat-ods-applications-auth-provider`
@@ -585,7 +585,7 @@ Enroll the new namespace for the Authorino instance in your existing OpenShift S
 ```
 
 Create the ServiceMeshMember resource on your cluster
-`oc create -f docs/notes/configs/authorino-smm.yaml`
+`oc create -f configs/authorino-smm.yaml`
 
 Configure an Authorino instance, create a new YAML file as shown
 
@@ -607,7 +607,7 @@ Configure an Authorino instance, create a new YAML file as shown
 ```
 
 Create the Authorino resource on your cluster.
-`oc create -f docs/notes/configs/authorino-instance.yaml`
+`oc create -f configs/authorino-instance.yaml`
 
 Patch the Authorino deployment to inject an Istio sidecar, which makes the Authorino instance part of your OpenShift Service Mesh instance
 `oc patch deployment authorino -n redhat-ods-applications-auth-provider -p '{"spec": {"template":{"metadata":{"labels":{"sidecar.istio.io/inject":"true"}}}} }'`
@@ -636,7 +636,7 @@ spec:
 
 Use the oc patch command to apply the YAML file to your OpenShift Service Mesh instance
 
-`oc patch smcp minimal --type merge -n istio-system --patch-file docs/notes/configs/servicemesh-smcp-patch.yaml`
+`oc patch smcp minimal --type merge -n istio-system --patch-file configs/servicemesh-smcp-patch.yaml`
 
 Inspect the ConfigMap object for your OpenShift Service Mesh instance
 `oc get configmap istio-minimal -n istio-system --output=jsonpath={.data.mesh}`
@@ -674,7 +674,7 @@ spec:
 ```
 
 Create the AuthorizationPolicy resource in the namespace for your OpenShift Service Mesh instance
-`oc create -n istio-system -f docs/notes/configs/servicemesh-authorization-policy.yaml`
+`oc create -n istio-system -f configs/servicemesh-authorization-policy.yaml`
 
 Create another new YAML file with the following contents:
 The EnvoyFilter resource shown continually resets the HTTP host header to the one initially included in any inference request.
@@ -720,7 +720,7 @@ spec:
 ```
 
 Create the EnvoyFilter resource in the namespace for your OpenShift Service Mesh instance
-`oc create -n istio-system -f docs/notes/configs/servicemesh-envoyfilter.yaml`
+`oc create -n istio-system -f configs/servicemesh-envoyfilter.yaml`
 
 Check that the AuthorizationPolicy resource was successfully created.
 `oc get authorizationpolicies -n istio-system`
@@ -791,7 +791,7 @@ metadata:
 ```
 
 Apply the Namespace object
-`oc apply -f docs/notes/configs/nfd-operator-ns.yaml`
+`oc apply -f configs/nfd-operator-ns.yaml`
 
 Create an OperatorGroup object YAML file
 
@@ -806,7 +806,7 @@ metadata:
 Apply the OperatorGroup object
 
 ```yaml
-oc apply -f docs/notes/configs/nfd-operator-group.yaml
+oc apply -f configs/nfd-operator-group.yaml
 ```
 
 Create a Subscription object YAML file to subscribe a namespace to an Operator
@@ -826,7 +826,7 @@ spec:
 ```
 
 Apply the Subscription object
-`oc apply -f docs/notes/configs/nfd-operator-sub.yaml`
+`oc apply -f configs/nfd-operator-sub.yaml`
 
 Verify the operator is installed and running
 `oc get pods -n openshift-nfd`
@@ -860,7 +860,7 @@ spec:
 ```
 
 Create the nfd instance object
-`oc apply -f docs/notes/configs/nfd-instance.yaml`
+`oc apply -f configs/nfd-instance.yaml`
 
 ![IMPORTANT]
 The NFD Operator uses vendor PCI IDs to identify hardware in a node. NVIDIA uses the PCI ID 10de.
@@ -898,7 +898,7 @@ metadata:
 ```
 
 Apply the Namespace object YAML file
-`oc apply -f docs/notes/configs/nvidia-gpu-operator-ns.yaml`
+`oc apply -f configs/nvidia-gpu-operator-ns.yaml`
 
 Create an OperatorGroup CR
 
@@ -916,7 +916,7 @@ spec:
 Apply the OperatorGroup YAML file
 
 ```yaml
-oc apply -f docs/notes/configs/nvidia-gpu-operator-group.yaml 
+oc apply -f configs/nvidia-gpu-operator-group.yaml 
 ```
 
 Run the following commands to get the startingCSV value
@@ -944,7 +944,7 @@ spec:
 ```
 
 Apply the Subscription CR
-`oc apply -f docs/notes/configs/nvidia-gpu-operator-subscription.yaml`
+`oc apply -f configs/nvidia-gpu-operator-subscription.yaml`
 
 Verify an install plan has been created
 `oc get installplan -n nvidia-gpu-operator`
@@ -1001,7 +1001,7 @@ Create a test project
 `oc new-project sandbox`
 
 Create the sample app
-`oc create -f docs/notes/configs/nvidia-gpu-sample-app.yaml`
+`oc create -f configs/nvidia-gpu-sample-app.yaml`
 
 Check the logs of the container
 `oc logs cuda-vectoradd`
@@ -1028,7 +1028,7 @@ Download the latest NVIDIA DCGM Exporter Dashboard from the DCGM Exporter reposi
 Create a config map from the downloaded file in the openshift-config-managed namespace
 
 ```shell
-oc create configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed --from-file=docs/notes/configs/nvidia-dcgm-dashboard-cm.json
+oc create configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed --from-file=configs/nvidia-dcgm-dashboard-cm.json
 ```
 
 Label the config map to expose the dashboard in the Administrator perspective of the web console
@@ -1100,7 +1100,7 @@ data:
 ```
 
 Apply the device plugin configuration
-`oc apply -f docs/notes/configs/nvidia-gpu-deviceplugin-cm.yaml`
+`oc apply -f configs/nvidia-gpu-deviceplugin-cm.yaml`
 
 Tell the GPU Operator which ConfigMap to use for the device plugin configuration. You can simply patch the ClusterPolicy custom resource.
 
@@ -1232,7 +1232,7 @@ spec:
 ```
 
 Apply the configuration to create the `default-flavor`
-`oc apply -f docs/notes/configs/rhoai-kueue-default-flavor.yaml`
+`oc apply -f configs/rhoai-kueue-default-flavor.yaml`
 
 Create a cluster queue to manage the empty Kueue resource flavor
 Why? A ClusterQueue is a cluster-scoped object that governs a pool of resources such as pods, CPU, memory, and hardware accelerators. Only batch administrators should create ClusterQueue objects.
@@ -1267,7 +1267,7 @@ What is this cluster-queue doing? This ClusterQueue admits Workloads if and only
 Replace the example quota values (9 CPUs, 36 GiB memory, and 5 NVIDIA GPUs) with the appropriate values for your cluster queue. The cluster queue will start a distributed workload only if the total required resources are within these quota limits. Only homogenous NVIDIA GPUs are supported.
 
 Apply the configuration to create the `cluster-queue`
-`oc apply -f docs/notes/configs/rhoai-kueue-cluster-queue.yaml`
+`oc apply -f configs/rhoai-kueue-cluster-queue.yaml`
 
 Create a local queue that points to your cluster queue
 Why? A LocalQueue is a namespaced object that groups closely related Workloads that belong to a single namespace. Users submit jobs to a LocalQueue, instead of to a ClusterQueue directly.
@@ -1288,7 +1288,7 @@ spec:
 Update the name value accordingly.
 
 Apply the configuration to create the local-queue object
-`oc apply -f docs/notes/configs/rhoai-kueue-local-queue.yaml`
+`oc apply -f configs/rhoai-kueue-local-queue.yaml`
 
 How do users known what queues they can submit jobs to? Users submit jobs to a LocalQueue, instead of to a ClusterQueue directly. Tenants can discover which queues they can submit jobs to by listing the local queues in their namespace.
 
@@ -1315,7 +1315,7 @@ kuberay:
 ```
 
 Recommended to keep default. If needed, apply the configuration to update the object
-`oc apply -f docs/notes/configs/rhoai-codeflare-operator-config.yaml`
+`oc apply -f configs/rhoai-codeflare-operator-config.yaml`
 
 ## Administrative Configurations for RHOAI
 
