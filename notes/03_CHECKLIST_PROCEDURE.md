@@ -15,7 +15,7 @@ Login to cluster via terminal
 
 Create an htpasswd file to store the user and password information
 
-`htpasswd -c -B -b users.htpasswd <username> <password>`
+`htpasswd -c -B -b scratch/users.htpasswd <username> <password>`
 
 Create a secret to represent the htpasswd file
 
