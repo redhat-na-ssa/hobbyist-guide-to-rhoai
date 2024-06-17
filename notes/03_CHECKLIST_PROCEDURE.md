@@ -944,6 +944,15 @@ Run the following command to get the channel value
 oc get packagemanifest gpu-operator-certified -n openshift-marketplace -o jsonpath='{.status.defaultChannel}'
 ```
 
+Run the following commands to get the startingCSV
+```sh
+# set channel value from output
+CHANNEL=v24.3
+
+# run the command to get the startingCSV
+oc get packagemanifests/gpu-operator-certified -n openshift-marketplace -ojson | jq -r '.status.channels[] | select(.name == "'$CHANNEL'") | .currentCSV'
+```
+
 Create the following Subscription CR and save the YAML
 Update the `channel` and `startingCSV` fields with the information returned
 
