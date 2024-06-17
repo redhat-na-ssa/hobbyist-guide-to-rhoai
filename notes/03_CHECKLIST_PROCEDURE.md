@@ -111,7 +111,7 @@ Check the installed operators for `rhods-operator.redhat-ods-operator`
 `oc get operators`
 
 Check the created projects `redhat-ods-applications|redhat-ods-monitoring|redhat-ods-operator`
-`oc get projects | grep -i redhat-ods`
+`oc get projects | egrep redhat-ods`
 
 ## Installing and managing Red Hat OpenShift AI components (~1min)
 
