@@ -764,22 +764,30 @@ Update the following fields:
 - [ ] `.spec.template.spec.providerSpec.value.instanceType` to `g4dn.4xlarge`.
 
 Apply the configuration to create the gpu machine
-`oc apply -f scratch/machineset.json`
+```sh
+oc apply -f scratch/machineset.json
+```
 
 Verify the gpu machineset you created is running
-`oc -n openshift-machine-api get machinesets | grep gpu`
+```sh
+oc -n openshift-machine-api get machinesets | grep gpu
+```
 
 Scale the machineset up
 
 View the Machine object that the machine set created
-`oc -n openshift-machine-api get machines | grep gpu`
+```sh
+oc -n openshift-machine-api get machines | grep gpu
+```
 
 ### Deploying the Node Feature Discovery Operator (12-30min)
 
 [source](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/machine_management/managing-compute-machines-with-the-machine-api#nvidia-gpu-aws-deploying-the-node-feature-discovery-operator_creating-machineset-aws)
 
 List the available operators for installation searching for Node Feature Discovery (NFD)
-`oc get packagemanifests -n openshift-marketplace | grep nfd`
+```sh
+oc get packagemanifests -n openshift-marketplace | grep nfd
+```
 
 Create a Namespace object YAML file
 
@@ -791,7 +799,9 @@ metadata:
 ```
 
 Apply the Namespace object
-`oc apply -f configs/nfd-operator-ns.yaml`
+```sh
+oc apply -f configs/nfd-operator-ns.yaml
+```
 
 Create an OperatorGroup object YAML file
 
@@ -805,7 +815,7 @@ metadata:
 
 Apply the OperatorGroup object
 
-```yaml
+```sh
 oc apply -f configs/nfd-operator-group.yaml
 ```
 
@@ -826,10 +836,14 @@ spec:
 ```
 
 Apply the Subscription object
-`oc apply -f configs/nfd-operator-sub.yaml`
+```sh
+oc apply -f configs/nfd-operator-sub.yaml
+```
 
 Verify the operator is installed and running
-`oc get pods -n openshift-nfd`
+```sh
+oc get pods -n openshift-nfd
+```
 
 Create an NodeFeatureDiscovery instance via the CLI or UI (recommended)
 
@@ -860,7 +874,9 @@ spec:
 ```
 
 Create the nfd instance object
-`oc apply -f configs/nfd-instance.yaml`
+```sh
+oc apply -f configs/nfd-instance.yaml
+```
 
 ![IMPORTANT]
 The NFD Operator uses vendor PCI IDs to identify hardware in a node. NVIDIA uses the PCI ID 10de.
@@ -886,7 +902,9 @@ Verify the NVIDIA GPU is discovered
 [source](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/install-gpu-ocp.html#installing-the-nvidia-gpu-operator-using-the-cli)
 
 List the available operators for installation searching for Node Feature Discovery (NFD)
-`oc get packagemanifests -n openshift-marketplace | grep gpu`
+```sh
+oc get packagemanifests -n openshift-marketplace | grep gpu
+```
 
 Create a Namespace custom resource (CR) that defines the nvidia-gpu-operator namespace
 
@@ -898,7 +916,9 @@ metadata:
 ```
 
 Apply the Namespace object YAML file
-`oc apply -f configs/nvidia-gpu-operator-ns.yaml`
+```sh
+oc apply -f configs/nvidia-gpu-operator-ns.yaml
+```
 
 Create an OperatorGroup CR
 
@@ -915,15 +935,14 @@ spec:
 
 Apply the OperatorGroup YAML file
 
-```yaml
+```sh
 oc apply -f configs/nvidia-gpu-operator-group.yaml 
 ```
 
-Run the following commands to get the startingCSV value
-`oc get packagemanifests/gpu-operator-certified -n openshift-marketplace -ojson | jq -r '.status.channels[] | select(.name == "'$CHANNEL'") | .currentCSV'`
-
-Run the following command to get the channel value required
-`CHANNEL=$(oc get packagemanifest gpu-operator-certified -n openshift-marketplace -o jsonpath='{.status.defaultChannel}')`
+Run the following command to get the channel value
+```sh
+oc get packagemanifest gpu-operator-certified -n openshift-marketplace -o jsonpath='{.status.defaultChannel}'
+```
 
 Create the following Subscription CR and save the YAML
 Update the `channel` and `startingCSV` fields with the information returned
