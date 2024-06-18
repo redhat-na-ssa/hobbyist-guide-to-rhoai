@@ -1517,10 +1517,17 @@ Verify the `taints` key set in your Node/MachineSets match your Accelerator Prof
 
 ##### Add serving runtime
 
-From RHOAI, Settings > Serving runtimes > Click Add Serving Runtime:
+From RHOAI, Settings > Serving runtimes > Click Add Serving Runtime.
+
+Option 1:
 - Select `Multi-model serving`
 - Select `Start from scratch`
 - Review, Copy and Paste in the content from `configs/rhoai-add-serving-runtime.yaml`
+- Add and confirm the runtime can be selected in a Data Science Project
+
+Option 2:
+- Review `configs/rhoai-add-serving-runtime-template.yaml`
+- `oc apply -f configs/rhoai-add-serving-runtime-template.yaml -n redhat-ods-applications`
 - Add and confirm the runtime can be selected in a Data Science Project
 
 #### User Management
