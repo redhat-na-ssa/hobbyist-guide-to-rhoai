@@ -3,11 +3,15 @@
 These are the detailed steps that accompany the `CHECKLIST.md` all in one doc.
 
 Login to cluster via terminal
-`oc login <openshift_cluster_url> -u <admin_username> -p <password>`
+```sh
+oc login <openshift_cluster_url> -u <admin_username> -p <password>
+```
 
 (optional) Configure bash completion - requires `oc` and `bash-completion` packages installed
 
-`source <(oc completion zsh)`
+```sh
+source <(oc completion zsh)
+```
 
 ## Adding administrative users for OpenShift Container Platform (~8 min)
 
@@ -15,11 +19,15 @@ Login to cluster via terminal
 
 Create an htpasswd file to store the user and password information
 
-`htpasswd -c -B -b scratch/users.htpasswd <username> <password>`
+```sh
+htpasswd -c -B -b scratch/users.htpasswd <username> <password>
+```
 
 Create a secret to represent the htpasswd file
 
-`oc create secret generic htpass-secret --from-file=htpasswd=scratch/users.htpasswd -n openshift-config`
+```sh
+oc create secret generic htpass-secret --from-file=htpasswd=scratch/users.htpasswd -n openshift-config
+```
 
 Define the custom resource for htpasswd
 
@@ -43,17 +51,23 @@ spec:
 
 Apply the resource to the default OAuth configuration to add the identity provider
 
-`oc apply -f configs/htpass-cr.yaml`
+```sh
+oc apply -f configs/htpass-cr.yaml
+```
 
 > You will have to a few minutes for the account to resolve.
 
 As kubeadmin, assign the cluster-admin role to perform administrator level tasks.
 
-`oc adm policy add-cluster-role-to-user cluster-admin <user>`
+```sh
+oc adm policy add-cluster-role-to-user cluster-admin <user>
+```
 
 Log in to the cluster as a user from your identity provider, entering the password when prompted
 
-`oc login --insecure-skip-tls-verify=true -u <username> -p <password>`
+```sh
+oc login --insecure-skip-tls-verify=true -u <username> -p <password>
+```
 
 ## Installing the Red Hat OpenShift AI Operator by using the CLI (~3min)
 
@@ -108,10 +122,14 @@ Create the Subscription object in your OpenShift Container Platform cluster
 Verification
 
 Check the installed operators for `rhods-operator.redhat-ods-operator`
-`oc get operators`
+```sh
+oc get operators
+```
 
 Check the created projects `redhat-ods-applications|redhat-ods-monitoring|redhat-ods-operator`
-`oc get projects | egrep redhat-ods`
+```sh
+oc get projects | egrep redhat-ods
+```
 
 ## Installing and managing Red Hat OpenShift AI components (~1min)
 
@@ -153,7 +171,9 @@ spec:
 
 Apply the DSC object
 
-`oc create -f configs/rhoai-operator-dcs.yaml`
+```sh
+oc create -f configs/rhoai-operator-dcs.yaml
+```
 
 ## Adding a CA bundle (~5min)
 
@@ -1450,6 +1470,13 @@ Access the RHOAI Dashboard > Settings.
 
 [Enabling GPU support in OpenShift AI](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.9/html/installing_and_uninstalling_openshift_ai_self-managed/enabling-gpu-support_install)
 
+RHOAI dashboard and check the **Settings > Accelerator profiles** - There should be none listed.
+
+Check the current configmap
+```sh
+oc get cm migration-gpu-status -n redhat-ods-applications -o yaml
+```
+
 Delete the migration-gpu-status ConfigMap
 ```sh
 oc delete cm migration-gpu-status -n redhat-ods-applications
@@ -1464,6 +1491,8 @@ Wait until the Status column indicates that all pods in the rollout have fully r
 ```sh
 oc get pods -n redhat-ods-applications | egrep rhods-dashboard
 ```
+
+Refresh the RHOAI dashboard and check the **Settings > Accelerator profiles** - There should be `NVIDIA GPU` enabled.
 
 Check the acceleratorprofiles
 ```sh
@@ -1485,7 +1514,15 @@ Verify the `taints` key set in your Node/MachineSets match your Accelerator Prof
   - TGIS Standalone ServingRuntime for KServe
 - Multi-model serving platform
   - OpenVINO Model Server
-  
+
+##### Add serving runtime
+
+From RHOAI, Settings > Serving runtimes > Click Add Serving Runtime:
+- Select `Multi-model serving`
+- Select `Start from scratch`
+- Review, Copy and Paste in the content from `configs/rhoai-add-serving-runtime.yaml`
+- Add and confirm the runtime can be selected in a Data Science Project
+
 #### User Management
 
 - Data scientists
