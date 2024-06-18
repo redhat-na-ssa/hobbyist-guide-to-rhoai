@@ -972,33 +972,49 @@ spec:
 ```
 
 Apply the Subscription CR
-`oc apply -f configs/nvidia-gpu-operator-subscription.yaml`
+```sh
+oc apply -f configs/nvidia-gpu-operator-subscription.yaml
+```
 
 Verify an install plan has been created
-`oc get installplan -n nvidia-gpu-operator`
+```sh
+oc get installplan -n nvidia-gpu-operator
+```
 
 (Optional) Approve the install plan if not `Automatic`
-`INSTALL_PLAN=$(oc get installplan -n nvidia-gpu-operator -oname)`
+```sh
+INSTALL_PLAN=$(oc get installplan -n nvidia-gpu-operator -oname)
+```
 
 Create the cluster policy
-`oc get csv -n nvidia-gpu-operator gpu-operator-certified.v24.3.0 -o jsonpath='{.metadata.annotations.alm-examples}' | jq '.[0]' > scratch/nvidia-gpu-clusterpolicy.json`
+```sh
+oc get csv -n nvidia-gpu-operator gpu-operator-certified.v24.3.0 -o jsonpath='{.metadata.annotations.alm-examples}' | jq '.[0]' > scratch/nvidia-gpu-clusterpolicy.json
+```
 
 Apply the clusterpolicy
-`oc apply -f scratch/nvidia-gpu-clusterpolicy.json`
+```sh
+oc apply -f scratch/nvidia-gpu-clusterpolicy.json
+```
 
 At this point, the GPU Operator proceeds and installs all the required components to set up the NVIDIA GPUs in the OpenShift 4 cluster. Wait at least 10-20 minutes before digging deeper into any form of troubleshooting because this may take a period of time to finish.
 
 Verify the successful installation of the NVIDIA GPU Operator
-`oc get pods,daemonset -n nvidia-gpu-operator`
+```sh
+oc get pods,daemonset -n nvidia-gpu-operator
+```
 
 (Opinion) When the NVIDIA operator completes labeling the nodes, you can add a label to the GPU node Role as `gpu, worker` for readability
-`oc label node -l nvidia.com/gpu.machine node-role.kubernetes.io/gpu=''`
+```sh
+oc label node -l nvidia.com/gpu.machine node-role.kubernetes.io/gpu=''
+```
 
 In order to apply this label to new machines/nodes:
 
 ```shell
+# set an env value
 MACHINE_SET_TYPE=$(oc -n openshift-machine-api get machinesets.machine.openshift.io -o name | grep gpu | head -n1)
 
+# patch the machineset
 oc -n openshift-machine-api \
   patch "${MACHINE_SET_TYPE}" \
   --type=merge --patch '{"spec":{"template":{"spec":{"metadata":{"labels":{"node-role.kubernetes.io/gpu":""}}}}}}'
@@ -1026,22 +1042,34 @@ spec:
 ```
 
 Create a test project
-`oc new-project sandbox`
+```sh
+oc new-project sandbox
+```
 
 Create the sample app
-`oc create -f configs/nvidia-gpu-sample-app.yaml`
+```sh
+oc create -f configs/nvidia-gpu-sample-app.yaml
+```
 
 Check the logs of the container
-`oc logs cuda-vectoradd`
+```sh
+oc logs cuda-vectoradd
+```
 
 Get information about the GPU
-`oc project nvidia-gpu-operator`
+```sh
+oc project nvidia-gpu-operator
+```
 
 View the new pods
-`oc get pod -owide -lopenshift.driver-toolkit=true`
+```sh
+oc get pod -owide -lopenshift.driver-toolkit=true
+```
 
 With the Pod and node name, run the nvidia-smi on the correct node.
-`oc exec -it nvidia-driver-daemonset-410.84.202203290245-0-xxgdv -- nvidia-smi`
+```sh
+oc exec -it nvidia-driver-daemonset-410.84.202203290245-0-xxgdv -- nvidia-smi
+```
 
 1. The first table reflects the information about all available GPUs (the example shows one GPU).
 1. The second table provides details on the processes using the GPUs.
@@ -1051,7 +1079,9 @@ With the Pod and node name, run the nvidia-smi on the correct node.
 [source](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/enable-gpu-monitoring-dashboard.html)
 
 Download the latest NVIDIA DCGM Exporter Dashboard from the DCGM Exporter repository on GitHub:
-`cd scratch && curl -LfO https://github.com/NVIDIA/dcgm-exporter/raw/main/grafana/dcgm-exporter-dashboard.json`
+```sh
+cd scratch && curl -LfO https://github.com/NVIDIA/dcgm-exporter/raw/main/grafana/dcgm-exporter-dashboard.json
+```
 
 Create a config map from the downloaded file in the openshift-config-managed namespace
 
@@ -1060,13 +1090,19 @@ oc create configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed -
 ```
 
 Label the config map to expose the dashboard in the Administrator perspective of the web console
-`oc label configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed "console.openshift.io/dashboard=true"`
+```sh
+oc label configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed "console.openshift.io/dashboard=true"
+```
 
 Optional: Label the config map to expose the dashboard in the Developer perspective of the web console:
-`oc label configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed "console.openshift.io/odc-dashboard=true"`
+```sh
+oc label configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed "console.openshift.io/odc-dashboard=true"
+```
 
 View the created resource and verify the labels
-`oc -n openshift-config-managed get cm nvidia-dcgm-exporter-dashboard --show-labels`
+```sh
+oc -n openshift-config-managed get cm nvidia-dcgm-exporter-dashboard --show-labels
+```
 
 View the NVIDIA DCGM Exporter Dashboard from the OCP UI from Administrator and Developer
 
@@ -1075,40 +1111,67 @@ View the NVIDIA DCGM Exporter Dashboard from the OCP UI from Administrator and D
 [source](https://docs.openshift.com/container-platform/4.12/observability/monitoring/nvidia-gpu-admin-dashboard.html)
 
 Add the Helm repository
-`helm repo add rh-ecosystem-edge https://rh-ecosystem-edge.github.io/console-plugin-nvidia-gpu`
+```sh
+helm repo add rh-ecosystem-edge https://rh-ecosystem-edge.github.io/console-plugin-nvidia-gpu
+```
 
 Helm update
-`helm repo update`
+```sh
+helm repo update
+```
 
 Install the Helm chart in the default NVIDIA GPU operator namespace
-`helm install -n nvidia-gpu-operator console-plugin-nvidia-gpu rh-ecosystem-edge/console-plugin-nvidia-gpu`
+```sh
+helm install -n nvidia-gpu-operator console-plugin-nvidia-gpu rh-ecosystem-edge/console-plugin-nvidia-gpu
+```
 
 Check if a plugins field is specified
-`oc get consoles.operator.openshift.io cluster --output=jsonpath="{.spec.plugins}"`
+```sh
+oc get consoles.operator.openshift.io cluster --output=jsonpath="{.spec.plugins}"
+```
 
 If not, then run the following to enable the plugin
-`oc patch consoles.operator.openshift.io cluster --patch '[{"op": "add", "path": "/spec/plugins/-", "value": "console-plugin-nvidia-gpu" }]' --type=json`
+```sh
+oc patch consoles.operator.openshift.io cluster --patch '[{"op": "add", "path": "/spec/plugins/-", "value": "console-plugin-nvidia-gpu" }]' --type=json
+```
 
 add the required DCGM Exporter metrics ConfigMap to the existing NVIDIA operator ClusterPolicy CR
-`oc patch clusterpolicies.nvidia.com gpu-cluster-policy --patch '{ "spec": { "dcgmExporter": { "config": { "name": "console-plugin-nvidia-gpu" } } } }' --type=merge`
+```sh
+oc patch clusterpolicies.nvidia.com gpu-cluster-policy --patch '{ "spec": { "dcgmExporter": { "config": { "name": "console-plugin-nvidia-gpu" } } } }' --type=merge
+```
+
+You should receive a message on the console "Web console update is available" > Refresh the web console.
+
+**Go to Compute > GPUs.**
 
 The dashboard relies mostly on Prometheus metrics exposed by the NVIDIA DCGM Exporter, but the default exposed metrics are not enough for the dashboard to render the required gauges. Therefore, the DGCM exporter is configured to expose a custom set of metrics, as shown here.
 
-```shell
+```sh
 oc get cm console-plugin-nvidia-gpu -n nvidia-gpu-operator -o yaml
 ```
 
 View the deployed resources
-`oc -n nvidia-gpu-operator get all -l app.kubernetes.io/name=console-plugin-nvidia-gpu`
+```sh
+oc -n nvidia-gpu-operator get all -l app.kubernetes.io/name=console-plugin-nvidia-gpu
+```
+
+### GPU sharing methods
+
+Why? By default, you get one workload per GPU. This is inefficient for certain use cases. [How can you share a GPU to 1:N workloads](https://docs.openshift.com/container-platform/4.15/architecture/nvidia-gpu-architecture-overview.html#nvidia-gpu-prerequisites_nvidia-gpu-architecture-overview):
+
+For NVIDIA:
+- [Time-slicing NVIDIA GPUs](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/time-slicing-gpus-in-openshift.html#)
+- [Multi-Instance GPU (MIG)](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/mig-ocp.html)) 
+- [NVIDIA vGPUs](https://docs.nvidia.com/datacenter/cloud-native/openshift/23.9.2/nvaie-with-ocp.html?highlight=passthrough#openshift-container-platform-on-vmware-vsphere-with-nvidia-vgpus)
 
 ### Configuring GPUs with time slicing (3min)
 
 [source](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/time-slicing-gpus-in-openshift.html#configuring-gpus-with-time-slicing)
 
-Enabling GPU Feature Discovery
-The feature release on GPU Feature Discovery (GFD) exposes the GPU types as labels and allows users to create node selectors based on these labels to help the scheduler place the pods.
+The following sections show you how to configure NVIDIA Tesla T4 GPUs, as they do not support MIG, but can easily accept multiple small jobs.
 
-Create the slicing configurations
+The GPU Feature Discovery (GFD) exposes the GPU types as labels and allows users to create node selectors based on these labels to help the scheduler place the pods.
+
 Before enabling a time slicing configuration, you need to tell the device plugin what are the possible configurations.
 
 ```yaml
@@ -1128,11 +1191,13 @@ data:
 ```
 
 Apply the device plugin configuration
-`oc apply -f configs/nvidia-gpu-deviceplugin-cm.yaml`
+```sh
+oc apply -f configs/nvidia-gpu-deviceplugin-cm.yaml
+```
 
 Tell the GPU Operator which ConfigMap to use for the device plugin configuration. You can simply patch the ClusterPolicy custom resource.
 
-```shell
+```sh
 oc patch clusterpolicy gpu-cluster-policy \
     -n nvidia-gpu-operator --type merge \
     -p '{"spec": {"devicePlugin": {"config": {"name": "device-plugin-config"}}}}'
@@ -1140,7 +1205,7 @@ oc patch clusterpolicy gpu-cluster-policy \
 
 Apply the configuration to all the nodes you have with Tesla TA GPUs. GFD, labels the nodes with the GPU product, in this example Tesla-T4, so you can use a node selector to label all of the nodes at once.
 
-```shell
+```sh
 oc label --overwrite node \
     --selector=nvidia.com/gpu.product=Tesla-T4 \
     nvidia.com/device-plugin.config=Tesla-T4
@@ -1148,7 +1213,7 @@ oc label --overwrite node \
 
 Patch the NVIDIA GPU Operator ClusterPolicy to use the timeslicing configuration by default.
 
-```shell
+```sh
 oc patch clusterpolicy gpu-cluster-policy \
     -n nvidia-gpu-operator --type merge \
     -p '{"spec": {"devicePlugin": {"config": {"default": "Tesla-T4"}}}}'
@@ -1156,31 +1221,31 @@ oc patch clusterpolicy gpu-cluster-policy \
 
 The applied configuration creates eight replicas for Tesla T4 GPUs, so the nvidia.com/gpu external resource is set to 8
 
-```shell
+```sh
 oc get node --selector=nvidia.com/gpu.product=Tesla-T4-SHARED -o json | jq '.items[0].status.capacity'
 ```
 
 Verify that GFD labels have been added to indicate time-sharing.
 
-```shell
+```sh
 oc get node --selector=nvidia.com/gpu.product=Tesla-T4-SHARED -o json \
  | jq '.items[0].metadata.labels' | grep nvidia
  ```
 
-Look for the following
+Expected output contains
 
-```shell
+```sh
   "nvidia.com/gpu.product": "Tesla-T4-SHARED",
   "nvidia.com/gpu.replicas": "8",
 ```
 
 ### Configure Taints and Tolerations (3min)
 
-Prevent non-GPU workloads from being scheduled on the GPU nodes.
+Why? Prevent non-GPU workloads from being scheduled on the GPU nodes.
 
 Taint the GPU nodes with `nvidia-gpu-only`. This MUST match the Accelerator profile taint key you use (by default may be different, i.e. `nvidia.com/gpu`).
 
-```shell
+```sh
 oc adm taint node -l node-role.kubernetes.io/gpu nvidia-gpu-only=:NoSchedule --overwrite
 ```
 
@@ -1240,7 +1305,9 @@ Components required for Distributed Workloads
 1. ray
 
 Verify the necessary pods are running - When the status of the codeflare-operator-manager-<pod-id>, kuberay-operator-<pod-id>, and kueue-controller-manager-<pod-id> pods is Running, the pods are ready to use.
-`oc get pods -n redhat-ods-applications | grep -E 'codeflare|kuberay|kueue'`
+```sh
+oc get pods -n redhat-ods-applications | grep -E 'codeflare|kuberay|kueue'
+```
 
 ### Configuring quota management for distributed workloads (~5min)
 
@@ -1260,7 +1327,9 @@ spec:
 ```
 
 Apply the configuration to create the `default-flavor`
-`oc apply -f configs/rhoai-kueue-default-flavor.yaml`
+```sh
+oc apply -f configs/rhoai-kueue-default-flavor.yaml
+```
 
 Create a cluster queue to manage the empty Kueue resource flavor
 Why? A ClusterQueue is a cluster-scoped object that governs a pool of resources such as pods, CPU, memory, and hardware accelerators. Only batch administrators should create ClusterQueue objects.
@@ -1295,7 +1364,9 @@ What is this cluster-queue doing? This ClusterQueue admits Workloads if and only
 Replace the example quota values (9 CPUs, 36 GiB memory, and 5 NVIDIA GPUs) with the appropriate values for your cluster queue. The cluster queue will start a distributed workload only if the total required resources are within these quota limits. Only homogenous NVIDIA GPUs are supported.
 
 Apply the configuration to create the `cluster-queue`
-`oc apply -f configs/rhoai-kueue-cluster-queue.yaml`
+```sh
+oc apply -f configs/rhoai-kueue-cluster-queue.yaml
+```
 
 Create a local queue that points to your cluster queue
 Why? A LocalQueue is a namespaced object that groups closely related Workloads that belong to a single namespace. Users submit jobs to a LocalQueue, instead of to a ClusterQueue directly.
@@ -1316,17 +1387,23 @@ spec:
 Update the name value accordingly.
 
 Apply the configuration to create the local-queue object
-`oc apply -f configs/rhoai-kueue-local-queue.yaml`
+```sh
+oc apply -f configs/rhoai-kueue-local-queue.yaml
+```
 
 How do users known what queues they can submit jobs to? Users submit jobs to a LocalQueue, instead of to a ClusterQueue directly. Tenants can discover which queues they can submit jobs to by listing the local queues in their namespace.
 
 Verify the local queue is created
-`oc get -n sandbox queues`
+```sh
+oc get -n sandbox queues
+```
 
 ### (Optional) Configuring the CodeFlare Operator (~5min)
 
 Get the `codeflare-operator-config` configmap
-`oc get cm codeflare-operator-config -n redhat-ods-applications -o yaml`
+```sh
+oc get cm codeflare-operator-config -n redhat-ods-applications -o yaml
+```
 
 In the `codeflare-operator-config`, data:config.yaml:kuberay section, you can patch the [following](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.9/html/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-the-codeflare-operator_distributed-workloads)
 
@@ -1343,7 +1420,9 @@ kuberay:
 ```
 
 Recommended to keep default. If needed, apply the configuration to update the object
-`oc apply -f configs/rhoai-codeflare-operator-config.yaml`
+```sh
+oc apply -f configs/rhoai-codeflare-operator-config.yaml
+```
 
 ## Administrative Configurations for RHOAI
 
@@ -1372,19 +1451,29 @@ Access the RHOAI Dashboard > Settings.
 [Enabling GPU support in OpenShift AI](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.9/html/installing_and_uninstalling_openshift_ai_self-managed/enabling-gpu-support_install)
 
 Delete the migration-gpu-status ConfigMap
-`oc delete cm migration-gpu-status -n redhat-ods-applications`
+```sh
+oc delete cm migration-gpu-status -n redhat-ods-applications
+```
 
 Restart the dashboard replicaset
-`oc rollout restart deployment rhods-dashboard -n redhat-ods-applications`
+```sh
+oc rollout restart deployment rhods-dashboard -n redhat-ods-applications
+```
 
 Wait until the Status column indicates that all pods in the rollout have fully restarted
-`oc get pods -n redhat-ods-applications | egrep rhods-dashboard`
+```sh
+oc get pods -n redhat-ods-applications | egrep rhods-dashboard
+```
 
 Check the acceleratorprofiles
-`oc get acceleratorprofile -n redhat-ods-applications`
+```sh
+oc get acceleratorprofile -n redhat-ods-applications
+```
 
 Review the acceleratorprofile configuration
-`oc describe acceleratorprofile -n redhat-ods-applications`
+```sh
+oc describe acceleratorprofile -n redhat-ods-applications
+```
 
 Verify the `taints` key set in your Node/MachineSets match your Accelerator Profile.
 

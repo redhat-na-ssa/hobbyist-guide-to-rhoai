@@ -1,6 +1,6 @@
 # Hobbyist Guide to install RHOAI
 
-This is the Hobbyist Guide to Installing and Configuring RHOAI for customers. Bring your towel.
+This is the Hobbyist Guide to Installing and Configuring RHOAI for customers. Bring your towel. This repo is intentionally imperative to aggregate the various official docs into a single markdown and paves the way for declarative automation in the [ai-gitops-catalog](https://github.com/redhat-na-ssa/demo-ai-gitops-catalog).
 
 - OCP Instance: AWS with OpenShift Open Environment
 - OCP Version: 4.14.27
