@@ -1,6 +1,6 @@
 # Notes - OVERVIEW
 
-Overview of the features in Red Hat OpenShift 2.9 with dependencies.
+Overview of the features in Red Hat OpenShift 2.10 with dependencies.
 
 |Component            |Purpose     |Dependency   |Resources          |Description      |
 |---------------------|------------|-------------|-------------------|-----------------|

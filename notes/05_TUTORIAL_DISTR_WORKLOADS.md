@@ -3,7 +3,7 @@
 Notes for the  Distributed Workloads Demonstration
 
 ## Running distributed data science workloads from notebooks
-[source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.9/html/working_with_distributed_workloads/running-distributed-workloads_distributed-workloads)
+[source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/working_with_distributed_workloads/running-distributed-workloads_distributed-workloads)
 
 1. Access the RHOAI Dashboard
 1. Create a data science project that contains a workbench that is running one of the default notebook images, for example, the Standard Data Science notebook. (not code-server)

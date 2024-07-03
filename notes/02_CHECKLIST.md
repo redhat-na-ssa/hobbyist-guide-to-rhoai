@@ -1,6 +1,6 @@
 # Notes
 
-This is checklist of the technical steps needed to complete the installation and configuration of Red Hat OpenShift 2.9 and it's dependencies for use.
+This is checklist of the technical steps needed to complete the installation and configuration of Red Hat OpenShift 2.10 and it's dependencies for use.
 
 ## Installing the Red Hat OpenShift AI "RHOAI" Operator
 
