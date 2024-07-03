@@ -4,6 +4,8 @@ This is checklist of the technical steps needed to complete the installation and
 
 ## Installing the Red Hat OpenShift AI "RHOAI" Operator
 
+- [ ] (Optional) Install the Web Terminal Operator
+  - [ ] 
 - [ ] Installing the Red Hat OpenShift AI Operator
   - [ ] Adding administrative users for OpenShift Container Platform (~8 min)
   - [ ] Installing the Red Hat OpenShift AI Operator by using the CLI (~3min)

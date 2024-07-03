@@ -55,22 +55,44 @@ RHOAI creates 4x OCP Projects
 ## Tips
 
 - Your cluster must have at least 2 worker nodes with at least 8 CPUs and 32 GiB RAM available for OpenShift AI to use when you install the Operator.
-- A default storage class that can be dynamically provisioned must be configured.
+- A default `storageclass` that can be dynamically provisioned must be configured.
 - Access to the cluster as a user with the `cluster-admin` role; the `kubeadmin` user is not allowed.
-- Data Science Pipelines (DSP) 2.0  
+- `Open Data Hub` must not be installed on the cluster
+- **Data Science Pipelines (DSP) 2.0**  
   - contains an installation of Argo Workflows.
   - OpenShift AI does not support direct customer usage of this installation of Argo Workflows.
     Before installing OpenShift AI, ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by DSP.
   - If there is an existing installation of Argo Workflows that is not installed by DSP on your cluster, data science pipelines will be disabled after you install OpenShift AI.
   - store your pipeline artifacts in an S3-compatible object storage bucket so that you do not consume local storage.
-- KServe
+- **KServe**
   - you must also install Operators for Red Hat OpenShift Serverless and Red Hat OpenShift Service Mesh and perform additional configuration.
   - If you want to add an authorization provider for the single-model serving platform, you must install the Red Hat - Authorino Operator
+- **Object Storage**
+  - Object storage is required for the following components:
+    - Single- or multi-model serving platforms, to deploy stored models.
+    - Data science pipelines, to store artifacts, logs, and intermediate results.
+  - Object storage can be used by the following components:
+    - Workbenches, to access large datasets.
+    - Distributed workloads, to pull input data from and push results to.
+    - Code executed inside a pipeline. For example, to store the resulting model in object storage.
 
-Cluster Size (for installation):
+## Source repositories
+Required images come from the following domains:
+1. cdn.redhat.com
+1. subscription.rhn.redhat.com
+1. registry.access.redhat.com
+1. registry.redhat.io
+1. quay.io
+
+For CUDA-based images, the following domains must be accessible:
+1. ngc.download.nvidia.cn
+1. developer.download.nvidia.com
+
+## Cluster Worker Node Size:
 |Qty|vCPU|Memory|Qty|GPU Arch |Notes|
 |---|----|------|---|---------|-----|
 | 3 | 4  | 16   | 0 |---------|not enough resources|
+| 2 | 8  | 32   | 0 |---------|minimum required to install all the components|
 | 4 | 4  | 16   | 0 |---------|minimum required to install all the components|
 | 1 | 16 | 64   | 0 |---------|minimum required to install all the components|
 | 5 | 4  | 16   | 0 |---------|minimum required to create a data science project with a `small` workbench container size|

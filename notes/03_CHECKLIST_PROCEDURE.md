@@ -1,5 +1,7 @@
 # Installing the Red Hat OpenShift AI Operator
 
+## Accessing the cluster via your client CLI
+
 These are the detailed steps that accompany the `CHECKLIST.md` all in one doc.
 
 Login to cluster via terminal
@@ -11,6 +13,11 @@ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 
 ```sh
 source <(oc completion zsh)
+```
+
+Git clone this repository
+```sh
+git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
 ```
 
 ## Adding administrative users for OpenShift Container Platform (~8 min)
@@ -68,6 +75,37 @@ Log in to the cluster as a user from your identity provider, entering the passwo
 ```sh
 oc login --insecure-skip-tls-verify=true -u <username> -p <password>
 ```
+
+## (Optional) Install the Web Terminal Operator (~5min)
+
+This provides a `Web Terminal` in the same browser as the `OCP Web Console` to minimize context switching between the browser and local client. [docs](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/web_console/web-terminal)
+
+![NOTE] kubeadmin is unable to create web terminals [source](https://github.com/redhat-developer/web-terminal-operator/blob/main/CHANGELOG.md)
+
+Create a subscription object for the Web Terminal.
+
+```yaml
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: web-terminal
+  namespace: openshift-operators
+spec:
+  channel: fast
+  installPlanApproval: Automatic
+  name: web-terminal
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+```
+
+Apply the web terminal subscription
+```sh
+oc apply -f configs/web-terminal-subscription.yaml
+```
+
+![NOTE]The Web Terminal Operator installs the DevWorkspace Operator as a dependency.
+
+From the OCP Web Console, Refresh the browser and click the `>_` icon in the top right of the window. This can serve as your browser based CLI.
 
 ## Installing the Red Hat OpenShift AI Operator by using the CLI (~3min)
 
@@ -268,6 +306,18 @@ Verify the `odh-trusted-ca-bundle` configmap for your root signed cert in the `o
 
 Run the following command to verify that all non-reserved namespaces contain the odh-trusted-ca-bundle ConfigMap
 `oc get configmaps --all-namespaces -l app.kubernetes.io/part-of=opendatahub-operator | grep odh-trusted-ca-bundle`
+
+## Configuring the OpenShift AI Operator logger
+[Section 3.5.1 source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/installing_and_uninstalling_openshift_ai_self-managed/installing-and-deploying-openshift-ai_install#configuring-the-operator-logger_operator-log) You can change the log level for OpenShift AI Operator (`development`, `""`, `production`) components by setting the .spec.devFlags.logmode flag for the DSC Initialization/DSCI custom resource during runtime. If you do not set a logmode value, the logger uses the INFO log level by default.
+
+Configure the log level from the OpenShift CLI by using the following command with the logmode value set to the log level that you want
+`oc patch dsci default-dsci -p '{"spec":{"devFlags":{"logmode":"development"}}}' --type=merge`
+
+Viewing the OpenShift AI Operator log
+`oc get pods -l name=rhods-operator -o name -n redhat-ods-operator |  xargs -I {} oc logs -f {} -n redhat-ods-operator`
+
+You can also view via the console
+**Workloads > Deployments > Pods > redhat-ods-operator > Logs**
 
 ## Installing KServe dependencies (~3min)
 
@@ -793,8 +843,6 @@ Verify the gpu machineset you created is running
 oc -n openshift-machine-api get machinesets | grep gpu
 ```
 
-Scale the machineset up
-
 View the Machine object that the machine set created
 ```sh
 oc -n openshift-machine-api get machines | grep gpu
@@ -1023,7 +1071,7 @@ Verify the successful installation of the NVIDIA GPU Operator
 oc get pods,daemonset -n nvidia-gpu-operator
 ```
 
-(Opinion) When the NVIDIA operator completes labeling the nodes, you can add a label to the GPU node Role as `gpu, worker` for readability
+(Opinion) When the NVIDIA operator completes labeling the nodes, you can add a label to the GPU node Role as `gpu, worker` for readability (cosmetics)
 ```sh
 oc label node -l nvidia.com/gpu.machine node-role.kubernetes.io/gpu=''
 ```
@@ -1106,6 +1154,10 @@ cd scratch && curl -LfO https://github.com/NVIDIA/dcgm-exporter/raw/main/grafana
 Create a config map from the downloaded file in the openshift-config-managed namespace
 
 ```shell
+# move up a level
+cd ../
+
+# create the configmap
 oc create configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed --from-file=configs/nvidia-dcgm-dashboard-cm.json
 ```
 
@@ -1162,7 +1214,7 @@ oc patch clusterpolicies.nvidia.com gpu-cluster-policy --patch '{ "spec": { "dcg
 
 You should receive a message on the console "Web console update is available" > Refresh the web console.
 
-**Go to Compute > GPUs.**
+**Go to Compute > GPUs**
 
 The dashboard relies mostly on Prometheus metrics exposed by the NVIDIA DCGM Exporter, but the default exposed metrics are not enough for the dashboard to render the required gauges. Therefore, the DGCM exporter is configured to expose a custom set of metrics, as shown here.
 
@@ -1269,7 +1321,9 @@ Taint the GPU nodes with `nvidia-gpu-only`. This MUST match the Accelerator prof
 oc adm taint node -l node-role.kubernetes.io/gpu nvidia-gpu-only=:NoSchedule --overwrite
 ```
 
-Update the `ClusterPolicy` in the NVIDIA GPU Operator under the `nvidia-gpu-operator` project. Add the below section to `.spec.daemonsets:`
+Edit the `ClusterPolicy` in the NVIDIA GPU Operator under the `nvidia-gpu-operator` project. Add the below section to `.spec.daemonsets:`
+
+`oc edit ClusterPolicy`
 
 ```shell
   daemonsets:
