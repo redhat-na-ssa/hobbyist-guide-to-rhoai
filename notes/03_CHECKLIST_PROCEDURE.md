@@ -307,7 +307,7 @@ Verify the `odh-trusted-ca-bundle` configmap for your root signed cert in the `o
 Run the following command to verify that all non-reserved namespaces contain the odh-trusted-ca-bundle ConfigMap
 `oc get configmaps --all-namespaces -l app.kubernetes.io/part-of=opendatahub-operator | grep odh-trusted-ca-bundle`
 
-## Configuring the OpenShift AI Operator logger
+## (Optional) Configuring the OpenShift AI Operator logger
 [Section 3.5.1 source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/installing_and_uninstalling_openshift_ai_self-managed/installing-and-deploying-openshift-ai_install#configuring-the-operator-logger_operator-log) You can change the log level for OpenShift AI Operator (`development`, `""`, `production`) components by setting the .spec.devFlags.logmode flag for the DSC Initialization/DSCI custom resource during runtime. If you do not set a logmode value, the logger uses the INFO log level by default.
 
 Configure the log level from the OpenShift CLI by using the following command with the logmode value set to the log level that you want

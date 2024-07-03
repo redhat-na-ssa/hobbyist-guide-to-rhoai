@@ -4,13 +4,14 @@ This is checklist of the technical steps needed to complete the installation and
 
 ## Installing the Red Hat OpenShift AI "RHOAI" Operator
 
-- [ ] (Optional) Install the Web Terminal Operator
-  - [ ] 
 - [ ] Installing the Red Hat OpenShift AI Operator
+  - [ ] Accessing the cluster via your client CLI
   - [ ] Adding administrative users for OpenShift Container Platform (~8 min)
+  - [ ] (Optional) Install the Web Terminal Operator (~5min)
   - [ ] Installing the Red Hat OpenShift AI Operator by using the CLI (~3min)
   - [ ] Installing and managing Red Hat OpenShift AI components (~1min)
   - [ ] Adding a CA bundle (~5min)
+  - [ ] (Optional) Configuring the OpenShift AI Operator logger
   - [ ] Installing KServe dependencies (~3min)
     - [ ] Creating a Knative Serving instance
     - [ ] Creating secure gateways for Knative Serving (~4min)

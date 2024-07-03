@@ -36,6 +36,8 @@ auth = TokenAuthentication(
 )
 auth.login()
 ```
+you can also use the internal K8s service as the server value
+`server = "https://kubernetes.default.svc.cluster.local:443">`
 
 You may need to create a local-queue in your project - see the CHECKLIST_PROCEDURE "Create a local queue that points to your cluster queue"
 
