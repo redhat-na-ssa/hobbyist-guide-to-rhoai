@@ -13,7 +13,7 @@ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 (optional) Configure bash completion - requires `oc` and `bash-completion` packages installed
 
 ```sh
-source <(oc completion zsh)
+source <(oc completion bash)
 ```
 
 Git clone this repository
@@ -29,6 +29,7 @@ git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
 Create an htpasswd file to store the user and password information
 
 ```sh
+mkdir scratch
 htpasswd -c -B -b scratch/users.htpasswd <username> <password>
 ```
 
@@ -48,7 +49,7 @@ metadata:
 spec:
   identityProviders:
     # This provider name is prefixed to provider user names to form an identity name.
-  - name: my_htpasswd_provider
+  - name: htpasswd
     # Controls how mappings are established between this provider’s identities and User objects.
     mappingMethod: claim
     type: HTPasswd
@@ -74,6 +75,8 @@ oc adm policy add-cluster-role-to-user cluster-admin <user>
 
 Log in to the cluster as a user from your identity provider, entering the password when prompted
 
+NOTE: You may need to add the parameter `--insecure-skip-tls-verify=true` if your clusters api endpoint does have a trusted cert.
+
 ```sh
 oc login --insecure-skip-tls-verify=true -u <username> -p <password>
 ```
@@ -82,7 +85,7 @@ oc login --insecure-skip-tls-verify=true -u <username> -p <password>
 
 This provides a `Web Terminal` in the same browser as the `OCP Web Console` to minimize context switching between the browser and local client. [docs](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/web_console/web-terminal)
 
-![NOTE] kubeadmin is unable to create web terminals [source](https://github.com/redhat-developer/web-terminal-operator/blob/main/CHANGELOG.md)
+![NOTE] kubeadmin is unable to create web terminals [source](https://github.com/redhat-developer/web-terminal-operator/issues/162)
 
 Create a subscription object for the Web Terminal.
 
@@ -637,7 +640,7 @@ spec:
   name: authorino-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: authorino-operator.v1.0.1
+  # startingCSV: authorino-operator.v1.0.1
 ```
 
 Apply the Authorino operator
@@ -1161,7 +1164,7 @@ oc project nvidia-gpu-operator
 View the new pods
 
 ```sh
-oc get pod -owide -lopenshift.driver-toolkit=true
+oc get pod -o wide -l openshift.driver-toolkit=true
 ```
 
 With the Pod and node name, run the nvidia-smi on the correct node.
@@ -1180,15 +1183,15 @@ oc exec -it nvidia-driver-daemonset-410.84.202203290245-0-xxgdv -- nvidia-smi
 Download the latest NVIDIA DCGM Exporter Dashboard from the DCGM Exporter repository on GitHub:
 
 ```sh
-cd scratch && curl -LfO https://github.com/NVIDIA/dcgm-exporter/raw/main/grafana/dcgm-exporter-dashboard.json
+curl -Lf https://github.com/NVIDIA/dcgm-exporter/raw/main/grafana/dcgm-exporter-dashboard.json -o scratch/dcgm-exporter-dashboard.json
+
+# check for modifications
+diff -u configs/nvidia-dcgm-dashboard-cm.json scratch/dcgm-exporter-dashboard.json
 ```
 
 Create a config map from the downloaded file in the openshift-config-managed namespace
 
 ```sh
-# move up a level
-cd ../
-
 # create the configmap
 oc create configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed --from-file=configs/nvidia-dcgm-dashboard-cm.json
 ```
@@ -1255,7 +1258,7 @@ oc patch clusterpolicies.nvidia.com gpu-cluster-policy --patch '{ "spec": { "dcg
 
 You should receive a message on the console "Web console update is available" > Refresh the web console.
 
-**Go to Compute > GPUs**
+#### Go to Compute > GPUs
 
 The dashboard relies mostly on Prometheus metrics exposed by the NVIDIA DCGM Exporter, but the default exposed metrics are not enough for the dashboard to render the required gauges. Therefore, the DGCM exporter is configured to expose a custom set of metrics, as shown here.
 
@@ -1276,7 +1279,7 @@ Why? By default, you get one workload per GPU. This is inefficient for certain u
 For NVIDIA:
 
 - [Time-slicing NVIDIA GPUs](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/time-slicing-gpus-in-openshift.html#)
-- [Multi-Instance GPU (MIG)](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/mig-ocp.html))
+- [Multi-Instance GPU (MIG)](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/mig-ocp.html)
 - [NVIDIA vGPUs](https://docs.nvidia.com/datacenter/cloud-native/openshift/23.9.2/nvaie-with-ocp.html?highlight=passthrough#openshift-container-platform-on-vmware-vsphere-with-nvidia-vgpus)
 
 ### Configuring GPUs with time slicing (3min)
@@ -1615,7 +1618,7 @@ Review the acceleratorprofile configuration
 oc describe acceleratorprofile -n redhat-ods-applications
 ```
 
-Verify the `taints` key set in your Node/MachineSets match your Accelerator Profile.
+Verify the `taints` key set in your Node / MachineSets match your `Accelerator Profile`.
 
 #### Serving Runtimes
 
@@ -1650,7 +1653,7 @@ Option 2:
 
 ### Review Backing up data
 
-Refer to [A Guide to High Availability/Disaster Recovery for Applications on OpenShift](https://www.redhat.com/en/blog/a-guide-to-high-availability/disaster-recovery-for-applications-on-openshift)
+Refer to [A Guide to High Availability / Disaster Recovery for Applications on OpenShift](https://www.redhat.com/en/blog/a-guide-to-high-availability/disaster-recovery-for-applications-on-openshift)
 
 #### Control plane backup and restore operations
 
