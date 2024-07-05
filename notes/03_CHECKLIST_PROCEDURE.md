@@ -1095,7 +1095,7 @@ Verify the successful installation of the NVIDIA GPU Operator
 oc get pods,daemonset -n nvidia-gpu-operator
 ```
 
-(Opinion) When the NVIDIA operator completes labeling the nodes, you can add a label to the GPU node Role as `gpu, worker` for readability (cosmetics)
+(Opinion) When the NVIDIA operator completes labeling the nodes, you can add a label to the GPU node Role as `gpu, worker` for readability (cosmetic)
 
 ```sh
 oc label node -l nvidia.com/gpu.machine node-role.kubernetes.io/gpu=''
