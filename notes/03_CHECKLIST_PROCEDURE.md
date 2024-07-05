@@ -715,7 +715,7 @@ spec:
 
 Use the oc patch command to apply the YAML file to your OpenShift Service Mesh instance
 
-`oc patch smcp minimal --type merge -n istio-system --patch-file configs/servicemesh-smcp-patch.yaml`
+`oc patch smcp minimal --type merge -n istio-system --patch-file configs/files/servicemesh-smcp-patch.yaml`
 
 Inspect the ConfigMap object for your OpenShift Service Mesh instance
 `oc get configmap istio-minimal -n istio-system --output=jsonpath={.data.mesh}`
@@ -1514,6 +1514,7 @@ Update the name value accordingly.
 Apply the configuration to create the local-queue object
 
 ```sh
+oc apply -f configs/sandbox-ns.yaml
 oc apply -f configs/rhoai-kueue-local-queue.yaml
 ```
 
