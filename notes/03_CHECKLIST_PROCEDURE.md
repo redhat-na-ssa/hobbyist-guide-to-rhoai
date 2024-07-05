@@ -205,7 +205,7 @@ spec:
     modelmeshserving:
       managementState: Managed
     kserve:
-      managementState: Managed
+      managementState: Removed
       serving:
         ingressGateway:
           certificate:
@@ -302,7 +302,6 @@ spec:
   trustedCABundle:
     customCABundle: |
       -----BEGIN CERTIFICATE-----
-      examplebundle123
       -----END CERTIFICATE-----
     managementState: Managed
 ```
