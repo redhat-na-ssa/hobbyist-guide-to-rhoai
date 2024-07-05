@@ -77,7 +77,9 @@ RHOAI creates 4x OCP Projects
     - Code executed inside a pipeline. For example, to store the resulting model in object storage.
 
 ## Source repositories
+
 Required images come from the following domains:
+
 1. cdn.redhat.com
 1. subscription.rhn.redhat.com
 1. registry.access.redhat.com
@@ -85,10 +87,12 @@ Required images come from the following domains:
 1. quay.io
 
 For CUDA-based images, the following domains must be accessible:
+
 1. ngc.download.nvidia.cn
 1. developer.download.nvidia.com
 
-## Cluster Worker Node Size:
+## Cluster Worker Node Size
+
 |Qty|vCPU|Memory|Qty|GPU Arch |Notes|
 |---|----|------|---|---------|-----|
 | 3 | 4  | 16   | 0 |---------|not enough resources|

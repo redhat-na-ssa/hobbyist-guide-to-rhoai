@@ -3,6 +3,7 @@
 Notes for the  Distributed Workloads Demonstration
 
 ## Running distributed data science workloads from notebooks
+
 [source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/working_with_distributed_workloads/running-distributed-workloads_distributed-workloads)
 
 1. Access the RHOAI Dashboard
@@ -36,11 +37,11 @@ auth = TokenAuthentication(
 )
 auth.login()
 ```
+
 you can also use the internal K8s service as the server value
 `server = "https://kubernetes.default.svc.cluster.local:443">`
 
 You may need to create a local-queue in your project - see the CHECKLIST_PROCEDURE "Create a local queue that points to your cluster queue"
-
 
 ![NOTE]
 It may also be helpful to ignore the warnings Jupyter displays
@@ -48,30 +49,4 @@ It may also be helpful to ignore the warnings Jupyter displays
 ```python
 import warnings
 warnings.filterwarnings('ignore')
-```
-
-## Links
-
-- [Docs - Link]()
-- [Blog - Link]()
-
-## Details / Notes
-
-```sh
-# run shell commands
-
-```
-
-### Issues
-
-[Reference](ISSUES.md) - [Jira](linktojira)
-
-### Kustomized Code
-
-[Code](../../components/configs/kustomized/rhods-config/)
-
-### Rollback / Uninstall
-
-```sh
-oc delete -k components/configs/kustomized/rhods-config
 ```
