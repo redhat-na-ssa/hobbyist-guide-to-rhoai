@@ -1,6 +1,6 @@
 #!/bin/bash
 # shellcheck disable=SC2015,SC1091
-set -ex
+set -e
 
 usage(){
   echo "
