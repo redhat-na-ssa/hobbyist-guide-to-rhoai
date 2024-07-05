@@ -36,7 +36,7 @@ htpasswd -c -B -b scratch/users.htpasswd <username> <password>
 Create a secret to represent the htpasswd file
 
 ```sh
-oc create secret generic htpass-secret --from-file=htpasswd=scratch/users.htpasswd -n openshift-config
+oc create secret generic htpasswd-secret --from-file=htpasswd=scratch/users.htpasswd -n openshift-config
 ```
 
 Define the custom resource for htpasswd
@@ -56,13 +56,13 @@ spec:
     htpasswd:
       fileData:
         # An existing secret containing a file generated using htpasswd.
-        name: htpass-secret
+        name: htpasswd-secret
 ```
 
 Apply the resource to the default OAuth configuration to add the identity provider
 
 ```sh
-oc apply -f configs/htpass-cr.yaml
+oc apply -f configs/htpasswd-cr.yaml
 ```
 
 > You will have to a few minutes for the account to resolve.
