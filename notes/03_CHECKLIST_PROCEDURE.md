@@ -419,7 +419,7 @@ istio-ingressgateway-c69849d49-fjswg   1/1     Running   0          59s
 istiod-minimal-5c68bf675d-whrns        1/1     Running   0          68s
 ```
 
-#### Creating a Knative Serving instance
+### Creating a Knative Serving instance
 
 [Section 3.3.1.2 source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#creating-a-knative-serving-instance_serving-large-models)
 
@@ -439,7 +439,7 @@ metadata:
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
 metadata:
-  name: serverless-operators
+  name: serverless-operator
   namespace: openshift-serverless
 spec: {}
 ---
@@ -831,7 +831,7 @@ Make a copy of one of the existing compute MachineSet definitions and output the
 oc get machineset -n openshift-machine-api
 
 # make a copy of an existing machineset definition
-oc get machineset <your-machineset-name> -n openshift-machine-api -o json > scratch/machineset.json
+oc get machineset <your-machineset-name > -n openshift-machine-api -o yaml > scratch/machineset.yaml
 ```
 
 Update the following fields:
@@ -845,7 +845,7 @@ Update the following fields:
 Apply the configuration to create the gpu machine
 
 ```sh
-oc apply -f scratch/machineset.json
+oc apply -f scratch/machineset.yaml
 ```
 
 Verify the gpu machineset you created is running
