@@ -11,11 +11,11 @@ This is the Hobbyist Guide to Installing and Configuring RHOAI for customers. Br
 ├── LICENSE
 ├── README.md
 ├── notes
-│   ├── 00_FEATURES.md                  # Overview of the features in RHOAI 2.10
-│   ├── 01_DASHBOARD.md                 # Deep dive into the RHOAI 2.10 Dashboard
+│   ├── 00_FEATURES.md                  # Overview of the features in RHOAI
+│   ├── 01_DASHBOARD.md                 # Deep dive into the RHOAI dashboard
 │   ├── 02_CHECKLIST.md                 # Technical overview for RHOAI install/config
-│   ├── 03_CHECKLIST_PROCEDURE.md       # Detailed steps that accompany 02_CHECKLIST.md
-│   ├── 04_TUTORIAL_FRAUD.md            # Notes for the Fraud Detection demo
-│   ├── 05_TUTORIAL_DISTR_WORKLOADS.md  # Notes for the Distributed Workloads demo
+│   ├── 03_CHECKLIST_PROCEDURE.md       # Additional detailed steps
+│   ├── 04_TUTORIAL_FRAUD.md            # Notes for the fraud detection demo
+│   ├── 05_TUTORIAL_DISTR_WORKLOADS.md  # Notes for the distributed workloads demo
 │   └── configs                         # These are the config files used in the 03_CHECKLIST_PROCEDURE.md
 ```
