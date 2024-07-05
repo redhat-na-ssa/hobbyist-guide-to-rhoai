@@ -75,7 +75,7 @@ oc adm policy add-cluster-role-to-user cluster-admin <user>
 
 Log in to the cluster as a user from your identity provider, entering the password when prompted
 
-NOTE: You may need to add the parameter `--insecure-skip-tls-verify=true` if your clusters api endpoint does have a trusted cert.
+NOTE: You may need to add the parameter `--insecure-skip-tls-verify=true` if your clusters api endpoint does not have a trusted cert.
 
 ```sh
 oc login --insecure-skip-tls-verify=true -u <username> -p <password>
