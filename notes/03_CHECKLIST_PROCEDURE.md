@@ -1665,3 +1665,11 @@ You must [back up etcd](https://docs.openshift.com/container-platform/4.15/backu
 The OpenShift API for Data Protection (OADP) product safeguards customer applications on OpenShift Container Platform. It offers comprehensive disaster recovery protection, covering OpenShift Container Platform applications, application-related cluster resources, persistent volumes, and internal images. OADP is also capable of backing up both containerized applications and virtual machines (VMs).
 
 However, OADP does not serve as a disaster recovery solution for [etcd](https://docs.openshift.com/container-platform/4.15/backup_and_restore/control_plane_backup_and_restore/backing-up-etcd.html#backup-etcd) or OpenShift Operators.
+
+## Answer key
+
+The following command will apply all configurations from the [Checklist Procedure](02_CHECKLIST_PROCEDURE.md)
+
+```sh
+until oc apply -f configs; do : ; done
+```
