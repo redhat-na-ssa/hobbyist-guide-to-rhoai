@@ -1668,7 +1668,7 @@ However, OADP does not serve as a disaster recovery solution for [etcd](https://
 
 ## Answer key
 
-The following command will apply all configurations from the [Checklist Procedure](02_CHECKLIST_PROCEDURE.md)
+The following command will apply all configurations from the checklist procedure above.
 
 ```sh
 until oc apply -f configs; do : ; done
