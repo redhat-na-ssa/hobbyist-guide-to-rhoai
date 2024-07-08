@@ -533,7 +533,7 @@ Verify creation of the Knative Serving instance
 
 #### Creating secure gateways for Knative Serving (4min)
 
-[Section 3.3.1.3 source]()
+[Section 3.3.1.3 source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#creating-secure-gateways-for-knative-serving_serving-large-models)
 
 Why? To secure traffic between your Knative Serving instance and the service mesh, you must create secure gateways for your Knative Serving instance.
 
@@ -552,10 +552,11 @@ export TARGET_CUSTOM_KEY=${BASE_DIR}/wildcard.key
 Create a TLS secret in the istio-system namespace using the environment variables that you set for the wildcard certificate and key
 `oc create secret tls wildcard-certs --cert=${TARGET_CUSTOM_CERT} --key=${TARGET_CUSTOM_KEY} -n istio-system`
 
-Create a serverless-gateways.yaml YAML file with the following contents
 >Defines a service in the istio-system namespace for the Knative local gateway.
 Defines an ingress gateway in the knative-serving namespace. The gateway uses the TLS secret you created earlier in this procedure. The ingress gateway handles external traffic to Knative.
 Defines a local gateway for Knative in the knative-serving namespace.
+
+Create a serverless-gateways.yaml YAML file with the following contents
 
 ```yaml
 apiVersion: v1
@@ -618,6 +619,14 @@ Apply the serverless-gateways.yaml file to create the defined resources
 
 Review the gateways that you created
 `oc get gateway --all-namespaces`
+
+Expected Output:
+
+```sh
+NAMESPACE         NAME                      AGE
+knative-serving   knative-ingress-gateway   2m
+knative-serving   knative-local-gateway     2m
+```
 
 ### Manually adding an authorization provider (~4min)
 
@@ -805,6 +814,14 @@ Check that the AuthorizationPolicy resource was successfully created.
 
 Check that the EnvoyFilter resource was successfully created.
 `oc get envoyfilter -n istio-system`
+
+Example Output:
+
+```sh
+NAME                                AGE
+activator-host-header               37s
+...
+```
 
 ## Enabling GPU support in OpenShift AI
 
@@ -1425,7 +1442,7 @@ Components required for Distributed Workloads
 1. kueue
 1. ray
 
-Verify the necessary pods are running - When the status of the codeflare-operator-manager-<pod-id>, kuberay-operator-<pod-id>, and kueue-controller-manager-<pod-id> pods is Running, the pods are ready to use.
+Verify the necessary pods are running - When the status of the codeflare-operator-manager-[pod-id], kuberay-operator-[pod-id], and kueue-controller-manager-[pod-id] pods is Running, the pods are ready to use.
 
 ```sh
 oc get pods -n redhat-ods-applications | grep -E 'codeflare|kuberay|kueue'
@@ -1513,7 +1530,7 @@ Update the name value accordingly.
 Apply the configuration to create the local-queue object
 
 ```sh
-oc apply -f configs/sandbox-ns.yaml
+oc create ns sandbox
 oc apply -f configs/rhoai-kueue-local-queue.yaml
 ```
 
