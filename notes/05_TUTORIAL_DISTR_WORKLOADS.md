@@ -26,6 +26,11 @@ You may have to pip install the codeflare_sdk if not provided with the Notebook 
 Update the following `token` and `server` values from your `oc login` command values
 `oc login --token=<YOUR_TOKEN> --server=<YOUR_API_URL>`
 
+```sh
+# if you are already logged in
+oc whoami -t
+```
+
 ```python
 # Create authentication object for user permissions
 # IF unused, SDK will automatically check for default kubeconfig, then in-cluster config
