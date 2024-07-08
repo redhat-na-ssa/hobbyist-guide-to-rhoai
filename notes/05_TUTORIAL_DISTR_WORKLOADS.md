@@ -55,3 +55,12 @@ It may also be helpful to ignore the warnings Jupyter displays
 import warnings
 warnings.filterwarnings('ignore')
 ```
+
+![NOTE]
+
+`2_basic_interactive.ipynb` will require you to upgrade the `codeflare-sdk` to the latest to avoid errors. Append a cell at the top with the following:
+
+```ssh
+!pip install -U pip -q
+!pip install -U codeflare-sdk -q
+```
