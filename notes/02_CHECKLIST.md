@@ -6,6 +6,7 @@ This is checklist of the technical steps needed to complete the installation and
 
 - [ ] Installing the Red Hat OpenShift AI Operator
   - [ ] Accessing the cluster via your client CLI
+  - [ ] Fix `kubeadmin` as an Administrator for Openshift AI (~2 min)
   - [ ] Adding administrative users for OpenShift Container Platform (~8 min)
   - [ ] (Optional) Install the Web Terminal Operator (~5min)
   - [ ] Installing the Red Hat OpenShift AI Operator by using the CLI (~3min)

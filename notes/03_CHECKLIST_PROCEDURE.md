@@ -22,6 +22,29 @@ Git clone this repository
 git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
 ```
 
+## Fix kubeadmin as an Administrator for Openshift AI (~2 min)
+
+Create a cluster role binding so that OpenShift AI will recognize `kubeadmin` as a `cluster-admin`
+
+```yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: fix-rhoai-kubeadmin
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: 'kube:admin'
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+```
+
+```sh
+oc apply -f configs/fix-kubeadmin.yaml
+```
+
 ## Adding administrative users for OpenShift Container Platform (~8 min)
 
 [Section 2.2 source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/installing_and_uninstalling_openshift_ai_self-managed/installing-and-deploying-openshift-ai_install#adding-administrative-users-for-openshift-container-platform_install)
