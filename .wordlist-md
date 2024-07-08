@@ -9,6 +9,8 @@ authorino
 Authorino
 AuthorizationPolicy
 autoscaler
+autoscaling
+aws
 caikit
 Caikit
 caitkit
@@ -136,6 +138,7 @@ Nvidia
 OADP
 OAuth
 oc
+ocp
 OCP
 odh
 ods
