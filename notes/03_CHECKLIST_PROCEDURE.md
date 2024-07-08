@@ -1711,5 +1711,10 @@ However, OADP does not serve as a disaster recovery solution for [etcd](https://
 The following command will apply all configurations from the checklist procedure above.
 
 ```sh
+# setup machinesets for autoscaling
+. configs/functions.sh
+ocp_aws_cluster_autoscaling
+
+# apply all configs (still need to patch things)
 until oc apply -f configs; do : ; done
 ```
