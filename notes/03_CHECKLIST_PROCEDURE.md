@@ -982,8 +982,6 @@ metadata:
   name: nfd-instance
   namespace: openshift-nfd
 spec:
-  customConfig:
-    configData: 
   operand:
     image: 'registry.redhat.io/openshift4/ose-node-feature-discovery-rhel9@sha256:a98a205e5541550dfd46caaf52147f078101a6c6e7221b7fb7cefb9581761dcb'
     servicePort: 12000
