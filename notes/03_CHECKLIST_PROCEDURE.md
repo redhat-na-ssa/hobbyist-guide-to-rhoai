@@ -881,6 +881,11 @@ Update the following fields:
 - [ ] `.spec.template.metadata.labels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
 - [ ] `.spec.template.spec.providerSpec.value.instanceType` to `g4dn.4xlarge`.
 
+Remove the following fields:
+
+- [ ] `uid`
+- [ ] `generation`
+
 Apply the configuration to create the gpu machine
 
 ```sh
