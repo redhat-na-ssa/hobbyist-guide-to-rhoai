@@ -863,7 +863,7 @@ View the machines and machine sets that exist in the openshift-machine-api names
 View the machines that exist in the openshift-machine-api namespace
 `oc get machines -n openshift-machine-api | grep worker`
 
-Make a copy of one of the existing compute MachineSet definitions and output the result to a JSON file
+Make a copy of one of the existing compute MachineSet definitions and output the result to a YAML file
 
 ```sh
 # get your machineset names
