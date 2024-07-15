@@ -1099,7 +1099,7 @@ spec:
   name: gpu-operator-certified
   source: certified-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: "gpu-operator-certified.v24.3.0"
+  # startingCSV: "gpu-operator-certified.v24.3.0"
 ```
 
 Apply the Subscription CR
