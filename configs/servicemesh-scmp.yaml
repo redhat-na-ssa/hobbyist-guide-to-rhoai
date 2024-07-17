@@ -4,6 +4,7 @@ metadata:
   name: minimal
   namespace: istio-system
 spec:
+  version: v2.5
   tracing:
     type: None
   addons:

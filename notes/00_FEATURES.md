@@ -18,9 +18,9 @@ Overview of the features in Red Hat OpenShift 2.10 with dependencies.
 |                     |            |Multi-Cluster App Dispatcher (MCAD)|                   |a K8s controller to manage batch jobs in a single or multi-cluster environment |
 |                     |            |Instascale   |                   |works with MCAD to get aggregated resources available in the K8s cluster without creating pending pods. Uses machinesets to launch instances on cloud provider |
 |modelmeshserving     |inference   |S3 Store     |                   |                 |
-|kserve               |inference   |             |4 CPUs and 16 GB   |each model is deployed on a model server|
-|                     |            |ServiceMesh  |4 CPUs and 16 GB   |                 |
-|                     |            |Serverless   |4 CPUs and 16 GB   |                 |
+|kserve               |inference   |             |4 CPUs and 16 GB   |orchestrates model serving for all types of models|
+|                     |            |ServiceMesh  |4 CPUs and 16 GB   |networking layer that manages traffic flows and enforces access policies                 |
+|                     |            |Serverless   |4 CPUs and 16 GB   |allows for serverless deployments of models|
 |                     |            |Authorino    |                   |enable token authorization for models|
 
 1. Central Dashboard for Development and Operations for Admin and Users
@@ -30,7 +30,13 @@ Overview of the features in Red Hat OpenShift 2.10 with dependencies.
 1. Data Science Pipelines (including Elyra notebook interface) (Kubeflow pipelines)
 1. Model Serving using ModelMesh and Kserve.
     1. Ability to use Serverless and Event Driven Applications as wells as configure secure gateways (Knative, OpenSSL)
-    1. Ability to manages traffic flow and enforce access policies
+    1. Ability to manage traffic flow and enforce access policies
+    1. When you have installed KServe, you can use the OpenShift AI dashboard to deploy models using pre-installed or custom model-serving runtimes:  
+      1. TGIS Standalone ServingRuntime for KServe: A runtime for serving TGI-enabled models
+      1. Caikit-TGIS ServingRuntime for KServe: A composite runtime for serving models in the Caikit format
+      1. Caikit Standalone ServingRuntime for KServe: A runtime for serving models in the Caikit embeddings format for embeddings tasks
+      1. OpenVINO Model Server: A scalable, high-performance runtime for serving models that are optimized for Intel architectures
+      1. vLLM ServingRuntime for KServe: A high-throughput and memory-efficient inference and serving runtime for large language models
     1. Ability to use other runtimes for serving (TGIS, Caikit-TGIS, OpenVino)
     1. Ability to enable token authorization for models that you deploy on the platform, which ensures that only authorized parties can make inference requests to the models (Authorino)
 1. Model Monitoring

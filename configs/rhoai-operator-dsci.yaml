@@ -15,7 +15,7 @@ spec:
       metricsCollection: Istio
       name: minimal
       namespace: istio-system
-    managementState: Removed
+    managementState: Unmanaged
   trustedCABundle:
     customCABundle: ''
     managementState: Managed
