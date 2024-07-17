@@ -1545,6 +1545,16 @@ daemonset.apps/nvidia-operator-validator                       0         0      
 oc label node -l nvidia.com/gpu.machine node-role.kubernetes.io/gpu=''
 ```
 
+```sh
+oc get nodes
+
+# expected output
+NAME                                        STATUS   ROLES                         AGE   VERSION
+ip-10-0-xx-xxx.us-east-2.compute.internal   Ready    gpu,worker                    19h   v1.28.10+a2c84a5
+ip-10-0-xx-xxx.us-east-2.compute.internal   Ready    gpu,worker                    19h   v1.28.10+a2c84a5
+...
+```
+
 In order to apply this label to new machines/nodes:
 
 ```sh
