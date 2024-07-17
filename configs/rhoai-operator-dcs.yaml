@@ -19,7 +19,7 @@ spec:
     modelmeshserving:
       managementState: Managed
     kserve:
-      managementState: Managed
+      managementState: Removed
       serving:
         ingressGateway:
           certificate:

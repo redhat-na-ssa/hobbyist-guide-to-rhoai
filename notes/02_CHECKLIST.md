@@ -1,14 +1,18 @@
 # Notes
 
-This is checklist of the technical steps needed to complete the installation and configuration of Red Hat OpenShift 2.9 and it's dependencies for use.
+This is checklist of the technical steps needed to complete the installation and configuration of Red Hat OpenShift 2.10 and it's dependencies for use.
 
 ## Installing the Red Hat OpenShift AI "RHOAI" Operator
 
 - [ ] Installing the Red Hat OpenShift AI Operator
+  - [ ] Accessing the cluster via your client CLI
+  - [ ] Fix `kubeadmin` as an Administrator for Openshift AI (~2 min)
   - [ ] Adding administrative users for OpenShift Container Platform (~8 min)
+  - [ ] (Optional) Install the Web Terminal Operator (~5min)
   - [ ] Installing the Red Hat OpenShift AI Operator by using the CLI (~3min)
   - [ ] Installing and managing Red Hat OpenShift AI components (~1min)
   - [ ] Adding a CA bundle (~5min)
+  - [ ] (Optional) Configuring the OpenShift AI Operator logger
   - [ ] Installing KServe dependencies (~3min)
     - [ ] Creating a Knative Serving instance
     - [ ] Creating secure gateways for Knative Serving (~4min)

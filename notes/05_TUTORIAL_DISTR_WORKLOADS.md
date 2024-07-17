@@ -4,7 +4,7 @@ Notes for the  Distributed Workloads Demonstration
 
 ## Running distributed data science workloads from notebooks
 
-[source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.9/html/working_with_distributed_workloads/running-distributed-workloads_distributed-workloads)
+[source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/working_with_distributed_workloads/running-distributed-workloads_distributed-workloads)
 
 1. Access the RHOAI Dashboard
 1. Create a data science project that contains a workbench that is running one of the default notebook images, for example, the Standard Data Science notebook. (not code-server)
@@ -26,6 +26,11 @@ You may have to pip install the codeflare_sdk if not provided with the Notebook 
 Update the following `token` and `server` values from your `oc login` command values
 `oc login --token=<YOUR_TOKEN> --server=<YOUR_API_URL>`
 
+```sh
+# if you are already logged in
+oc whoami -t
+```
+
 ```python
 # Create authentication object for user permissions
 # IF unused, SDK will automatically check for default kubeconfig, then in-cluster config
@@ -38,6 +43,9 @@ auth = TokenAuthentication(
 auth.login()
 ```
 
+you can also use the internal K8s service as the server value
+`server = "https://kubernetes.default.svc.cluster.local:443">`
+
 You may need to create a local-queue in your project - see the CHECKLIST_PROCEDURE "Create a local queue that points to your cluster queue"
 
 ![NOTE]
@@ -46,4 +54,13 @@ It may also be helpful to ignore the warnings Jupyter displays
 ```python
 import warnings
 warnings.filterwarnings('ignore')
+```
+
+![NOTE]
+
+`2_basic_interactive.ipynb` will require you to upgrade the `codeflare-sdk` to the latest to avoid errors. Append a cell at the top with the following:
+
+```ssh
+!pip install -U pip -q
+!pip install -U codeflare-sdk -q
 ```

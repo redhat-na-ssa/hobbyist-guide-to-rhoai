@@ -1,6 +1,6 @@
 # Notes - DASHBOARD
 
-Deep dive into the Red Hat OpenShift AI 2.9 Dashboard
+Deep dive into the Red Hat OpenShift AI 2.10 Dashboard
 
 >     One of the most important concepts is the Data Science Project = OpenShift Project > Kubernetes namespace. A Kubernetes namespace is the central vehicle by which access to resources/objects for regular users is managed.
 
@@ -24,7 +24,7 @@ Deep dive into the Red Hat OpenShift AI 2.9 Dashboard
     1. Pipelines - data science pipelines that are executed within the project
         1. Pipeline server enables the creation, storing and management of pipelines
         1. Pipeline is the python code workflow or DAG that data scientists generate
-    1. Workbenches - an isolated area where you can work with models in your preferred IDE, such as a Jupyter notebook, add accelerators and data connections, create pipelines, and add cluster storage in your workbench. [docs](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.9/html/working_on_data_science_projects/creating-and-importing-notebooks_notebooks#notebook-images-for-data-scientists_notebooks)
+    1. Workbenches - an isolated area where you can work with models in your preferred IDE, such as a Jupyter notebook, add accelerators and data connections, create pipelines, and add cluster storage in your workbench. [docs](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/working_on_data_science_projects/creating-and-importing-notebooks_notebooks#notebook-images-for-data-scientists_notebooks)
         1. IDE Images
             1. Minimal Python
             1. Standard Data Science
@@ -63,7 +63,7 @@ Deep dive into the Red Hat OpenShift AI 2.9 Dashboard
         1. YAML
 1. Distributed Workload Metrics -
     1. Distributed Workloads - train complex machine-learning models or process data more quickly, by distributing  jobs on multiple worker nodes in parallel
-        1. In 2.9 release of OpenShift AI, the only accelerators supported for distributed workloads are NVIDIA GPUs.
+        1. In 2.10 release of OpenShift AI, the only accelerators supported for distributed workloads are NVIDIA GPUs.
 1. Model Serving - each project/workbench, you can specify only one model serving platform
     1. Single-model serving - Each model in the project is deployed on its own model server - suitable for large models or models that need dedicated resources.
     1. Multi-model serving - All models in the project are deployed on the same model server - suitable for sharing resources amongst deployed models.

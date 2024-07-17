@@ -4,6 +4,7 @@ metadata:
   name: minimal
   namespace: istio-system
 spec:
+  version: v2.5
   tracing:
     type: None
   addons:
@@ -25,6 +26,11 @@ spec:
     meshConfig:
       defaultConfig:
         terminationDrainDuration: 35s
+      # extensionProviders:
+      # - name: redhat-ods-applications-auth-provider
+      #   envoyExtAuthzGrpc:
+      #     service: authorino-authorino-authorization.redhat-ods-applicatiions-auth-provider.svc.cluster.local
+      #     port: 50051
   gateways:
     ingress:
       service:
