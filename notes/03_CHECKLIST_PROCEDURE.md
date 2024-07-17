@@ -1068,7 +1068,7 @@ oc -n openshift-machine-api \
 
 Run a simple CUDA VectorAdd sample, which adds two vectors together to ensure the GPUs have bootstrapped correctly
 
-```shell
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
