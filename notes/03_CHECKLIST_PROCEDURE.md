@@ -1983,6 +1983,13 @@ Verify the necessary pods are running - When the status of the codeflare-operato
 oc get pods -n redhat-ods-applications | grep -E 'codeflare|kuberay|kueue'
 ```
 
+```sh
+# expected output
+codeflare-operator-manager-6bbff698d-74fpz                        1/1     Running   7 (107m ago)   21h
+kuberay-operator-bf97858f4-zg45s                                  1/1     Running   8 (10m ago)    21h
+kueue-controller-manager-77c758b595-hgrz7                         1/1     Running   8 (10m ago)    21h
+```
+
 ### Configuring quota management for distributed workloads (~5min)
 
 Create an empty Kueue resource flavor
@@ -2004,6 +2011,11 @@ Apply the configuration to create the `default-flavor`
 
 ```sh
 oc apply -f configs/rhoai-kueue-default-flavor.yaml
+```
+
+```sh
+# expected output
+resourceflavor.kueue.x-k8s.io/default-flavor created
 ```
 
 Create a cluster queue to manage the empty Kueue resource flavor
@@ -2044,6 +2056,11 @@ Apply the configuration to create the `cluster-queue`
 oc apply -f configs/rhoai-kueue-cluster-queue.yaml
 ```
 
+```sh
+# expected output
+clusterqueue.kueue.x-k8s.io/cluster-queue created
+```
+
 Create a local queue that points to your cluster queue
 Why? A LocalQueue is a namespaced object that groups closely related Workloads that belong to a single namespace. Users submit jobs to a LocalQueue, instead of to a ClusterQueue directly.
 
@@ -2060,13 +2077,18 @@ spec:
 ```
 
 ![NOTE]
-Update the name value accordingly.
+Update the `name` and `namespace` accordingly.
 
 Apply the configuration to create the local-queue object
 
 ```sh
-oc create ns sandbox
+oc new-project sandbox
 oc apply -f configs/rhoai-kueue-local-queue.yaml
+```
+
+```sh
+# expected output
+localqueue.kueue.x-k8s.io/local-queue-test created
 ```
 
 How do users known what queues they can submit jobs to? Users submit jobs to a LocalQueue, instead of to a ClusterQueue directly. Tenants can discover which queues they can submit jobs to by listing the local queues in their namespace.
@@ -2075,6 +2097,12 @@ Verify the local queue is created
 
 ```sh
 oc get -n sandbox queues
+```
+
+```sh
+# expected output
+NAME               CLUSTERQUEUE    PENDING WORKLOADS   ADMITTED WORKLOADS
+local-queue-test   cluster-queue   0 
 ```
 
 ### (Optional) Configuring the CodeFlare Operator (~5min)
@@ -2138,11 +2166,29 @@ Check the current configmap
 ```sh
 oc get cm migration-gpu-status -n redhat-ods-applications -o yaml
 ```
+```sh
+# expected output
+apiVersion: v1
+data:
+  migratedCompleted: "true"
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2024-07-16T17:43:10Z"
+  name: migration-gpu-status
+  namespace: redhat-ods-applications
+  resourceVersion: "48442"
+  uid: 1724c41a-8bbc-4619-a55f-df029d98f2ff
+```
 
 Delete the migration-gpu-status ConfigMap
 
 ```sh
 oc delete cm migration-gpu-status -n redhat-ods-applications
+```
+
+```sh
+# expected output
+configmap "migration-gpu-status" deleted
 ```
 
 Restart the dashboard replicaset
@@ -2151,10 +2197,25 @@ Restart the dashboard replicaset
 oc rollout restart deployment rhods-dashboard -n redhat-ods-applications
 ```
 
+```sh
+# expected output
+deployment.apps/rhods-dashboard restarted
+```
+
 Wait until the Status column indicates that all pods in the rollout have fully restarted
 
 ```sh
 oc get pods -n redhat-ods-applications | egrep rhods-dashboard
+```
+
+```sh
+# expected output
+rhods-dashboard-69b9bc879d-k6gzb                                  2/2     Running   6                25h
+rhods-dashboard-7b67c58d9b-4xzr7                                  2/2     Running   0                67s
+rhods-dashboard-7b67c58d9b-chgln                                  2/2     Running   0                67s
+rhods-dashboard-7b67c58d9b-dk8sx                                  0/2     Running   0                7s
+rhods-dashboard-7b67c58d9b-tsngh                                  2/2     Running   0                67s
+rhods-dashboard-7b67c58d9b-x5v89                                  0/2     Running   0                7s
 ```
 
 Refresh the RHOAI dashboard and check the **Settings > Accelerator profiles** - There should be `NVIDIA GPU` enabled.
@@ -2165,10 +2226,40 @@ Check the acceleratorprofiles
 oc get acceleratorprofile -n redhat-ods-applications
 ```
 
+```sh
+# expected output
+NAME           AGE
+migrated-gpu   83s
+```
+
 Review the acceleratorprofile configuration
 
 ```sh
 oc describe acceleratorprofile -n redhat-ods-applications
+```
+
+```sh
+# expected output
+Name:         migrated-gpu
+Namespace:    redhat-ods-applications
+Labels:       <none>
+Annotations:  <none>
+API Version:  dashboard.opendatahub.io/v1
+Kind:         AcceleratorProfile
+Metadata:
+  Creation Timestamp:  2024-07-17T19:28:24Z
+  Generation:          1
+  Resource Version:    609012
+  UID:                 8f64a27f-6593-43a6-873d-4796e920494f
+Spec:
+  Display Name:  NVIDIA GPU
+  Enabled:       true
+  Identifier:    nvidia.com/gpu
+  Tolerations:
+    Effect:    NoSchedule
+    Key:       nvidia.com/gpu
+    Operator:  Exists
+Events:        <none>
 ```
 
 Verify the `taints` key set in your Node / MachineSets match your `Accelerator Profile`.
