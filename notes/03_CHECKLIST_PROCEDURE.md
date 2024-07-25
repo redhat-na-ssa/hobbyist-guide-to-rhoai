@@ -1924,10 +1924,10 @@ Expected output contains
 
 Why? Prevent non-GPU workloads from being scheduled on the GPU nodes.
 
-Taint the GPU nodes with `nvidia-gpu-only`. This MUST match the Accelerator profile taint key you use (by default may be different, i.e. `nvidia.com/gpu`).
+Taint the GPU nodes with `nvidia.com/gpu`. This MUST match the Accelerator profile taint key you use (this could be different, i.e. `nvidia-gpu-only`).
 
 ```sh
-oc adm taint node -l node-role.kubernetes.io/gpu nvidia-gpu-only=:NoSchedule --overwrite
+oc adm taint node -l node-role.kubernetes.io/gpu nvidia.com/gpu=:NoSchedule --overwrite
 ```
 
 Edit the `ClusterPolicy` in the NVIDIA GPU Operator under the `nvidia-gpu-operator` project. Add the below section to `.spec.daemonsets:`
@@ -1939,7 +1939,7 @@ Edit the `ClusterPolicy` in the NVIDIA GPU Operator under the `nvidia-gpu-operat
     tolerations:
     - effect: NoSchedule
       operator: Exists
-      key: nvidia-gpu-only
+      key: nvidia.com/gpu
 ```
 
 Cordon the GPU node, drain the GPU tainted nodes and terminate workloads
@@ -1960,12 +1960,12 @@ Get the name of the gpu node
 MACHINE_SET_TYPE=$(oc get machineset -n openshift-machine-api -o name |  egrep gpu)
 ```
 
-Taint the machineset for any new nodes that get added to be tainted with `nvidia-gpu-only`
+Taint the machineset for any new nodes that get added to be tainted with `nvidia.com/gpu`
 
 ```sh
 oc -n openshift-machine-api \
   patch "${MACHINE_SET_TYPE}" \
-  --type=merge --patch '{"spec":{"template":{"spec":{"taints":[{"key":"nvidia-gpu-only","value":"","effect":"NoSchedule"}]}}}}'
+  --type=merge --patch '{"spec":{"template":{"spec":{"taints":[{"key":"nvidia.com/gpu","value":"","effect":"NoSchedule"}]}}}}'
 ```
 
 Tolerations will be set in the RHOAI accelerator profiles that match the Taint key.
@@ -2014,7 +2014,7 @@ spec:
   tolerations:
   - effect: NoSchedule
     operator: Exists
-    key: nvidia-gpu-only
+    key: nvidia.com/gpu
 ```
 
 Apply the configuration to create the `default-flavor`
