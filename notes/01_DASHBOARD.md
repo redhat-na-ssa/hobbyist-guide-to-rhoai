@@ -80,7 +80,7 @@ Deep dive into the Red Hat OpenShift AI 2.10 Dashboard
         1. Notebook pod tolerations on tainted nodes
     1. Accelerator Profiles
         1. Details - An identifier is a unique string that names a specific hardware accelerator resource "nvidia.com/gpu" maps to
-        1. Tolerations - applied to pods and allow the scheduler to schedule pods with matching taints (key=nvidia-gpu-only) found on the MachineSets labels (cluster-api/accelerator=nvidia-gpu)
+        1. Tolerations - applied to pods and allow the scheduler to schedule pods with matching taints (key=nvidia.com/gpu) found on the MachineSets labels (cluster-api/accelerator=nvidia-gpu)
     1. Serving Runtimes - supports REST and gRPC API protocols
         1. Caikit TGIS ServingRuntimes for KServe for REST
             1. Serialized models:

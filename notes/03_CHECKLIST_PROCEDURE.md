@@ -2274,16 +2274,10 @@ oc get node --selector=nvidia.com/gpu.product=Tesla-T4-SHARED -o json \
 
 Why? Prevent non-GPU workloads from being scheduled on the GPU nodes.
 
-Taint the GPU nodes with `nvidia.com/gpu`. This MUST match the Accelerator profile taint key you use (by default may be different, i.e. `nvidia.com/gpu`).
+Taint the GPU nodes with `nvidia.com/gpu`. This MUST match the Accelerator profile taint key you use (by default may be different, i.e. `nvidia-gpu-only`).
 
 ```sh
-oc adm taint node -l node-role.kubernetes.io/gpu nvidia.com/gpu=:NoSchedule --overwrite
-```
-
-```sh
-# expected output
-node/ip-10-0-22-15.us-east-2.compute.internal modified
-node/ip-10-0-22-25.us-east-2.compute.internal modified
+oc adm taint node -l node-role.kubernetes.io/gpu nvidia-gpu-only=:NoSchedule --overwrite
 ```
 
 Edit the `ClusterPolicy` in the NVIDIA GPU Operator under the `nvidia-gpu-operator` project. Add the below section to `.spec.daemonsets:`
