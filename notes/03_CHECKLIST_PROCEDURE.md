@@ -22,7 +22,11 @@ Git clone this repository
 git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
 ```
 
+>Red Hat recommends that you install only one instance of OpenShift AI (or Open Data Hub) on your cluster.
+
 ## Fix kubeadmin as an Administrator for Openshift AI (~2 min)
+
+>`kubeadmin` user is an automatically generated temporary user. Best practice is to create a new user using an identity provider and elevate the privileges of that user to `cluster-admin`. Once such user is created, the default `kubeadmin` user should be removed. [source](https://access.redhat.com/solutions/5309141)
 
 Create a cluster role binding so that OpenShift AI will recognize `kubeadmin` as a `cluster-admin`
 
@@ -47,7 +51,7 @@ oc apply -f configs/fix-kubeadmin.yaml
 
 ## Adding administrative users for OpenShift Container Platform (~8 min)
 
-[Section 2.2 source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/installing_and_uninstalling_openshift_ai_self-managed/installing-and-deploying-openshift-ai_install#adding-administrative-users-for-openshift-container-platform_install)
+>For this process we are using HTpasswd typical for PoC. You can configure the following types of identity providers [htpasswd, keystone, LDAP, basic-authentication, request-header, GitHub, GitLab, Google, OpenID Connect](https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/authentication_and_authorization/understanding-identity-provider#supported-identity-providers). [RHOAI source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.12/html/installing_and_uninstalling_openshift_ai_self-managed/installing-and-deploying-openshift-ai_install#adding-administrative-users-for-openshift-container-platform_install)
 
 Create an htpasswd file to store the user and password information
 
@@ -106,7 +110,7 @@ oc login --insecure-skip-tls-verify=true -u <username> -p <password>
 
 ## (Optional) Install the Web Terminal Operator (~5min)
 
-This provides a `Web Terminal` in the same browser as the `OCP Web Console` to minimize context switching between the browser and local client. [docs](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/web_console/web-terminal)
+This provides a `Web Terminal` in the same browser as the `OCP Web Console` to minimize context switching between the browser and local client. [docs](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/web_console/web-terminal).
 
 ![NOTE] kubeadmin is unable to create web terminals [source](https://github.com/redhat-developer/web-terminal-operator/issues/162)
 
@@ -184,6 +188,8 @@ operatorgroup.operators.coreos.com/rhods-operator created
 
 Create a Subscription object CR file, for example, rhoai-operator-subscription.yaml
 
+>Understanding `update channels`. We are using `fast` channel as this gives customers access to the latest product features. [source](https://access.redhat.com/support/policy/updates/rhoai-sm/lifecycle).
+
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -192,7 +198,7 @@ metadata:
   namespace: redhat-ods-operator 
 spec:
   name: rhods-operator
-  channel:  
+  channel: fast 
   source: redhat-operators
   sourceNamespace: openshift-marketplace
 ```
@@ -1539,7 +1545,7 @@ daemonset.apps/nvidia-node-status-exporter                     2         2      
 daemonset.apps/nvidia-operator-validator                       0         0         0       0            0           nvidia.com/gpu.deploy.operator-validator=true                                                                         22s
 ```
 
-(Opinion) When the NVIDIA operator completes labeling the nodes, you can add a label to the GPU node Role as `gpu, worker` for readability (cosmetic)
+Once the NVIDIA GPU Operator (specifically, nvidia-driver-daemonset) has finished, you can add a label to the GPU node Role as `gpu, worker` for readability (cosmetic).
 
 ```sh
 oc label node -l nvidia.com/gpu.machine node-role.kubernetes.io/gpu=''
@@ -1547,7 +1553,9 @@ oc label node -l nvidia.com/gpu.machine node-role.kubernetes.io/gpu=''
 
 ```sh
 oc get nodes
+```
 
+```
 # expected output
 NAME                                        STATUS   ROLES                         AGE   VERSION
 ip-10-0-xx-xxx.us-east-2.compute.internal   Ready    gpu,worker                    19h   v1.28.10+a2c84a5
@@ -1723,7 +1731,7 @@ helm repo update
 Install the Helm chart in the default NVIDIA GPU operator namespace
 
 ```sh
-helm install -n nvidia-gpu-operator console-plugin-nvidia-gpu rh-ecosystem-edge/console-plugin-nvidia-gpu
+helm install -n nvidia-gpu-operator console-plugin-nvidia-gpu rh-ecosystem-edge/console-plugin-nvidia-gpu --hide-notes
 ```
 
 ```sh
