@@ -1761,7 +1761,7 @@ daemonset.apps/nvidia-node-status-exporter                     2         2      
 daemonset.apps/nvidia-operator-validator                       0         0         0       0            0           nvidia.com/gpu.deploy.operator-validator=true                                                                         22s
 ```
 
-Once the NVIDIA GPU Operator (specifically, nvidia-driver-daemonset) has finished, you can add a label to the GPU node Role as `gpu, worker` for readability (cosmetic).
+(Opinion) When the NVIDIA operator completes labeling the nodes, you can add a label to the GPU node Role as `gpu, worker` for readability (cosmetic)
 
 ```sh
 oc label node -l nvidia.com/gpu.machine node-role.kubernetes.io/gpu=''
@@ -2277,7 +2277,7 @@ Why? Prevent non-GPU workloads from being scheduled on the GPU nodes.
 Taint the GPU nodes with `nvidia.com/gpu`. This MUST match the Accelerator profile taint key you use (by default may be different, i.e. `nvidia-gpu-only`).
 
 ```sh
-oc adm taint node -l node-role.kubernetes.io/gpu nvidia-gpu-only=:NoSchedule --overwrite
+oc adm taint node -l node-role.kubernetes.io/gpu nvidia.com/gpu=:NoSchedule --overwrite
 ```
 
 Edit the `ClusterPolicy` in the NVIDIA GPU Operator under the `nvidia-gpu-operator` project. Add the below section to `.spec.daemonsets:`
@@ -2297,13 +2297,13 @@ oc edit ClusterPolicy
 Cordon the GPU node, drain the GPU tainted nodes and terminate workloads
 
 ```sh
-oc adm drain -l node-role.kubernetes.io/gpu --ignore-daemonsets --delete-emptydir-data
+oc adm drain -l nvidia.com/gpu.machine --ignore-daemonsets --delete-emptydir-data
 ```
 
 Allow the GPU node to be schedulable again per tolerations
 
 ```sh
-oc adm uncordon -l node-role.kubernetes.io/gpu
+oc adm uncordon -l nvidia.com/gpu.machine
 ```
 
 Get the name of the gpu node
