@@ -4,7 +4,7 @@ metadata:
   name: device-plugin-config
   namespace: nvidia-gpu-operator
 data:
-  Tesla-T4: |-
+  time-sliced-8: |-
     version: v1
     sharing:
       timeSlicing:
