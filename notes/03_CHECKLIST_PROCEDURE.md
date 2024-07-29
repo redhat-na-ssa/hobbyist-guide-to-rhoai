@@ -1761,7 +1761,7 @@ daemonset.apps/nvidia-node-status-exporter                     2         2      
 daemonset.apps/nvidia-operator-validator                       0         0         0       0            0           nvidia.com/gpu.deploy.operator-validator=true                                                                         22s
 ```
 
-(Opinion) When the NVIDIA operator completes labeling the nodes, you can add a label to the GPU node Role as `gpu, worker` for readability (cosmetic)
+(Optional) When the NVIDIA operator completes labeling the nodes, you can add a label to the GPU node Role as `gpu, worker` for readability (cosmetic)
 
 ```sh
 oc label node -l nvidia.com/gpu.machine node-role.kubernetes.io/gpu=''
@@ -2274,10 +2274,10 @@ oc get node --selector=nvidia.com/gpu.product=Tesla-T4-SHARED -o json \
 
 Why? Prevent non-GPU workloads from being scheduled on the GPU nodes.
 
-Taint the GPU nodes with `nvidia.com/gpu`. This MUST match the Accelerator profile taint key you use (by default may be different, i.e. `nvidia-gpu-only`).
+Taint the GPU nodes with `nvidia.com/gpu`. This MUST match the Accelerator profile taint key you use (this could be different, i.e. `nvidia-gpu-only`).
 
 ```sh
-oc adm taint node -l node-role.kubernetes.io/gpu nvidia.com/gpu=:NoSchedule --overwrite
+oc adm taint node -l nvidia.com/gpu.machine nvidia.com/gpu=:NoSchedule --overwrite
 ```
 
 Edit the `ClusterPolicy` in the NVIDIA GPU Operator under the `nvidia-gpu-operator` project. Add the below section to `.spec.daemonsets:`
