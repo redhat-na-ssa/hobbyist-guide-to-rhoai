@@ -4,7 +4,7 @@ This is the Hobbyist Guide to Installing and Configuring RHOAI for customers. Br
 
 - OCP Instance: AWS with OpenShift Open Environment
 - OCP Version: 4.15
-- RHOAI Version: 2.10
+- RHOAI Version: 2.11
 
 ```shell
 .
@@ -17,5 +17,6 @@ This is the Hobbyist Guide to Installing and Configuring RHOAI for customers. Br
 │   ├── 03_CHECKLIST_PROCEDURE.md       # Additional detailed steps
 │   ├── 04_TUTORIAL_FRAUD.md            # Notes for the fraud detection demo
 │   ├── 05_TUTORIAL_DISTR_WORKLOADS.md  # Notes for the distributed workloads demo
+│   ├── 06_APPENDIX.md                  # Additional configurations for Unmanaged dependencies
 │   └── configs                         # These are the config files used in the 03_CHECKLIST_PROCEDURE.md
 ```
