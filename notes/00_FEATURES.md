@@ -60,6 +60,7 @@ RHOAI creates 4x OCP Projects
 
 ## Tips
 
+- Red Hat recommends that you install only one instance of RHOCP (or ODH) on your cluster.
 - Your cluster must have at least 2 worker nodes with at least 8 CPUs and 32 GiB RAM available for OpenShift AI to use when you install the Operator.
 - A default `storageclass` that can be dynamically provisioned must be configured.
 - Access to the cluster as a user with the `cluster-admin` role; the `kubeadmin` user is not allowed.
