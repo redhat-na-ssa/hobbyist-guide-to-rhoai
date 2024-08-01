@@ -2131,6 +2131,16 @@ Access the RHOAI Dashboard > Settings.
 
 - Import new notebook images  
 
+#### Create and add a custom notebook image (~10min)
+
+It is possible to take an existing supported RHOAI notebook image and add OS and Python packages. By launching a custom notebook image, users don't have to download custom packages every time they launch a notebook.
+
+![NOTE]
+Red Hat supports the base notebook image and the additional packages are the customer's responsibility.
+
+
+
+
 #### Cluster Settings
 
 - Model serving platforms
