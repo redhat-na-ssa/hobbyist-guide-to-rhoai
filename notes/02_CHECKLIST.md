@@ -2,37 +2,53 @@
 
 This is checklist of the technical steps needed to complete the installation and configuration of Red Hat OpenShift 2.10 and it's dependencies for use.
 
-## Installing the Red Hat OpenShift AI "RHOAI" Operator
-
-- [ ] Installing the Red Hat OpenShift AI Operator
-  - [ ] Accessing the cluster via your client CLI
-  - [ ] Fix `kubeadmin` as an Administrator for Openshift AI (~2 min)
-  - [ ] Adding administrative users for OpenShift Container Platform (~8 min)
-  - [ ] (Optional) Install the Web Terminal Operator (~5min)
-  - [ ] Installing the Red Hat OpenShift AI Operator by using the CLI (~3min)
-  - [ ] Installing and managing Red Hat OpenShift AI components (~1min)
-  - [ ] Adding a CA bundle (~5min)
-  - [ ] (Optional) Configuring the OpenShift AI Operator logger
-  - [ ] Installing KServe dependencies (~3min)
-    - [ ] Creating a Knative Serving instance
-    - [ ] Creating secure gateways for Knative Serving (~4min)
-  - [ ] Manually adding an authorization provider (~4min)
-    - [ ] Configuring an OpenShift Service Mesh instance to use Authorino (~6min)
-    - [ ] Configuring authorization for KServe (~3min)
-  - [ ] Enabling GPU support in OpenShift AI
-    - [ ] Adding a GPU node to an existing OpenShift Container Platform cluster (~12min)
-    - [ ] Deploying the Node Feature Discovery Operator (~12-30min)
-    - [ ] Installing the NVIDIA GPU Operator (~10min)
-    - [ ] (Optional) Running a sample GPU Application (~1min)
-    - [ ] Enabling the GPU Monitoring Dashboard (3min)
-    - [ ] Installing the NVIDIA GPU administration dashboard (~5min)
-    - [ ] Configuring GPUs with time slicing (~3min)
-    - [ ] Configure Taints and Tolerations (~3min)
-    - [ ] (Optional) Configuring the cluster autoscaler
-  - [ ] Configuring distributed workloads
-    - [ ] Configuring quota management for distributed workloads (~5min)
-    - [ ] (Optional) Configuring the CodeFlare Operator (~5min)
-
+```sh
+# Install the Red Hat OpenShift AI Operator
+## Access the cluster via your client CLI
+## Add administrative users
+## (Optional) Install the Web Terminal Operator
+## Install RHOAI Dependencies
+### Install RHOAI KServe dependencies
+#### Install Red Hat OpenShift Service Mesh Operator
+#### Install Red Hat OpenShift Serverless Operator
+#### Install Red Hat Authorino Operator
+## Install the Red Hat OpenShift AI Operator by using the CLI
+### Install and managing Red Hat OpenShift AI components
+## Adding a CA bundle
+## (Optional) Configure the OpenShift AI Operator logger
+## Enabling GPU support for OpenShift AI
+### Adding a GPU node to an existing OpenShift Container Platform cluster
+### Deploying the Node Feature Discovery Operator
+### Install the NVIDIA GPU Operator
+### (Optional) Running a sample GPU Application
+### Enabling the GPU Monitoring Dashboard
+### Install the NVIDIA GPU administration dashboard
+#### Viewing the GPU Dashboard
+### GPU sharing methods
+### Configure GPUs with time slicing 
+### Configure Taints and Tolerations
+### (Optional) Configure the cluster autoscaler
+## Configure distributed workloads
+### Configure quota management for distributed workloads
+#### Create an empty Kueue resource flavor
+#### Create a cluster queue to manage the empty Kueue resource flavor
+#### Create a local queue that points to your cluster queue
+### (Optional) Configure the CodeFlare Operator (~5min)
+## Administrative Configurations for RHOAI
+### Review RHOAI Dashboard Settings
+#### Notebook Images
+#### Cluster Settings
+#### Accelerator Profiles
+#### Add a new Accelerator Profile
+#### Serving Runtimes
+##### Add serving runtime
+#### User Management
+### Review Backing up data
+#### Control plane backup and restore operations
+#### Control plane backup and restore operations
+#### Application backup and restore operations
+## Answer key
+```
 ## Administrative Configurations for RHOAI
 
 - [ ] Review RHOAI Dashboard Settings
