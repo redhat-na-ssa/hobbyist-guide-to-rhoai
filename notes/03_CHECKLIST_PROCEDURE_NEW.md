@@ -2226,6 +2226,7 @@ Tag the new image and push to Quay
 
 ```sh
 podman tag custom-notebook-image:v1.0 quay.io/$QUAY_USERNAME/custom-notebook-image:v1.0
+podman push quay.io/$QUAY_USERNAME/custom-notebook-image:v1.0
 ```
 
 The custom notebook image can now be imported to RHOAI.
