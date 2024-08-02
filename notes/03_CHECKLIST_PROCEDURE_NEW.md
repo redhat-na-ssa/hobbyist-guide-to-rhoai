@@ -2164,7 +2164,7 @@ curl -o Pipfile https://raw.githubusercontent.com/red-hat-data-services/notebook
 Add Python package `pyodbc` to the Pipfile
 
 ```sh
-sed -ie '/^setuptools/a \                                                                                                     
+sed -i '/^setuptools/a \
 \
 # Additional Packages\
 pyodbc = "~=5.1.0"\
