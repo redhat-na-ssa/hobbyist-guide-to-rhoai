@@ -2193,7 +2193,7 @@ FROM $MINIMAL_PYTHON_BASE_IMAGE
 USER 0
 
 RUN INSTALL_PKGS="jq unixODBC" && \
-    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
+    yum install -y --setopt=tsflags=nodocs \$INSTALL_PKGS && \
     yum -y clean all --enablerepo='*'
 
 USER 1001
