@@ -2283,6 +2283,101 @@ Option 2:
 - Data scientists
 - Administrators
 
+#### Pipelines
+
+##### Configure External DB
+
+When a pipeline server is configured for a Data Science Project, a local database using MariaDB is automatically configured for the pipelines. This database is local to the project and not reusable. 
+
+Instead, the best practice is to configure an external SQL database for the pipeline server. In this way, multiple Data Science projects can use the external SQL database.
+
+Let's configure an external database for two separate pipeline servers.
+
+Create a new project for the database
+
+```sh
+oc new-project database
+```
+
+Create Operator Group
+
+```sh
+cat <<EOF | oc apply -f -
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: database-operator-group
+  namespace: database
+spec:
+ targetNamespaces:
+ - database
+EOF
+```
+
+Deploy the Crunchy Postgres Operator
+
+```sh
+cat <<EOF | oc apply -f - 
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: crunchy-postgres-operator
+  namespace: database
+spec:
+  channel: v5
+  installPlanApproval: Automatic
+  name: crunchy-postgres-operator
+  source: certified-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: postgresoperator.v5.6.0
+EOF
+```
+
+Wait for Operator to finish installing
+
+```sh
+oc rollout status deploy/pgo -n database --timeout=300s
+```
+
+Deploy the Postgres database
+
+```sh
+cat <<EOF | oc apply -f - 
+apiVersion: postgres-operator.crunchydata.com/v1beta1
+kind: PostgresCluster
+metadata:
+  name: pipeline
+  namespace: database
+spec:
+  backups:
+    pgbackrest:
+      repos:
+        - name: repo1
+          volume:
+            volumeClaimSpec:
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 1Gi
+  instances:
+    - dataVolumeClaimSpec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+      replicas: 1
+  postgresVersion: 16
+EOF
+```
+
+Wait for the database to install
+
+```sh
+oc wait --for=jsonpath='{.status.availableReplicas}'=1 -l postgres-operator.crunchydata.com/instance-set=00 sts -n database
+```
+
 ### Review Backing up data
 
 Refer to [A Guide to High Availability / Disaster Recovery for Applications on OpenShift](https://www.redhat.com/en/blog/a-guide-to-high-availability/disaster-recovery-for-applications-on-openshift)
