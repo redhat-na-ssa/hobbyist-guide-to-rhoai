@@ -65,6 +65,8 @@ This is checklist of the technical steps needed to complete the installation and
     - [ ] Add a new Serving Runtimes
   - [ ] User Management
     - [ ] Configure User and Admin groups
+  - [ ] Pipelines
+    - [ ] Configure External DB
 - [ ] Review Backing up data
   - [ ] Control plane backup and restore operations
   - [ ] Application backup and restore operations
