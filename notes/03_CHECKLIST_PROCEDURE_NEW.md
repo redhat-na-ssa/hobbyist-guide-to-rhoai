@@ -2377,6 +2377,16 @@ Wait for the database to install
 oc wait --for=jsonpath='{.status.availableReplicas}'=1 -l postgres-operator.crunchydata.com/instance-set=00 sts -n database
 ```
 
+Get references to the database and user for use later
+
+```sh
+PG_HOST=$(oc get secret example-pguser-example -n database -o jsonpath='{.data.host}' | base64 -d)
+PG_PORT=$(oc get secret example-pguser-example -n database -o jsonpath='{.data.port}' | base64 -d)
+PG_USER=$(oc get secret example-pguser-example -n database -o jsonpath='{.data.user}' | base64 -d)
+PG_PASSWORD=$(oc get secret example-pguser-example -n database -o jsonpath='{.data.password}' | base64 -d)
+PG_DATABASE=$(oc get secret example-pguser-example -n database -o jsonpath='{.data.dbname}' | base64 -d)
+```
+
 Object storage is also needed for pipelines. 
 
 Clone the `gitops-catalog` repo
@@ -2446,6 +2456,15 @@ spec:
 EOF
 ```
 
+Create data science projects
+
+```sh
+oc new-project pipeline-one 
+oc new-project pipeline-two
+oc label ns pipeline-one opendatahub.io/dashboard=true
+oc label ns pipeline-two opendatahub.io/dashboard=true
+
+```
 
 ### Review Backing up data
 
