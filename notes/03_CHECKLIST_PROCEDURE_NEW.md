@@ -2131,6 +2131,115 @@ Access the RHOAI Dashboard > Settings.
 
 - Import new notebook images  
 
+#### Create and add a custom notebook image (~10min)
+
+It is possible to take an existing supported RHOAI notebook image and add OS and Python packages. By launching a custom notebook image, users don't have to download custom packages every time they launch a notebook.
+
+![NOTE]
+Red Hat supports the base notebook image, whereas the additional packages are the customer's responsibility.
+
+In this example, we'll take the existing RHOAI `Minimal Python` notebook image and add OS and Python packages for ODBC database connections.
+
+Get the link to the GitHub repo for the `Minimal Python` notebook image.
+
+```sh
+oc get is s2i-minimal-notebook -n redhat-ods-applications -o jsonpath='{.metadata.annotations.opendatahub\.io\/notebook-image-url}{"\n"}'
+```
+
+```sh
+# expected output
+https://github.com/red-hat-data-services/notebooks/tree/main/jupyter/minimal
+```
+
+Navigate to this repo -> `ubi9-python-3.9` -> `Pipfile`
+
+You need a copy of this Pipfile to add Python packages.
+
+Download the raw version of this file
+
+```sh
+curl -o Pipfile https://raw.githubusercontent.com/red-hat-data-services/notebooks/main/jupyter/minimal/ubi9-python-3.9/Pipfile
+```
+
+Add Python package `pyodbc` to the Pipfile
+
+```sh
+sed -i '/^setuptools/a \
+\
+# Additional Packages\
+pyodbc = "~=5.1.0"\
+' Pipfile
+```
+
+Create a Pipfile lock using the updated Pipfile
+
+```sh
+pipenv lock
+```
+
+Get the image reference for the `Minimal Python` notebook base image `2024.1` tag.
+
+```sh
+MINIMAL_PYTHON_BASE_IMAGE=`oc get istag s2i-minimal-notebook:2024.1 -n redhat-ods-applications -o jsonpath='{.image.dockerImageReference}'`
+```
+
+Now create a Containerfile. In the Containerfile, add the OS package `unixODBC` which is required for the `pyodbc` module. Also add the `jq` package to demonstrate installing multiple OS packages.
+
+```sh
+cat > Containerfile <<EOF
+FROM $MINIMAL_PYTHON_BASE_IMAGE
+
+# Install OS packages
+USER 0
+
+RUN INSTALL_PKGS="jq unixODBC" && \
+    yum install -y --setopt=tsflags=nodocs \$INSTALL_PKGS && \
+    yum -y clean all --enablerepo='*'
+
+USER 1001
+
+# Install Python packages
+COPY Pipfile.lock ./
+
+RUN echo "Installing softwares and packages" && \
+    micropipenv install && \
+    rm -f ./Pipfile.lock && \
+    chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
+    fix-permissions /opt/app-root -P
+EOF
+```
+
+Build the custom image
+
+```sh
+podman build . -t custom-notebook-image:v1.0
+```
+
+Login to Quay
+
+```sh
+QUAY_USERNAME=  #enter your quay username
+podman login quay.io -u $QUAY_USERNAME
+```
+
+Tag the new image and push to Quay
+
+```sh
+podman tag custom-notebook-image:v1.0 quay.io/$QUAY_USERNAME/custom-notebook-image:v1.0
+podman push quay.io/$QUAY_USERNAME/custom-notebook-image:v1.0
+```
+
+The custom notebook image can now be imported to RHOAI.
+
+Navigate to the RHOAI dashboard -> `Settings` -> `Notebook images` -> `Import new image`
+
+Specify your image repository `quay.io/$QUAY_USERNAME/custom-notebook-image:v1.0` in the Image location. Give it a name and add displayed content if you would like.
+
+The custom notebook image can now be launched in a workbench.
+
+
+
+
 #### Cluster Settings
 
 - Model serving platforms
