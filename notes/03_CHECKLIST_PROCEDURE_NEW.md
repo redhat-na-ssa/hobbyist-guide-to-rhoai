@@ -2415,6 +2415,7 @@ metadata:
 spec:
   template:
     spec:
+      serviceAccountName: job-create-minio-root
       restartPolicy: Never
       containers:
         - args:
