@@ -2460,9 +2460,14 @@ spec:
   scheduledWorkflow:
     cronScheduleTimezone: UTC
     deploy: true
+EOF
 ```
 
+The pipeline server was configured with an example pipeline using the parameter `enableSamplePipeline`.
 
+Navigate to RHOAI dashboard -> Data Science Pipelines -> Project `pipeline-test`
+
+You should see the `iris-training` pipeline and be able to execute a pipeline run.
 
 ### Review Backing up data
 
