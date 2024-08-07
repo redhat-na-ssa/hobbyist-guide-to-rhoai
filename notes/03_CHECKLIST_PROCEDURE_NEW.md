@@ -142,7 +142,7 @@ oc login --insecure-skip-tls-verify=true -u <username> -p <password>
 
 The Web Terminal Operator provides users with the ability to create a terminal instance embedded in the OpenShift Console. This is useful to provide a consistent terminal experience for those using Microsoft OS or MacOS. It also minimizes context switching between the browser and local client. [docs](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/web_console/web-terminal).
 
-![NOTE] We could not do this sooner as `kubeadmin` is unable to create web terminal instances [source](https://github.com/redhat-developer/web-terminal-operator/issues/162)
+>[NOTE] We could not do this sooner as `kubeadmin` is unable to create web terminal instances [source](https://github.com/redhat-developer/web-terminal-operator/issues/162).
 
 Create a subscription object for the Web Terminal.
 
@@ -187,34 +187,48 @@ web-terminal.openshift-operators            70m
 
 From the OCP Web Console, Refresh the browser and click the `>_` icon in the top right of the window. This can serve as your browser based CLI.
 
+You can `git clone` in the instance and complete the rest of the procedure.
+
+```sh
+# clone in the web terminal
+git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
+
+# change directory
+cd hobbyist-guide-to-rhoai/
+```
+
 ## Install RHOAI Dependencies
 
 Before you install RHOAI, it is important to understand how it's dependencies will be managed as it be automated or not. Below are required and use-case dependent operators:
 
-1. OpenShift Pipelines
-1. OpenShift Serverless
-1. OpenShift Service Mesh
-1. Node Feature Discovery Operator
-1. NVIDIA GPU Operator
-1. HabanaAI Operator
-1. Authorino Operator
+1. `Red Hat OpenShift Serverless Operator` (if RHOAI KServe is planned for serving, this is required)
+1. `Red Hat OpenShift Service Mesh Operator` (if RHOAI KServe is planned for serving, this is required)
+1. `Red Hat Authorino Operator` (RHOAI recommended)
+1. `Red Hat Node Feature Discovery (NFD) Operator` (if NVIDIA GPU accelerators exist)
+1. `NVIDIA GPU Operator` (if NVIDIA GPU accelerators exist)
+1. `NVIDIA Network Operator` (if NVIDIA Infiniband accelerators exist)
+1. `Kernel Module Management (KMM) Operator` (if Intel Gaudi/AMD accelerators exist)
+1. `HabanaAI Operator` (if Intel Gaudi accelerators exist)
+1. `AMD GPU Operator` (if AMD accelerators exist)
+
+>NOTE: NFD and KMM operators exists with other patterns, these are the most common.
 
 There are 3x RHOAI Operator dependency states to be set: `Managed`, `Removed`, and `Unmanaged`.
 
-1. `Managed` = The Red Hat OpenShift AI Operator manages the dependency (i.e. Service Mesh, Serverless, etc.)
-1. `Removed` = The Red Hat OpenShift AI Operator removes the dependency. Changing from `Managed` to `Removed` does remove the dependency.
-1. `Unmanaged` = The Red Hat OpenShift AI Operator does not manage the dependency allowing for an administrator to manage it instead.  Changing from `Managed` to `Unmanaged` does not remove the dependency. For example, this is important when the customer has an existing Service Mesh.
+1. `Managed` = The RHOAI Operator manages the dependency (i.e. Service Mesh, Serverless, etc.)
+1. `Removed` = The RHOAI Operator removes the dependency. Changing from `Managed` to `Removed` does remove the dependency.
+1. `Unmanaged` = The RHAOI Operator does not manage the dependency allowing for an administrator to manage it instead.  Changing from `Managed` to `Unmanaged` does not remove the dependency. For example, this is important when the customer has an existing Service Mesh.
 
 ### Install RHOAI KServe dependencies
 
-RHOAI provides two primary methods for serving models:
+RHOAI provides 2x primary methods for serving models:
 
-1. Model Mesh
-1. KServe
+1. `Model Mesh`
+1. `KServe`
 
-The ModelMesh framework is a general-purpose (non-GenAI) model serving management/routing layer designed for high-scale, high-density and frequently-changing model use cases. There are no extra dependencies needed to configure this solution.
+The `ModelMesh` framework is a general-purpose (non-GenAI) model serving management/routing layer designed for high-scale, high-density and frequently-changing model use cases. There are no extra dependencies needed to configure this solution.
 
-KServe has specific dependencies and provides a Kubernetes Custom Resource Definition for serving predictive and generative machine learning (ML) models. It aims to solve production model serving use cases by providing high abstraction interfaces for Tensorflow, XGBoost, ScikitLearn, PyTorch, Huggingface Transformer/LLM models using standardized data plane protocols.
+`KServe` has specific dependencies and provides a Kubernetes Custom Resource Definition for serving predictive and generative machine learning (ML) models. It aims to solve production model serving use cases by providing high abstraction interfaces for Tensorflow, XGBoost, ScikitLearn, PyTorch, Huggingface Transformer/LLM models using standardized data plane protocols.
 
 To support the RHOAI KServe component, you must also install Operators for `Red Hat OpenShift Service Mesh` (based on `Istio`) and `Red Hat OpenShift Serverless` (based on  `Knative`). Furthermore, if you want to add an authorization provider, you must also install `Red Hat Authorino Operator` (based on `Kuadrant`).
 
@@ -331,60 +345,6 @@ operatorgroup.operators.coreos.com/serverless-operator created
 subscription.operators.coreos.com/serverless-operator created
 ```
 
-(Optional) use a TLS certificate to secure the mapped service from [source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.11/html/serving_models/serving-large-models_serving-large-models#creating-a-knative-serving-instance_serving-large-models)
-
-Review the default ServiceMeshMemberRoll object in the istio-system namespace and confirm that it includes the knative-serving namespace.
-```sh
-oc describe smmr default -n istio-system
-```
-
-```yaml
-# expected output
-...  
-Member Statuses:
-    Conditions:
-      Last Transition Time:  2024-07-25T22:15:59Z
-      Status:                True
-      Type:                  Reconciled
-    Namespace:               knative-serving
-  Members:
-    knative-serving
-...
-```
-
-```sh
-oc get smmr default -n istio-system -o jsonpath='{.status.memberStatuses}'
-```
-
-```sh
-# expected output TODO
-[{"conditions":[{"lastTransitionTime":"2024-07-16T18:09:10Z","status":"Unknown","type":"Reconciled"}],"namespace":"knative-serving"}]
-```
-
-Verify creation of the Knative Serving instance
-```sh
-oc get pods -n knative-serving
-```
-
-```sh
-# expected output
-activator-5cf876c6cf-jtvs2                                    0/1     Running     0             91s
-activator-5cf876c6cf-ntf79                                    0/1     Running     0             76s
-autoscaler-84655b4df5-w9lmc                                   1/1     Running     0             91s
-autoscaler-84655b4df5-zznlw                                   1/1     Running     0             91s
-autoscaler-hpa-986bb8687-llms8                                1/1     Running     0             90s
-autoscaler-hpa-986bb8687-qtgln                                1/1     Running     0             90s
-controller-84cb7b64bc-9654q                                   1/1     Running     0             89s
-controller-84cb7b64bc-bdhps                                   1/1     Running     0             83s
-net-istio-controller-6498db6ccb-4ddvd                         0/1     Running     2 (24s ago)   89s
-net-istio-controller-6498db6ccb-f66mv                         0/1     Running     2 (24s ago)   89s
-net-istio-webhook-79cbc7c4d4-r6gln                            1/1     Running     0             89s
-net-istio-webhook-79cbc7c4d4-snd7k                            1/1     Running     0             89s
-storage-version-migration-serving-serving-1.12-1.33.0-6v9ll   0/1     Completed   0             89s
-webhook-6bb9cd8c97-46lz4                                      1/1     Running     0             90s
-webhook-6bb9cd8c97-cxm2n                                      1/1     Running     0             75s
-```
-
 For `Unmanaged` deployments additional steps need to be executed. See the Define a ServiceMeshMember for Serverless in the 06_APPENDIX.md
 
 #### Install Red Hat Authorino Operator
@@ -402,7 +362,7 @@ metadata:
   name: authorino-operator
   namespace: openshift-operators
 spec:
-  channel: managed-services
+  channel: tech-preview-v1
   installPlanApproval: Automatic
   name: authorino-operator
   source: redhat-operators
