@@ -2289,9 +2289,7 @@ Option 2:
 
 When a pipeline server is configured for a Data Science Project, a local database using MariaDB is automatically configured for the pipelines. This database is local to the project and not intended for reuse. 
 
-Instead, the best practice is to configure an external SQL database for the pipeline server. In this way, multiple Data Science projects can use the external SQL database.
-
-Let's configure an external database for two separate pipeline servers.
+Instead, the best practice is to configure an external SQL database for the pipeline server. Let's configure an external database for pipelines.
 
 Create a new project for the database
 
@@ -2299,92 +2297,25 @@ Create a new project for the database
 oc new-project database
 ```
 
-Create Operator Group
+Create database
+
+![NOTE]
+The pipeline server's metadata service uses a client that *cannot* handle the default `caching_sha2_password` authentication method in MySQL 8+. You must enable the older `mysql_native_password` authentication method in the MySQL server.
+
+![NOTE]
+Also note that MySQL v9 will not work with Data Science Pipelines because the `mysql_native_password` authentication method has been fully deprecated and removed. See this [blog post](https://blogs.oracle.com/mysql/post/mysql-90-its-time-to-abandon-the-weak-authentication-method) for more details.
 
 ```sh
-cat <<EOF | oc apply -f -
-apiVersion: operators.coreos.com/v1
-kind: OperatorGroup
-metadata:
-  name: database-operator-group
-  namespace: database
-spec:
- targetNamespaces:
- - database
-EOF
-```
-
-Deploy the Crunchy Postgres Operator
-
-```sh
-cat <<EOF | oc apply -f - 
-apiVersion: operators.coreos.com/v1alpha1
-kind: Subscription
-metadata:
-  name: crunchy-postgres-operator
-  namespace: database
-spec:
-  channel: v5
-  installPlanApproval: Automatic
-  name: crunchy-postgres-operator
-  source: certified-operators
-  sourceNamespace: openshift-marketplace
-EOF
-```
-
-Wait for Operator to finish installing
-
-```sh
-oc rollout status deploy/pgo -n database --timeout=300s
-```
-
-Deploy the Postgres database
-
-```sh
-cat <<EOF | oc apply -f - 
-apiVersion: postgres-operator.crunchydata.com/v1beta1
-kind: PostgresCluster
-metadata:
-  name: pipeline
-  namespace: database
-spec:
-  backups:
-    pgbackrest:
-      repos:
-        - name: repo1
-          volume:
-            volumeClaimSpec:
-              accessModes:
-                - ReadWriteOnce
-              resources:
-                requests:
-                  storage: 1Gi
-  instances:
-    - dataVolumeClaimSpec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
-      replicas: 1
-  postgresVersion: 16
-EOF
+MYSQL_USER=user
+MYSQL_PASSWORD=user123
+MYSQL_DATABASE=pipelines
+oc new-app -i mysql:8.0-el9 -e MYSQL_DEFAULT_AUTHENTICATION_PLUGIN=mysql_native_password -e MYSQL_DATABASE=$MYSQL_DATABASE -e MYSQL_USER=$MYSQL_USER -e MYSQL_PASSWORD=$MYSQL_PASSWORD
 ```
 
 Wait for the database to install
 
 ```sh
-oc wait --for=jsonpath='{.status.availableReplicas}'=1 -l postgres-operator.crunchydata.com/instance-set=00 sts -n database
-```
-
-Get references to the database and user for use later
-
-```sh
-PG_HOST=$(oc get secret example-pguser-example -n database -o jsonpath='{.data.host}' | base64 -d)
-PG_PORT=$(oc get secret example-pguser-example -n database -o jsonpath='{.data.port}' | base64 -d)
-PG_USER=$(oc get secret example-pguser-example -n database -o jsonpath='{.data.user}' | base64 -d)
-PG_PASSWORD=$(oc get secret example-pguser-example -n database -o jsonpath='{.data.password}' | base64 -d)
-PG_DATABASE=$(oc get secret example-pguser-example -n database -o jsonpath='{.data.dbname}' | base64 -d)
+oc wait --for=jsonpath='{.status.replicas}'=1 deploy mysql -n database
 ```
 
 Object storage is also needed for pipelines. 
@@ -2459,12 +2390,79 @@ EOF
 Create data science projects
 
 ```sh
-oc new-project pipeline-one 
-oc new-project pipeline-two
-oc label ns pipeline-one opendatahub.io/dashboard=true
-oc label ns pipeline-two opendatahub.io/dashboard=true
-
+oc new-project pipeline-test
+oc label ns pipeline-test opendatahub.io/dashboard=true
 ```
+
+Create required secrets for pipeline server
+
+```sh
+oc create secret generic dbpassword --from-literal=dbpassword=$MYSQL_PASSWORD -n pipeline-test
+oc create secret generic dspa-secret --from-literal=AWS_ACCESS_KEY_ID=$MINIO_ROOT_USER --from-literal=AWS_SECRET_ACCESS_KEY=$MINIO_ROOT_PASSWORD -n pipeline-test
+```
+
+Create the pipeline server
+
+![NOTE]
+The sample MySQL deployment does not have SSL configured so we need to add a `customExtraParams` field to disable the tls check. For a production MySQL deployment, you can remove this parameter to enable the tls check.
+
+```sh
+cat <<EOF | oc apply -n pipeline-test -f -
+apiVersion: datasciencepipelinesapplications.opendatahub.io/v1alpha1
+kind: DataSciencePipelinesApplication
+metadata:
+  name: dspa
+spec:
+  apiServer:
+    applyTektonCustomResource: true
+    archiveLogs: false
+    autoUpdatePipelineDefaultVersion: true
+    caBundleFileMountPath: ""
+    caBundleFileName: ""
+    collectMetrics: true
+    dbConfigConMaxLifetimeSec: 120
+    deploy: true
+    enableOauth: true
+    enableSamplePipeline: true
+    injectDefaultScript: true
+    stripEOF: true
+    terminateStatus: Cancelled
+    trackArtifacts: true
+  database:
+    customExtraParams: '{"tls":"false"}'
+    disableHealthChecks: false
+    externalDB:
+      host: mysql.mysql
+      passwordSecret:
+        key: dbpassword
+        name: dbpassword
+      pipelineDBName: pipelines
+      port: "3306"
+      username: user
+  dspVersion: v2
+  objectStorage:
+    disableHealthCheck: false
+    enableExternalRoute: false
+    externalStorage:
+      basePath: ""
+      bucket: pipeline-artifacts
+      host: minio.minio:9000
+      port: ""
+      region: us-east-1
+      s3CredentialsSecret:
+        accessKey: AWS_ACCESS_KEY_ID
+        secretKey: AWS_SECRET_ACCESS_KEY
+        secretName: dspa-secret
+      scheme: http
+  persistenceAgent:
+    deploy: true
+    numWorkers: 2
+  scheduledWorkflow:
+    cronScheduleTimezone: UTC
+    deploy: true
+```
+
+
 
 ### Review Backing up data
 
