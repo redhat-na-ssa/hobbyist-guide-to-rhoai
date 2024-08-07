@@ -1,6 +1,6 @@
 # Notes
 
-This is checklist of the technical steps needed to complete the installation and configuration of Red Hat OpenShift 2.10 and it's dependencies for use.
+This is checklist of the technical steps needed to complete the installation and configuration of Red Hat OpenShift and it's dependencies for use.
 
 - [ ] Install the `Red Hat OpenShift AI Operator (RHOAI)`
   - [ ] Access the cluster via your client CLI
@@ -44,7 +44,7 @@ This is checklist of the technical steps needed to complete the installation and
     - [ ]  Review Backing up data
       - [ ] Control plane backup and restore operations
       - [ ] Application backup and restore operations
-  - [ ]Answer key
+  - [ ] Answer key
 
 ## Administrative Configurations for RHOAI
 
