@@ -2432,7 +2432,7 @@ spec:
     customExtraParams: '{"tls":"false"}'
     disableHealthChecks: false
     externalDB:
-      host: mysql.mysql
+      host: mysql.database
       passwordSecret:
         key: dbpassword
         name: dbpassword
