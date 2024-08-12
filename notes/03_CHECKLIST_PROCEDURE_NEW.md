@@ -6,6 +6,8 @@ Acronyms:
 - RHOAI = Red Hat OpenShift AI
 - ODH = Open Data Hub
 
+>Intended commands to be excuted from the root directory of the hobbyist-guide
+
 ## Access the cluster via your client CLI
 
 Login to cluster via terminal
@@ -50,6 +52,13 @@ Adding password for user <username>
 Create a secret to represent the htpasswd file
 
 ```sh
+#create hobbyist dir
+mkdir hobbyist-guide
+
+# change dir
+cd hobbyist-guide
+
+# git clone
 oc create secret generic htpasswd-secret --from-file=htpasswd=scratch/users.htpasswd -n openshift-config
 ```
 
@@ -108,6 +117,8 @@ oc get oauth/cluster -o yaml
 
 You will have to a few minutes for the account to resolve.
 
+TODO add cr creation
+
 As kubeadmin, assign the cluster-admin role to perform administrator level tasks.
 
 ```sh
@@ -138,11 +149,13 @@ NOTE: You may need to add the parameter `--insecure-skip-tls-verify=true` if you
 oc login --insecure-skip-tls-verify=true -u <username> -p <password>
 ```
 
+The remainder of the procedure should be completed with the new cluster-admin <user>.
+
 ## (Optional) Install the Web Terminal Operator
 
 The Web Terminal Operator provides users with the ability to create a terminal instance embedded in the OpenShift Console. This is useful to provide a consistent terminal experience for those using Microsoft OS or MacOS. It also minimizes context switching between the browser and local client. [docs](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/web_console/web-terminal).
 
->[NOTE] We could not do this sooner as `kubeadmin` is unable to create web terminal instances [source](https://github.com/redhat-developer/web-terminal-operator/issues/162).
+>[NOTE] We could not do this sooner as `kubeadmin` is able to install the Web Terminal Operator, however unable to create web terminal instances [source](https://github.com/redhat-developer/web-terminal-operator/issues/162).
 
 Create a subscription object for the Web Terminal.
 
@@ -193,6 +206,9 @@ You can `git clone` in the instance and complete the rest of the procedure.
 # clone in the web terminal
 git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
 
+# check the dir
+ls
+
 # change directory
 cd hobbyist-guide-to-rhoai/
 ```
@@ -203,7 +219,7 @@ Before you install RHOAI, it is important to understand how it's dependencies wi
 
 1. `Red Hat OpenShift Serverless Operator` (if RHOAI KServe is planned for serving, this is required)
 1. `Red Hat OpenShift Service Mesh Operator` (if RHOAI KServe is planned for serving, this is required)
-1. `Red Hat Authorino Operator` (RHOAI recommended)
+1. `Red Hat Authorino Operator` (if you want to authenticate KServe model API endpoints, RHOAI recommended)
 1. `Red Hat Node Feature Discovery (NFD) Operator` (if NVIDIA GPU accelerators exist)
 1. `NVIDIA GPU Operator` (if NVIDIA GPU accelerators exist)
 1. `NVIDIA Network Operator` (if NVIDIA Infiniband accelerators exist)
@@ -386,6 +402,22 @@ For `Unmanaged` deployments additional steps need to be executed. See the Config
 
 [source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.11/html/Install_and_unInstall_openshift_ai_self-managed/Install-and-deploying-openshift-ai_install#Install-the-openshift-data-science-operator_operator-install)
 
+Check the pre-requisite operators in order to fully deploy RHOAI components.
+
+```sh
+oc get subscriptions -A
+```
+
+```sh
+# expected output
+NAMESPACE              NAME                                                                PACKAGE                 SOURCE             CHANNEL
+openshift-operators    authorino-operator                                                  authorino-operator      redhat-operators   tech-preview-v1
+openshift-operators    devworkspace-operator-fast-redhat-operators-openshift-marketplace   devworkspace-operator   redhat-operators   fast
+openshift-operators    servicemeshoperator                                                 servicemeshoperator     redhat-operators   stable
+openshift-operators    web-terminal                                                        web-terminal            redhat-operators   fast
+openshift-serverless   serverless-operator                                                 serverless-operator     redhat-operators   stable
+```
+
 Create a namespace object CR
 
 ```yaml
@@ -466,12 +498,12 @@ oc get operators
 ```sh
 # expected output
 NAME                                        AGE
-authorino-operator.openshift-operators      6m58s
-devworkspace-operator.openshift-operators   93m
-rhods-operator.redhat-ods-operator          43s
-serverless-operator.openshift-serverless    13m
-servicemeshoperator.openshift-operators     20m
-web-terminal.openshift-operators            93m
+authorino-operator.openshift-operators      29m
+devworkspace-operator.openshift-operators   21h
+rhods-operator.redhat-ods-operator          16s
+serverless-operator.openshift-serverless    34m
+servicemeshoperator.openshift-operators     34m
+web-terminal.openshift-operators            21h
 ```
 
 Check the created projects `redhat-ods-applications|redhat-ods-monitoring|redhat-ods-operator`
@@ -496,19 +528,26 @@ oc get DSCInitialization,FeatureTracker -n redhat-ods-operator
 
 ```sh
 # expected output
-NAME                                                              AGE   PHASE   CREATED AT
-dscinitialization.dscinitialization.opendatahub.io/default-dsci   56s   Ready   2024-07-31T22:35:06Z
+NAME                                                              AGE    PHASE   CREATED AT
+dscinitialization.dscinitialization.opendatahub.io/default-dsci   108s   Ready   2024-08-07T17:05:34Z
 
 NAME                                                                                               AGE
-featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-control-plane-creation         52s
-featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-control-plane-external-authz   24s
-featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-metrics-collection             26s
-featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-shared-configmap               24s
+featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-control-plane-creation         105s
+featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-control-plane-external-authz   32s
+featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-metrics-collection             84s
+featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-shared-configmap               32s
 ```
 
 The RHOAI Operator is installed with a 'default-dcsi' object with the following. Notice how the `serviceMesh` is `Managed`. By default, RHOAI is managing `ServiceMesh`.
 
+```sh
+oc describe DSCInitialization -n redhat-ods-operator
+```
+
 ```yaml
+# expected output
+
+...
 apiVersion: dscinitialization.opendatahub.io/v1
 kind: DSCInitialization
 metadata:
@@ -532,6 +571,7 @@ spec:
   trustedCABundle:
     customCABundle: ''
     managementState: Managed
+...
 ```
 
 ### Install and managing Red Hat OpenShift AI components
@@ -741,6 +781,15 @@ Verify the `odh-trusted-ca-bundle` configmap for your root signed cert in the `o
 
 ```sh
 oc get cm/odh-trusted-ca-bundle -o yaml -n redhat-ods-applications
+```
+
+```sh
+# expected output
+...
+ odh-ca-bundle.crt: |
+    -----BEGIN CERTIFICATE-----
+    -----END CERTIFICATE-----  
+... 
 ```
 
 Run the following command to verify that all non-reserved namespaces contain the odh-trusted-ca-bundle ConfigMap
