@@ -8,7 +8,7 @@ The intended outcome is to have all RHOAI stable components enabled and dependen
 - OCP Version: 4.15
 - RHOAI Version: stable-2.10
 
-Starting from a single RHOCP control-plane, master, worker we will provision the rest of the objects illustrated and provide two different official demonstrations on the platform.
+Starting from a single RHOCP control-plane, master, worker we will provision the rest of the objects illustrated.
 
 ![image](./notes/images/concept-diagram.png)
 
