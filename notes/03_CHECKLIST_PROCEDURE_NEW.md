@@ -183,20 +183,6 @@ oc apply -f configs/web-terminal-subscription.yaml
 subscription.operators.coreos.com/web-terminal created
 ```
 
-The Web Terminal Operator installs the DevWorkspace Operator as a dependency.
-
-```sh
-# check the installed operators
-oc get operators
-```
-
-```sh
-# expected output
-NAME                                        AGE
-devworkspace-operator.openshift-operators   69m
-web-terminal.openshift-operators            70m
-```
-
 From the OCP Web Console, Refresh the browser and click the `>_` icon in the top right of the window. This can serve as your browser based CLI.
 
 You can `git clone` in the instance and complete the rest of the procedure.
@@ -392,7 +378,7 @@ subscription.operators.coreos.com/authorino-operator created
 
 For `Unmanaged` deployments additional steps need to be executed. See the Configure Authorino for Unmanaged deployments in the 06_APPENDIX.md
 
-## Install the Red Hat OpenShift AI Operator by using the CLI
+## Install the Red Hat OpenShift AI Operator
 
 [source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.11/html/Install_and_unInstall_openshift_ai_self-managed/Install-and-deploying-openshift-ai_install#Install-the-openshift-data-science-operator_operator-install)
 
@@ -455,7 +441,7 @@ operatorgroup.operators.coreos.com/rhods-operator created
 
 Create a Subscription object CR file, for example, rhoai-operator-subscription.yaml
 
->Understanding `update channels`. We are using `fast` channel as this gives customers access to the latest product features. It can lead to an inconsistent experience as it is only supported for 1 month and it updated every month. [source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.11/html-single/Install_and_unInstall_openshift_ai_self-managed/index#understanding-update-channels_install).
+>Understanding `update channels`. We are using `stable` channel as this gives customers access to the stable product features. `fast` can lead to an inconsistent experience as it is only supported for 1 month and it updated every month. [source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.11/html-single/Install_and_unInstall_openshift_ai_self-managed/index#understanding-update-channels_install).
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -465,7 +451,7 @@ metadata:
   namespace: redhat-ods-operator 
 spec:
   name: rhods-operator
-  channel: fast 
+  channel: stable-2.10 
   source: redhat-operators
   sourceNamespace: openshift-marketplace
 ```
@@ -479,25 +465,6 @@ oc create -f configs/rhoai-operator-subscription.yaml
 ```sh
 # expected output
 subscription.operators.coreos.com/rhods-operator created
-```
-
-Verification
-
-Check the installed operators for `rhods-operator.redhat-ods-operator`
-
-```sh
-oc get operators
-```
-
-```sh
-# expected output
-NAME                                        AGE
-authorino-operator.openshift-operators      29m
-devworkspace-operator.openshift-operators   21h
-rhods-operator.redhat-ods-operator          16s
-serverless-operator.openshift-serverless    34m
-servicemeshoperator.openshift-operators     34m
-web-terminal.openshift-operators            21h
 ```
 
 Check the created projects `redhat-ods-applications|redhat-ods-monitoring|redhat-ods-operator`
