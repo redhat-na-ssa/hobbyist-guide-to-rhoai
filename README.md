@@ -10,7 +10,7 @@ The intended outcome is to have all RHOAI stable components enabled and dependen
 
 Starting from a single RHOCP control-plane, master, worker we will provision the rest of the objects illustrated and provide two different official demonstrations on the platform.
 
-[image](./notes/images/concept-diagram.png)
+![image](./notes/images/concept-diagram.png)
 
 ```shell
 .
