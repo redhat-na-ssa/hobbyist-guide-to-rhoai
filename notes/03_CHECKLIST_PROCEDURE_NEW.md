@@ -475,6 +475,7 @@ When you install the Red Hat OpenShift AI Operator in the OpenShift cluster, the
 1. `redhat-ods-applications` installs the dashboard and other required components of OpenShift AI.
 1. `redhat-ods-monitoring` contains services for monitoring.
 1. `rhods-notebooks` is where notebook environments are deployed by default.
+1. You or your data scientists must create additional projects for the applications that will use your machine learning models.
 
 ```sh
 oc get projects | grep -E "redhat-ods|rhods"
@@ -488,13 +489,8 @@ redhat-ods-operator                                               Active
 rhods-notebooks                                                   Active
 ```
 
-You or your data scientists must create additional projects for the applications that will use your machine learning models.
-
 >IMPORTANT
 Do not install independent software vendor (ISV) applications in namespaces associated with OpenShift AI.
-
->IMPORTANT
-The RHOAI Operator has instances deployed as a result of Install the operator.
 
 ```sh
 oc get DSCInitialization,FeatureTracker -n redhat-ods-operator
