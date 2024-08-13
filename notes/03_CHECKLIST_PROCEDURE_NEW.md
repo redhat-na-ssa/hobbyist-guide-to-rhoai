@@ -265,10 +265,6 @@ How Istio relates to KServe:
 1. `KServe (Inference) Data Plane` - consists of a static graph of components (predictor, transformer, explainer) which coordinate requests for a single model. Advanced features such as Ensembling, A/B testing, and Multi-Arm-Bandits should compose InferenceServices together.
 1. `KServe Control Plane` - creates the Knative serverless deployment for predictor, transformer, explainer to enable autoscaling based on incoming request workload including scaling down to zero when no traffic is received. When raw deployment mode is enabled, control plane creates Kubernetes deployment, service, ingress, HPA.
 
-[source](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/service_mesh/service-mesh-2-x#ossm-about)
-
-[source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.11/html/serving_models/serving-large-models_serving-large-models#manually-Install-kserve_serving-large-models)
-
 Create the required namespace for Red Hat OpenShift Service Mesh.
 
 ```sh
@@ -366,9 +362,7 @@ For `Unmanaged` deployments additional steps need to be executed. See the Define
 
 #### Install Red Hat Authorino Operator
 
-[source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.11/html/serving_models/serving-large-models_serving-large-models#manually-adding-an-authorization-provider_serving-large-models)
-
-Adding an authorization provider allows you to enable token authorization for models that you deploy on the platform, which ensures that only authorized parties can make inference requests to the models.
+In order to front services with Authn/Authz, Authorino provides Authn/Authz for public exposure of the [KServe inference endpoint]((https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.11/html/serving_models/serving-large-models_serving-large-models#manually-adding-an-authorization-provider_serving-large-models)). Adding an authorization provider allows you to enable token authorization for models that you deploy on the platform, which ensures that only authorized parties can make inference requests to the models.
 
 Create subscription for the Authorino Operator
 
