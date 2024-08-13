@@ -221,7 +221,7 @@ Before you install RHOAI, it is important to understand how it's dependencies wi
 
 1. `Red Hat OpenShift Serverless Operator` (if RHOAI KServe is planned for serving, this is required)
 1. `Red Hat OpenShift Service Mesh Operator` (if RHOAI KServe is planned for serving, this is required)
-1. `Red Hat Authorino Operator` (if you want to authenticate KServe model API endpoints, RHOAI recommended)
+1. `Red Hat Authorino Operator` (if you want to authenticate KServe model API endpoints with a route, RHOAI recommended)
 1. `Red Hat Node Feature Discovery (NFD) Operator` (if additional hardware features are beiing utilized, like GPU)
 1. `NVIDIA GPU Operator` (if NVIDIA GPU accelerators exist)
 1. `NVIDIA Network Operator` (if NVIDIA Infiniband accelerators exist)
@@ -244,9 +244,9 @@ RHOAI provides 2x primary methods for serving models:
 1. `Model Mesh`
 1. `KServe`
 
-The `ModelMesh` framework is a general-purpose (non-GenAI) model serving management/routing layer designed for high-scale, high-density and frequently-changing model use cases. There are no extra dependencies needed to configure this solution.
+The `ModelMesh` framework is a general-purpose model serving management/routing layer designed for high-scale, high-density and frequently-changing model use cases. There are no extra dependencies needed to configure this solution.
 
-`KServe` has specific dependencies and provides a Kubernetes Custom Resource Definition for serving predictive and generative machine learning (ML) models. It aims to solve production model serving use cases by providing high abstraction interfaces for Tensorflow, XGBoost, ScikitLearn, PyTorch, Huggingface Transformer/LLM models using standardized data plane protocols.
+`KServe` has specific dependencies and provides an interface for serving predictive and generative machine learning (ML) models.
 
 To support the RHOAI KServe component, you must also install Operators for `Red Hat OpenShift Service Mesh` (based on `Istio`) and `Red Hat OpenShift Serverless` (based on  `Knative`). Furthermore, if you want to add an authorization provider, you must also install `Red Hat Authorino Operator` (based on `Kuadrant`).
 
