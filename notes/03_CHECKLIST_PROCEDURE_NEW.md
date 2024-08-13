@@ -239,7 +239,7 @@ There are 3x RHOAI Operator dependency states to be set: `Managed`, `Removed`, a
 
 ### Install RHOAI KServe dependencies
 
-RHOAI provides 2x primary methods for serving models that depend on both resources constraints and inference use cases:
+RHOAI provides 2x primary methods for serving models that you would choose depending on both resources constraints and inference use cases:
 
 1. `Model Mesh`
 1. `KServe`
@@ -248,23 +248,22 @@ The `ModelMesh` framework is a general-purpose model serving management/routing 
 
 `KServe` has specific dependencies and provides an interface for serving predictive and generative machine learning (ML) models.
 
-To support the RHOAI KServe component, you must also install Operators for `Red Hat OpenShift Service Mesh` (based on `Istio`) and `Red Hat OpenShift Serverless` (based on  `Knative`). Furthermore, if you want to add an authorization provider, you must also install `Red Hat Authorino Operator` (based on `Kuadrant`).
+- To support the RHOAI KServe component, you must also install Operators for `Red Hat OpenShift Service Mesh` (based on `Istio`) and `Red Hat OpenShift Serverless` (based on  `Knative`). Furthermore, if you want to add an authorization provider, you must also install `Red Hat Authorino Operator` (based on `Kuadrant`).
 
 Because `Service Mesh`, `Serverless`, and `Authorino` will be `Managed` in this procedure, we only need to install the operators. We will not configure instances (i.e. control plane, members, etc.).
 
 #### Install Red Hat OpenShift Service Mesh Operator
 
-A service mesh is an infrastructure layer that simplifies the communication between services in a loosely-coupled/ microservices architecture without requiring any changes to the application code. It includes a collection of lightweight network proxies, known as sidecars, which are placed next to each service in the system. Red Hat OpenShift Service Mesh, is based on the open source Istio project.
+A service mesh is an infrastructure layer that simplifies the communication between services in a loosely-coupled/ microservices architecture without requiring any changes to the application code. It includes a collection of lightweight network proxies, known as sidecars, which are placed next to each service in the system.
 
-Service Mesh concepts to know:
+Red Hat OpenShift Service Mesh, is based on the open source Istio project.
 
-1. The sidecar proxy represents the *data plane* and is responsible for service discovery, health checks, routing, load balancing, Authn and Authz, and observability. It does touch every data packet between services.
-1. The *control plane* provides configuration and policy for all of the data planes. It doesn't not touch any data packets, it only defines how things are done and who can do them.
+Service Mesh is made up of a `data plane` (service discovery, health checks, routing, load balancing, Authn and Authz, and observability) and `control plane` (configuration and policy for all of the data planes).
 
-How this relates to KServe:
+How Istio relates to KServe:
 
-1. `KServe Control Plane` - creates the Knative serverless deployment for predictor, transformer, explainer to enable autoscaling based on incoming request workload including scaling down to zero when no traffic is received. When raw deployment mode is enabled, control plane creates Kubernetes deployment, service, ingress, HPA.
 1. `KServe (Inference) Data Plane` - consists of a static graph of components (predictor, transformer, explainer) which coordinate requests for a single model. Advanced features such as Ensembling, A/B testing, and Multi-Arm-Bandits should compose InferenceServices together.
+1. `KServe Control Plane` - creates the Knative serverless deployment for predictor, transformer, explainer to enable autoscaling based on incoming request workload including scaling down to zero when no traffic is received. When raw deployment mode is enabled, control plane creates Kubernetes deployment, service, ingress, HPA.
 
 [source](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/service_mesh/service-mesh-2-x#ossm-about)
 
