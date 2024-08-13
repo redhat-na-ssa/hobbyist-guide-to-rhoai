@@ -492,22 +492,6 @@ rhods-notebooks                                                   Active
 >IMPORTANT
 Do not install independent software vendor (ISV) applications in namespaces associated with OpenShift AI.
 
-```sh
-oc get DSCInitialization,FeatureTracker -n redhat-ods-operator
-```
-
-```sh
-# expected output
-NAME                                                              AGE    PHASE   CREATED AT
-dscinitialization.dscinitialization.opendatahub.io/default-dsci   108s   Ready   2024-08-07T17:05:34Z
-
-NAME                                                                                               AGE
-featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-control-plane-creation         105s
-featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-control-plane-external-authz   32s
-featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-metrics-collection             84s
-featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-shared-configmap               32s
-```
-
 The RHOAI Operator is installed with a 'default-dcsi' object with the following. Notice how the `serviceMesh` is `Managed`. By default, RHOAI is managing `ServiceMesh`.
 
 ```sh
