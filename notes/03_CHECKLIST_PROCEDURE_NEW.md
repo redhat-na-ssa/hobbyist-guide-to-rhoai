@@ -6,7 +6,7 @@ Acronyms:
 - RHOAI = Red Hat OpenShift AI
 - ODH = Open Data Hub
 
->Intended commands to be excuted from the root directory of the hobbyist-guide
+>Intended commands to be executed from the root directory of the hobbyist-guide. The majority of the configurations to be applied are already created, with the exception of the ones that prompts you for specifics that are either created in the command or dumped to a `scratch` dir that is in the `.gitignore`.
 
 ## Access the cluster via your client CLI
 
@@ -34,7 +34,7 @@ Only users with cluster administrator privileges can install and configure OpenS
 
 You may be logged into the cluster as user `kubeadmin` which is an automatically generated temporary user that should not be used as a best practice. See 06_APPENDIX.md for more details on best practices and patching if needed.
 
-For this procedure, we are using HTpasswd as the Identity Provider (IdP). RHOAI uses the same IdP as Red Hat OpenShift Container Platform, such as: [htpasswd, keystone, LDAP, basic-authentication, request-header, GitHub, GitLab, Google, OpenID Connect](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/authentication_and_authorization/understanding-identity-provider#supported-identity-providers).
+For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPasswd updates the files that store usernames and password for authentication of HTTP users. RHOAI uses the same IdP as Red Hat OpenShift Container Platform, such as: [htpasswd, keystone, LDAP, basic-authentication, request-header, GitHub, GitLab, Google, OpenID Connect](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/authentication_and_authorization/understanding-identity-provider#supported-identity-providers).
 
 Create an htpasswd file to store the user and password information
 
@@ -117,9 +117,12 @@ oc get oauth/cluster -o yaml
 
 You will have to a few minutes for the account to resolve.
 
-TODO add cr creation
+```sh
+# watch for the oauth pod to cycle 
+oc get pods -n openshift-authentication -w 
+```
 
-As kubeadmin, assign the cluster-admin role to perform administrator level tasks.
+As kubeadmin, assign the cluster-admin role to perform administrator level tasks. [See default cluster roles](https://docs.openshift.com/container-platform/4.15/authentication/using-rbac.html#default-roles_using-rbac)
 
 ```sh
 oc adm policy add-cluster-role-to-user cluster-admin <user>
@@ -133,6 +136,8 @@ clusterrole.rbac.authorization.k8s.io/cluster-admin added: "<username>"
 ```sh
 oc get users 
 ```
+
+If needed, see [Updating users for an htpasswd identity provider](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html-single/authentication_and_authorization/index#identity-provider-htpasswd-update-users_configuring-htpasswd-identity-provider)
 
 ```sh
 # expected output
@@ -211,6 +216,9 @@ ls
 
 # change directory
 cd hobbyist-guide-to-rhoai/
+
+# make scratch dir
+mkdir scratch
 ```
 
 ## Install RHOAI Dependencies
@@ -476,7 +484,7 @@ spec:
   sourceNamespace: openshift-marketplace
 ```
 
-Create the Subscription object 
+Create the Subscription object
 
 ```sh
 oc create -f configs/rhoai-operator-subscription.yaml
@@ -508,8 +516,15 @@ web-terminal.openshift-operators            21h
 
 Check the created projects `redhat-ods-applications|redhat-ods-monitoring|redhat-ods-operator`
 
+When you install the Red Hat OpenShift AI Operator in the OpenShift cluster, the following new projects are created:
+
+1. `redhat-ods-operator` contains the Red Hat OpenShift AI Operator.
+1. `redhat-ods-applications` installs the dashboard and other required components of OpenShift AI.
+1. `redhat-ods-monitoring` contains services for monitoring.
+1. `rhods-notebooks` is where notebook environments are deployed by default.
+
 ```sh
-oc get projects | egrep redhat-ods
+oc get projects | grep -E "redhat-ods|rhods"
 ```
 
 ```sh
@@ -517,7 +532,13 @@ oc get projects | egrep redhat-ods
 redhat-ods-applications                                           Active
 redhat-ods-monitoring                                             Active
 redhat-ods-operator                                               Active
+rhods-notebooks                                                   Active
 ```
+
+You or your data scientists must create additional projects for the applications that will use your machine learning models.
+
+>IMPORTANT
+Do not install independent software vendor (ISV) applications in namespaces associated with OpenShift AI.
 
 >IMPORTANT
 The RHOAI Operator has instances deployed as a result of Install the operator.
@@ -635,6 +656,8 @@ For `Unmanaged` dependencies, see the Install and managing Red Hat OpenShift AI 
 
 The RHOAI Operator has instances deployed as a result of Install the operator.
 
+TODO Add watch
+
 ```sh
 oc get DSCInitialization,FeatureTracker -n redhat-ods-operator
 ```
@@ -656,6 +679,8 @@ featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-servin
 ```
 
 ## Adding a CA bundle
+
+TODO Why add CA Bundle
 
 [source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.11/html/Install_and_unInstall_openshift_ai_self-managed/working-with-certificates_certs#adding-a-ca-bundle_certs)
 
@@ -833,7 +858,7 @@ You can also view via the console
 
 ## Enabling GPU support for OpenShift AI
 
-[source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.11/html/Install_and_unInstall_openshift_ai_self-managed/enabling-gpu-support_install)
+In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs for RHOCP](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.11/html/Install_and_unInstall_openshift_ai_self-managed/enabling-gpu-support_install). Once completed, RHOAI requires an Accelerator Profile cusstome resource definition in the `redhat-ods-applications`. Currently, NVIDIA and Intel Gaudi are the supported [accelerator profiles](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.11/html/working_with_accelerators/overview-of-accelerators_accelerators#overview-of-accelerators_accelerators).
 
 ### Adding a GPU node to an existing OpenShift Container Platform cluster
 
@@ -863,11 +888,6 @@ NAME                                    DESIRED   CURRENT   READY   AVAILABLE   
 cluster-xxxxx-xxxxx-worker-us-xxxx-xc   0         0                             5h13m
 ```
 
-View the machines that exist in the openshift-machine-api namespace
-```sh
-oc get machines -n openshift-machine-api | egrep worker
-```
-
 Make a copy of one of the existing compute MachineSet definitions and output the result to a YAML file
 
 ```sh
@@ -880,7 +900,7 @@ oc get machineset <your-machineset-name> -n openshift-machine-api -o yaml > scra
 
 Update the following fields:
 
-- [ ] ~Line 13`.metadata.name` to a name containing `gpu`.
+- [ ] ~Line 13`.metadata.name` to a name containing `-gpu`.
 - [ ] ~Line 18 `.spec.replicas` from `0` to `2`
 - [ ] ~Line 22`.spec.selector.matchLabels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
 - [ ] ~Line 29 `.spec.template.metadata.labels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
@@ -889,7 +909,7 @@ Update the following fields:
 Remove the following fields:
 
 - [ ] ~Line 10 `generation`
-- [ ] ~Line 16 `uid`
+- [ ] ~Line 16 `uid` (becomes line 15 if you delete line 10 first)
 
 Apply the configuration to create the gpu machine
 
@@ -1014,7 +1034,8 @@ subscription.operators.coreos.com/nfd created
 Verify the operator is installed and running
 
 ```sh
-oc get pods -n openshift-nfd
+# watch the pods create in the new project
+oc get pods -n openshift-nfd -w
 ```
 
 ```sh
@@ -1258,7 +1279,8 @@ subscription.operators.coreos.com/gpu-operator-certified created
 Verify an install plan has been created. Be patient.
 
 ```sh
-oc get installplan -n nvidia-gpu-operator
+# you can watch the installplan instances get created
+oc get installplan -n nvidia-gpu-operator -w
 ```
 
 ```sh
@@ -1832,7 +1854,7 @@ oc get node --selector=nvidia.com/gpu.product=Tesla-T4-SHARED -o json \
   ...
 ```
 
-### Configure Taints and Tolerations 
+### Configure Taints and Tolerations
 
 Why? Prevent non-GPU workloads from being scheduled on the GPU nodes.
 
