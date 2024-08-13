@@ -362,7 +362,7 @@ For `Unmanaged` deployments additional steps need to be executed. See the Define
 
 #### Install Red Hat Authorino Operator
 
-In order to front services with Auth{n,z}, Authorino provides an authorization proxy for publicly  exposed [KServe inference endpoint]((https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.11/html/serving_models/serving-large-models_serving-large-models#manually-adding-an-authorization-provider_serving-large-models)). You to enable token authorization for models that you deploy on the platform, which ensures that only authorized parties can make inference requests to the models.
+In order to front services with Auth{n,z}, Authorino provides an authorization proxy (using Istio Envoy) for publicly  exposed [KServe inference endpoint](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.11/html/serving_models/serving-large-models_serving-large-models#manually-adding-an-authorization-provider_serving-large-models). You can enable token authorization for models that you expose outside the platform to ensure that only authorized parties can make inference requests to models.
 
 Create subscription for the Authorino Operator
 
