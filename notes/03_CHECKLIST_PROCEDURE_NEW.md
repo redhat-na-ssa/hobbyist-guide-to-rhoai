@@ -52,12 +52,6 @@ Adding password for user <username>
 Create a secret to represent the htpasswd file
 
 ```sh
-#create hobbyist dir
-mkdir hobbyist-guide
-
-# change dir
-cd hobbyist-guide
-
 # git clone
 oc create secret generic htpasswd-secret --from-file=htpasswd=scratch/users.htpasswd -n openshift-config
 ```
@@ -118,8 +112,8 @@ oc get oauth/cluster -o yaml
 You will have to a few minutes for the account to resolve.
 
 ```sh
-# watch for the oauth pod to cycle 
-oc get pods -n openshift-authentication -w 
+# watch for the cluster operator to cycle 
+oc get co authentication -w
 ```
 
 As kubeadmin, assign the cluster-admin role to perform administrator level tasks. [See default cluster roles](https://docs.openshift.com/container-platform/4.15/authentication/using-rbac.html#default-roles_using-rbac)
@@ -221,14 +215,14 @@ cd hobbyist-guide-to-rhoai/
 mkdir scratch
 ```
 
-## Install RHOAI Dependencies
+## Install RHOAI Optional Dependencies
 
-Before you install RHOAI, it is important to understand how it's dependencies will be managed as it be automated or not. Below are required and use-case dependent operators:
+Before you install RHOAI, it is important to understand how it's dependencies will be managed as it be automated or not. Below are required and **use-case dependent operators**:
 
 1. `Red Hat OpenShift Serverless Operator` (if RHOAI KServe is planned for serving, this is required)
 1. `Red Hat OpenShift Service Mesh Operator` (if RHOAI KServe is planned for serving, this is required)
 1. `Red Hat Authorino Operator` (if you want to authenticate KServe model API endpoints, RHOAI recommended)
-1. `Red Hat Node Feature Discovery (NFD) Operator` (if NVIDIA GPU accelerators exist)
+1. `Red Hat Node Feature Discovery (NFD) Operator` (if additional hardware features are beiing utilized, like GPU)
 1. `NVIDIA GPU Operator` (if NVIDIA GPU accelerators exist)
 1. `NVIDIA Network Operator` (if NVIDIA Infiniband accelerators exist)
 1. `Kernel Module Management (KMM) Operator` (if Intel Gaudi/AMD accelerators exist)
@@ -239,9 +233,9 @@ Before you install RHOAI, it is important to understand how it's dependencies wi
 
 There are 3x RHOAI Operator dependency states to be set: `Managed`, `Removed`, and `Unmanaged`.
 
-1. `Managed` = The RHOAI Operator manages the dependency (i.e. Service Mesh, Serverless, etc.)
+1. `Managed` = The RHOAI Operator manages the dependency (i.e. Service Mesh, Serverless, etc.). RHOAI manages the operands, not the operators. This is where FeatureTrackers come into play.
 1. `Removed` = The RHOAI Operator removes the dependency. Changing from `Managed` to `Removed` does remove the dependency.
-1. `Unmanaged` = The RHAOI Operator does not manage the dependency allowing for an administrator to manage it instead.  Changing from `Managed` to `Unmanaged` does not remove the dependency. For example, this is important when the customer has an existing Service Mesh.
+1. `Unmanaged` = The RHAOI Operator does not manage the dependency allowing for an administrator to manage it instead.  Changing from `Managed` to `Unmanaged` does not remove the dependency. For example, this is important when the customer has an existing Service Mesh. It won't create it when it doesn't exist, but you can make manual changes.
 
 ### Install RHOAI KServe dependencies
 
