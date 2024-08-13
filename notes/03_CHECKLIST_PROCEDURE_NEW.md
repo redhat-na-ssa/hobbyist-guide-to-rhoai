@@ -2326,6 +2326,12 @@ MINIO_ROOT_USER=rootuser
 MINIO_ROOT_PASSWORD=rootuser123
 ```
 
+Install MinIO helm chart
+
+```sh
+helm repo add minio https://charts.min.io/
+```
+
 Deploy MinIO storage in its own namespace with a bucket for pipelines
 
 ```sh
