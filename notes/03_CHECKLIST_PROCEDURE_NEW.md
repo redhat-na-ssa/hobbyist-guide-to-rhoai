@@ -239,7 +239,7 @@ There are 3x RHOAI Operator dependency states to be set: `Managed`, `Removed`, a
 
 ### Install RHOAI KServe dependencies
 
-RHOAI provides 2x primary methods for serving models:
+RHOAI provides 2x primary methods for serving models that depend on both resources constraints and inference use cases:
 
 1. `Model Mesh`
 1. `KServe`
