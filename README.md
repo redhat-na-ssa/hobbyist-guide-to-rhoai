@@ -1,10 +1,16 @@
 # Hobbyist Guide to install RHOAI
 
-This is the Hobbyist Guide to Installing and Configuring RHOAI for customers. Bring your towel. This repo is intentionally imperative to aggregate the various official docs into a single markdown and paves the way for declarative automation in the [ai-gitops-catalog](https://github.com/redhat-na-ssa/demo-ai-gitops-catalog).
+This is a Hobbyist Guide to Installing and Configuring RHOAI for customer proof of concept environments. This repo is intentionally imperative to aggregate the various official docs into a single markdown sequence and paves the way for declarative automation in the [ai-gitops-catalog](https://github.com/redhat-na-ssa/demo-ai-gitops-catalog).
+
+The intended outcome is to have all RHOAI stable components enabled and dependencies installed on a cluster with 1x control plane/worker and 2x worker GPU EC2 instances capable of delivering the current official docs demos: Fraud Detection and Distributed Workloads.
 
 - OCP Instance: AWS with OpenShift Open Environment
 - OCP Version: 4.15
-- RHOAI Version: 2.11
+- RHOAI Version: stable-2.10
+
+Starting from a single RHOCP control-plane, master, worker we will provision the rest of the objects illustrated and provide two different official demonstrations on the platform.
+
+[image](./notes/images/concept-diagram.png)
 
 ```shell
 .
