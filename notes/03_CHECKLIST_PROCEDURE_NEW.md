@@ -378,7 +378,6 @@ spec:
   name: authorino-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  # startingCSV: authorino-operator.v1.0.1
 ```
 
 Apply the Authorino operator
