@@ -1,8 +1,14 @@
-# Installing the Red Hat OpenShift AI Operator
+# Install the Red Hat OpenShift AI Operator
 
-## Accessing the cluster via your client CLI
+Acronyms:
 
-These are the detailed steps that accompany the `CHECKLIST.md` all in one doc.
+- RHOCP = Red Hat OpenShift Container Platform
+- RHOAI = Red Hat OpenShift AI
+- ODH = Open Data Hub
+
+>Intended commands to be executed from the root directory of the hobbyist-guide. The majority of the configurations to be applied are already created, with the exception of the ones that prompts you for specifics that are either created in the command or dumped to a `scratch` dir that is in the `.gitignore`.
+
+## Access the cluster via your client CLI
 
 Login to cluster via terminal
 
@@ -16,47 +22,19 @@ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 source <(oc completion bash)
 ```
 
-Git clone this repository
+Git clone this repository to your local editor
 
 ```sh
 git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
 ```
 
->Red Hat recommends that you install only one instance of OpenShift AI (or Open Data Hub) on your cluster.
+## Add administrative users
 
-## Fix kubeadmin as an Administrator for Openshift AI (~2 min)
+Only users with cluster administrator privileges can install and configure OpenShift AI.
 
->`kubeadmin` user is an automatically generated temporary user. Best practice is to create a new user using an identity provider and elevate the privileges of that user to `cluster-admin`. Once such user is created, the default `kubeadmin` user should be removed. [source](https://access.redhat.com/solutions/5309141)
+You may be logged into the cluster as user `kubeadmin` which is an automatically generated temporary user that should not be used as a best practice. See 06_APPENDIX.md for more details on best practices and patching if needed.
 
-Create a cluster role binding so that OpenShift AI will recognize `kubeadmin` as a `cluster-admin`
-
-```yaml
-kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: fix-rhoai-kubeadmin
-subjects:
-  - kind: User
-    apiGroup: rbac.authorization.k8s.io
-    name: 'kube:admin'
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-```
-
-```sh
-oc apply -f configs/fix-kubeadmin.yaml
-```
-
-```sh
-# expected output
-clusterrolebinding.rbac.authorization.k8s.io/fix-rhoai-kubeadmin created
-```
-
-## Adding administrative users for OpenShift Container Platform (~8 min)
-
->For this process we are using HTpasswd typical for PoC. You can configure the following types of identity providers [htpasswd, keystone, LDAP, basic-authentication, request-header, GitHub, GitLab, Google, OpenID Connect](https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/authentication_and_authorization/understanding-identity-provider#supported-identity-providers). [RHOAI source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.12/html/installing_and_uninstalling_openshift_ai_self-managed/installing-and-deploying-openshift-ai_install#adding-administrative-users-for-openshift-container-platform_install)
+For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPasswd updates the files that store usernames and password for authentication of HTTP users. RHOAI uses the same IdP as Red Hat OpenShift Container Platform, such as: [htpasswd, keystone, LDAP, basic-authentication, request-header, GitHub, GitLab, Google, OpenID Connect](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/authentication_and_authorization/understanding-identity-provider#supported-identity-providers).
 
 Create an htpasswd file to store the user and password information
 
@@ -74,12 +52,24 @@ Adding password for user <username>
 Create a secret to represent the htpasswd file
 
 ```sh
+# git clone
 oc create secret generic htpasswd-secret --from-file=htpasswd=scratch/users.htpasswd -n openshift-config
 ```
 
 ```sh
 # expected output
 secret/htpasswd-secret created
+```
+
+```sh
+# this creates a secret/htpasswd-secret object in openshift-config
+oc get secret/htpasswd-secret -n openshift-config
+```
+
+```sh
+# expected output
+NAME              TYPE     DATA   AGE
+htpasswd-secret   Opaque   1      4m46s
 ```
 
 Define the custom resource for htpasswd
@@ -114,9 +104,19 @@ oc apply -f configs/htpasswd-cr.yaml
 oauth.config.openshift.io/cluster configured
 ```
 
-> You will have to a few minutes for the account to resolve.
+```sh
+# verify the identity provider
+oc get oauth/cluster -o yaml
+```
 
-As kubeadmin, assign the cluster-admin role to perform administrator level tasks.
+You will have to a few minutes for the account to resolve.
+
+```sh
+# watch for the cluster operator to cycle 
+oc get co authentication -w
+```
+
+As kubeadmin, assign the cluster-admin role to perform administrator level tasks. [See default cluster roles](https://docs.openshift.com/container-platform/4.15/authentication/using-rbac.html#default-roles_using-rbac)
 
 ```sh
 oc adm policy add-cluster-role-to-user cluster-admin <user>
@@ -127,6 +127,19 @@ oc adm policy add-cluster-role-to-user cluster-admin <user>
 clusterrole.rbac.authorization.k8s.io/cluster-admin added: "<username>"
 ```
 
+```sh
+oc get users 
+```
+
+If needed, see [Updating users for an htpasswd identity provider](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html-single/authentication_and_authorization/index#identity-provider-htpasswd-update-users_configuring-htpasswd-identity-provider)
+
+```sh
+# expected output
+
+NAME    UID                                    FULL NAME   IDENTITIES
+admin   5cdea351-fd1d-4b81-9e75-1f05d34104d4               htpasswd:admin
+```
+
 Log in to the cluster as a user from your identity provider, entering the password when prompted
 
 NOTE: You may need to add the parameter `--insecure-skip-tls-verify=true` if your clusters api endpoint does not have a trusted cert.
@@ -135,11 +148,13 @@ NOTE: You may need to add the parameter `--insecure-skip-tls-verify=true` if you
 oc login --insecure-skip-tls-verify=true -u <username> -p <password>
 ```
 
-## (Optional) Install the Web Terminal Operator (~5min)
+The remainder of the procedure should be completed with the new cluster-admin <user>.
 
-This provides a `Web Terminal` in the same browser as the `OCP Web Console` to minimize context switching between the browser and local client. [docs](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/web_console/web-terminal).
+## (Optional) Install the Web Terminal Operator
 
-![NOTE] kubeadmin is unable to create web terminals [source](https://github.com/redhat-developer/web-terminal-operator/issues/162)
+The Web Terminal Operator provides users with the ability to create a terminal instance embedded in the OpenShift Console. This is useful to provide a consistent terminal experience for those using Microsoft OS or MacOS. It also minimizes context switching between the browser and local client. [docs](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/web_console/web-terminal).
+
+>[NOTE] We could not do this sooner as `kubeadmin` is able to install the Web Terminal Operator, however unable to create web terminal instances [source](https://github.com/redhat-developer/web-terminal-operator/issues/162).
 
 Create a subscription object for the Web Terminal.
 
@@ -165,18 +180,225 @@ oc apply -f configs/web-terminal-subscription.yaml
 
 ```sh
 # expected output
-subscription.operators.coreos.com/web-terminal configured
+subscription.operators.coreos.com/web-terminal created
 ```
-
-![NOTE]The Web Terminal Operator installs the DevWorkspace Operator as a dependency.
 
 From the OCP Web Console, Refresh the browser and click the `>_` icon in the top right of the window. This can serve as your browser based CLI.
 
-## Installing the Red Hat OpenShift AI Operator by using the CLI (~3min)
+You can `git clone` in the instance and complete the rest of the procedure.
 
-[Section 2.3 source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/installing_and_uninstalling_openshift_ai_self-managed/installing-and-deploying-openshift-ai_install#installing-the-openshift-data-science-operator_operator-install)
+```sh
+# clone in the web terminal
+git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
 
-Create a namespace YAML file, for example, rhoai-operator-ns.yaml
+# check the dir
+ls
+
+# change directory
+cd hobbyist-guide-to-rhoai/
+
+# make scratch dir
+mkdir scratch
+```
+
+## Install RHOAI Optional Dependencies
+
+Before you install RHOAI, it is important to understand how it's dependencies will be managed as it be automated or not. Below are required and **use-case dependent operators**:
+
+1. `Red Hat OpenShift Serverless Operator` (if RHOAI KServe is planned for serving, this is required)
+1. `Red Hat OpenShift Service Mesh Operator` (if RHOAI KServe is planned for serving, this is required)
+1. `Red Hat Authorino Operator` (if you want to authenticate KServe model API endpoints with a route, RHOAI recommended)
+1. `Red Hat Node Feature Discovery (NFD) Operator` (if additional hardware features are beiing utilized, like GPU)
+1. `NVIDIA GPU Operator` (if NVIDIA GPU accelerators exist)
+1. `NVIDIA Network Operator` (if NVIDIA Infiniband accelerators exist)
+1. `Kernel Module Management (KMM) Operator` (if Intel Gaudi/AMD accelerators exist)
+1. `HabanaAI Operator` (if Intel Gaudi accelerators exist)
+1. `AMD GPU Operator` (if AMD accelerators exist)
+
+>NOTE: NFD and KMM operators exists with other patterns, these are the most common.
+
+There are 3x RHOAI Operator dependency states to be set: `Managed`, `Removed`, and `Unmanaged`.
+
+1. `Managed` = The RHOAI Operator manages the dependency (i.e. Service Mesh, Serverless, etc.). RHOAI manages the operands, not the operators. This is where FeatureTrackers come into play.
+1. `Removed` = The RHOAI Operator removes the dependency. Changing from `Managed` to `Removed` does remove the dependency.
+1. `Unmanaged` = The RHAOI Operator does not manage the dependency allowing for an administrator to manage it instead.  Changing from `Managed` to `Unmanaged` does not remove the dependency. For example, this is important when the customer has an existing Service Mesh. It won't create it when it doesn't exist, but you can make manual changes.
+
+### Install RHOAI KServe dependencies
+
+RHOAI provides 2x primary methods for serving models that you would choose depending on both resources constraints and inference use cases:
+
+1. `Model Mesh`
+1. `KServe`
+
+The `ModelMesh` framework is a general-purpose model serving management/routing layer designed for high-scale, high-density and frequently-changing model use cases. There are no extra dependencies needed to configure this solution.
+
+`KServe` has specific dependencies and provides an interface for serving predictive and generative machine learning (ML) models.
+
+- To support the RHOAI KServe component, you must also install Operators for `Red Hat OpenShift Service Mesh` (based on `Istio`) and `Red Hat OpenShift Serverless` (based on  `Knative`). Furthermore, if you want to add an authorization provider, you must also install `Red Hat Authorino Operator` (based on `Kuadrant`).
+
+Because `Service Mesh`, `Serverless`, and `Authorino` will be `Managed` in this procedure, we only need to install the operators. We will not configure instances (i.e. control plane, members, etc.).
+
+#### Install Red Hat OpenShift Service Mesh Operator
+
+A service mesh is an infrastructure layer that simplifies the communication between services in a loosely-coupled/ microservices architecture without requiring any changes to the application code. It includes a collection of lightweight network proxies, known as sidecars, which are placed next to each service in the system.
+
+Red Hat OpenShift Service Mesh, is based on the open source Istio project.
+
+Service Mesh is made up of a `data plane` (service discovery, health checks, routing, load balancing, Authn and Authz, and observability) and `control plane` (configuration and policy for all of the data planes).
+
+How Istio relates to KServe:
+
+1. `KServe (Inference) Data Plane` - consists of a static graph of components (predictor, transformer, explainer) which coordinate requests for a single model. Advanced features such as Ensembling, A/B testing, and Multi-Arm-Bandits should compose InferenceServices together.
+1. `KServe Control Plane` - creates the Knative serverless deployment for predictor, transformer, explainer to enable autoscaling based on incoming request workload including scaling down to zero when no traffic is received. When raw deployment mode is enabled, control plane creates Kubernetes deployment, service, ingress, HPA.
+
+Create the required namespace for Red Hat OpenShift Service Mesh.
+
+```sh
+oc create ns istio-system
+```
+
+```sh
+# expected output
+namespace/istio-system created
+```
+
+Define the required subscription for the Red Hat OpenShift Service Mesh Operator
+
+```yaml
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: servicemeshoperator
+  namespace: openshift-operators
+spec:
+  channel: stable 
+  installPlanApproval: Automatic
+  name: servicemeshoperator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  ```
+
+Apply the Service Mesh subscription to install the operator
+
+```sh
+oc create -f configs/servicemesh-subscription.yaml
+```
+
+```sh
+# expected output
+subscription.operators.coreos.com/servicemeshoperator created
+```
+
+For `Unmanaged` configuration details, see the 06_APPENDIX.md.
+
+#### Install Red Hat OpenShift Serverless Operator
+
+Serverless computing is a method of providing backend services on an as-used basis. Servers are still used to execute code. However, developers of serverless applications are not concerned with capacity planning, configuration, management, maintenance, fault tolerance, or scaling of containers, virtual machines, or physical servers. Overall, serverless computing can simplify the process of deploying code into production.
+
+OpenShift Serverless provides Kubernetes native building blocks that enable developers to create and deploy serverless, event-driven applications on RHOCP. It's is based on the open source Knative project, which provides portability and consistency for hybrid and multi-cloud environments by a providing a platform-agnostic solution for running serverless deployments. [source](https://docs.redhat.com/en/documentation/red_hat_openshift_serverless/1.33/html/about_openshift_serverless/about-serverless)
+
+[source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#creating-a-knative-serving-instance_serving-large-models)
+
+Define the Serverless operator ns, operatorgroup, and subscription
+
+```yaml
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    openshift.io/display-name: "Red Hat OpenShift Serverless"
+  labels:
+    openshift.io/cluster-monitoring: 'true'
+  name: openshift-serverless
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: serverless-operator
+  namespace: openshift-serverless
+spec: {}
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: serverless-operator
+  namespace: openshift-serverless
+spec:
+  channel: stable 
+  name: serverless-operator 
+  source: redhat-operators 
+  sourceNamespace: openshift-marketplace 
+```
+
+Install the Serverless Operator objects
+
+```sh
+oc create -f configs/serverless-operator.yaml
+```
+
+```sh
+# expected output
+namespace/openshift-serverless created
+operatorgroup.operators.coreos.com/serverless-operator created
+subscription.operators.coreos.com/serverless-operator created
+```
+
+For `Unmanaged` deployments additional steps need to be executed. See the Define a ServiceMeshMember for Serverless in the 06_APPENDIX.md
+
+#### Install Red Hat Authorino Operator
+
+In order to front services with Auth{n,z}, Authorino provides an authorization proxy (using Envoy) for publicly  exposed [KServe inference endpoint](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#manually-adding-an-authorization-provider_serving-large-models). You can enable token authorization for models that you expose outside the platform to ensure that only authorized parties can make inference requests.
+
+Create subscription for the Authorino Operator
+
+```yaml
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: authorino-operator
+  namespace: openshift-operators
+spec:
+  channel: tech-preview-v1
+  installPlanApproval: Automatic
+  name: authorino-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+```
+
+Apply the Authorino subscription
+```sh
+oc create -f configs/authorino-subscription.yaml
+```
+
+```sh
+# expected output
+subscription.operators.coreos.com/authorino-operator created
+```
+
+For `Unmanaged` deployments additional steps need to be executed. See the Configure Authorino for Unmanaged deployments in the 06_APPENDIX.md
+
+## Install the Red Hat OpenShift AI Operator
+
+[source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/Install-and-deploying-openshift-ai_install#Install-the-openshift-data-science-operator_operator-install)
+
+Check the pre-requisite operators in order to fully deploy RHOAI components.
+
+```sh
+oc get subscriptions -A
+```
+
+```sh
+# expected output
+NAMESPACE              NAME                                                                PACKAGE                 SOURCE             CHANNEL
+openshift-operators    authorino-operator                                                  authorino-operator      redhat-operators   tech-preview-v1
+openshift-operators    devworkspace-operator-fast-redhat-operators-openshift-marketplace   devworkspace-operator   redhat-operators   fast
+openshift-operators    servicemeshoperator                                                 servicemeshoperator     redhat-operators   stable
+openshift-operators    web-terminal                                                        web-terminal            redhat-operators   fast
+openshift-serverless   serverless-operator                                                 serverless-operator     redhat-operators   stable
+```
+
+Create a namespace object CR
 
 ```yaml
 apiVersion: v1
@@ -196,7 +418,7 @@ oc create -f configs/rhoai-operator-ns.yaml
 namespace/redhat-ods-operator created
 ```
 
-Create an OperatorGroup object custom resource (CR) file, for example, rhoai-operator-group.yaml
+Create an OperatorGroup object CR
 
 ```yaml
 apiVersion: operators.coreos.com/v1
@@ -206,7 +428,7 @@ metadata:
   namespace: redhat-ods-operator 
 ```
 
-Create the OperatorGroup in your OpenShift Container Platform cluster
+Create the OperatorGroup object 
 
 ```sh
 oc create -f configs/rhoai-operator-group.yaml
@@ -219,7 +441,7 @@ operatorgroup.operators.coreos.com/rhods-operator created
 
 Create a Subscription object CR file, for example, rhoai-operator-subscription.yaml
 
->Understanding `update channels`. We are using `fast` channel as this gives customers access to the latest product features. [source](https://access.redhat.com/support/policy/updates/rhoai-sm/lifecycle).
+>Understanding `update channels`. We are using `stable` channel as this gives customers access to the stable product features. `fast` can lead to an inconsistent experience as it is only supported for 1 month and it updated every month. [source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html-single/Install_and_unInstall_openshift_ai_self-managed/index#understanding-update-channels_install).
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -229,12 +451,12 @@ metadata:
   namespace: redhat-ods-operator 
 spec:
   name: rhods-operator
-  channel: fast 
+  channel: stable-2.10 
   source: redhat-operators
   sourceNamespace: openshift-marketplace
 ```
 
-Create the Subscription object in your OpenShift Container Platform cluster
+Create the Subscription object
 
 ```sh
 oc create -f configs/rhoai-operator-subscription.yaml
@@ -245,26 +467,18 @@ oc create -f configs/rhoai-operator-subscription.yaml
 subscription.operators.coreos.com/rhods-operator created
 ```
 
-Verification
-
-Check the installed operators for `rhods-operator.redhat-ods-operator`
-
-```sh
-oc get operators
-```
-
-```sh
-# expected output
-NAME                                        AGE
-devworkspace-operator.openshift-operators   21m
-rhods-operator.redhat-ods-operator          7s
-web-terminal.openshift-operators            22m
-```
-
 Check the created projects `redhat-ods-applications|redhat-ods-monitoring|redhat-ods-operator`
 
+When you install the Red Hat OpenShift AI Operator in the OpenShift cluster, the following new projects are created:
+
+1. `redhat-ods-operator` contains the Red Hat OpenShift AI Operator.
+1. `redhat-ods-applications` installs the dashboard and other required components of OpenShift AI.
+1. `redhat-ods-monitoring` contains services for monitoring.
+1. `rhods-notebooks` is where an individual user notebook environments are deployed by default.
+1. You or your data scientists must create additional projects for the applications that will use your machine learning models.
+
 ```sh
-oc get projects | egrep redhat-ods
+oc get projects | grep -E "redhat-ods|rhods"
 ```
 
 ```sh
@@ -272,29 +486,22 @@ oc get projects | egrep redhat-ods
 redhat-ods-applications                                           Active
 redhat-ods-monitoring                                             Active
 redhat-ods-operator                                               Active
+rhods-notebooks                                                   Active
 ```
 
 >IMPORTANT
-The RHOAI Operator has instances deployed as a result of installing the operator.
-
-```sh
-oc get DSCInitialization,FeatureTracker -n redhat-ods-operator
-```
-
-```sh
-# expected output
-NAME                                                              AGE   PHASE         CREATED AT
-dscinitialization.dscinitialization.opendatahub.io/default-dsci   22m   Progressing   2024-07-25T20:26:03Z
-
-NAME                                                                                         AGE
-featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-control-plane-creation   22m
-featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-metrics-collection       22m
-featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-shared-configmap         22m
-```
+Do not install independent software vendor (ISV) applications in namespaces associated with OpenShift AI.
 
 The RHOAI Operator is installed with a 'default-dcsi' object with the following. Notice how the `serviceMesh` is `Managed`. By default, RHOAI is managing `ServiceMesh`.
 
+```sh
+oc describe DSCInitialization -n redhat-ods-operator
+```
+
 ```yaml
+# expected output
+
+...
 apiVersion: dscinitialization.opendatahub.io/v1
 kind: DSCInitialization
 metadata:
@@ -318,107 +525,97 @@ spec:
   trustedCABundle:
     customCABundle: ''
     managementState: Managed
+...
 ```
 
-## Installing and managing Red Hat OpenShift AI components (~1min)
+### Install and managing Red Hat OpenShift AI components
 
-Before you install KServe, you must install and configure some dependencies. Specifically, you must create Red Hat OpenShift Service Mesh and Knative Serving instances and then configure secure gateways for Knative Serving.
-
-[3.4.1. Installing Red Hat OpenShift AI components by using the CLI](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/installing_and_uninstalling_openshift_ai_self-managed/installing-and-deploying-openshift-ai_install#installing-openshift-ai-components-using-cli_component-install)
-
-In the spec.components section of the CR, for each OpenShift AI component shown, set the value of the managementState field to either Managed or Removed:
-- `Managed` - The Operator actively manages the component, installs it, and tries to keep it active. The Operator will upgrade the component only if it is safe to do so.
-- `Removed` - The Operator actively manages the component but does not install it. If the component is already installed, the Operator will try to remove it.
-
-Create a DataScienceCluster object custom resource (CR) file, for example, rhoai-operator-dsc.yaml
+In order to use the RHOAI Operator, you must create a DataScienceCluster instance. Create a DataScienceCluster object custom resource (CR) file, for example, rhoai-operator-dsc.yaml
 
 ```yaml
 apiVersion: datasciencecluster.opendatahub.io/v1
 kind: DataScienceCluster
 metadata:
   name: default-dsc
+  labels:
+    app.kubernetes.io/name: datasciencecluster
+    app.kubernetes.io/instance: default-dsc
+    app.kubernetes.io/part-of: rhods-operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: rhods-operator
 spec:
   components:
-    dashboard:
-      managementState: Managed
-    workbenches:
-      managementState: Managed
-    datasciencepipelines:
-      managementState: Managed
-    kueue:
-      managementState: Managed
     codeflare:
       managementState: Managed
-    ray:
-      managementState: Managed
-    modelmeshserving:
-      managementState: Managed
     kserve:
-      managementState: Removed
       serving:
         ingressGateway:
           certificate:
-            secretName: knative-serving-cert
-            type: SelfSigned
-        managementState: Unmanaged
-        name: knative-serving       
+            type: OpenshiftDefaultIngress
+        managementState: Managed
+        name: knative-serving
+      managementState: Managed
+    ray:
+      managementState: Managed
+    kueue:
+      managementState: Managed
+    workbenches:
+      managementState: Managed
+    dashboard:
+      managementState: Managed
+    modelmeshserving:
+      managementState: Managed
+    datasciencepipelines:
+      managementState: Managed
+    trainingoperator:
+      managementState: Removed
 ```
 
->When you manually installed KServe, you set the value of the managementState to `Unmanaged` within the kserve component.
+>When you manually installed KServe, you set the value of the managementState to `Unmanaged` within the Kserve component in the DataScienceCluster and MUST update the DSCInitialization object.
 
-Apply the DSC object
+Create the DSC object
 
 ```sh
-oc create -f configs/rhoai-operator-dcs.yaml
+oc create -f configs/rhoai-operator-dsc.yaml 
 ```
 
 ```sh
 # expected output
+
 datasciencecluster.datasciencecluster.opendatahub.io/default-dsc created
 ```
 
-When you manually installed KServe, you set the value of the managementState field for the serviceMesh component to `Unmanaged` to prevent RHOAI from managing it. Modify the DSCI object so that ServiceMesh is not managed by the RHOAI operator
+For `Unmanaged` dependencies, see the Install and managing Red Hat OpenShift AI components on the 06_APPENDIX.md.
 
-```yaml
-apiVersion: dscinitialization.opendatahub.io/v1
-kind: DSCInitialization
+The RHOAI Operator has instances deployed as a result of Install the operator.
 
-metadata:
-  name: default-dsci
-spec:
-  applicationsNamespace: redhat-ods-applications
-  monitoring:
-    managementState: Managed
-    namespace: redhat-ods-monitoring
-  serviceMesh:
-    auth:
-      audiences:
-        - 'https://kubernetes.default.svc'
-    controlPlane:
-      metricsCollection: Istio
-      name: minimal
-      namespace: istio-system
-    managementState: Unmanaged
-  trustedCABundle:
-    customCABundle: ''
-    managementState: Managed
-```
-
-Apply the default-dsci object
+TODO Add watch
 
 ```sh
-oc apply -f configs/rhoai-operator-dsci.yaml
+oc get DSCInitialization,FeatureTracker -n redhat-ods-operator
 ```
 
 ```sh
 # expected output
-...
-dscinitialization.dscinitialization.opendatahub.io/default-dsci configured
+NAME                                                              AGE   PHASE   CREATED AT
+dscinitialization.dscinitialization.opendatahub.io/default-dsci   10m   Ready   2024-07-31T22:35:06Z
+
+NAME                                                                                                   AGE
+featuretracker.features.opendatahub.io/redhat-ods-applications-kserve-external-authz                   94s
+featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-control-plane-creation             10m
+featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-control-plane-external-authz       10m
+featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-metrics-collection                 10m
+featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-shared-configmap                   10m
+featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-net-istio-secret-filtering   101s
+featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-serving-deployment           2m19s
+featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-serving-gateways             97s
 ```
 
-## Adding a CA bundle (~5min)
+## Adding a CA bundle
 
-[Section 3.2 source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/installing_and_uninstalling_openshift_ai_self-managed/working-with-certificates_certs#adding-a-ca-bundle_certs)
+TODO Why add CA Bundle
+
+[source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/working-with-certificates_certs#adding-a-ca-bundle_certs)
 
 Set environment variables to define base directories for generation of a wildcard certificate and key for the gateways.
 
@@ -538,12 +735,19 @@ you can use `:34,53s/^/       /` to indent the pasted cert
 dscinitialization.dscinitialization.opendatahub.io/default-dsci edited
 ```
 
-More info on managementState [source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/installing_and_uninstalling_openshift_ai_self-managed/working-with-certificates_certs#managing-certificates_certs)
-
 Verify the `odh-trusted-ca-bundle` configmap for your root signed cert in the `odh-ca-bundle.crt:` section
 
 ```sh
 oc get cm/odh-trusted-ca-bundle -o yaml -n redhat-ods-applications
+```
+
+```sh
+# expected output
+...
+ odh-ca-bundle.crt: |
+    -----BEGIN CERTIFICATE-----
+    -----END CERTIFICATE-----  
+... 
 ```
 
 Run the following command to verify that all non-reserved namespaces contain the odh-trusted-ca-bundle ConfigMap
@@ -553,16 +757,19 @@ oc get configmaps --all-namespaces -l app.kubernetes.io/part-of=opendatahub-oper
 
 ```sh
 # expected output
-istio-system              odh-trusted-ca-bundle   2      10m
-redhat-ods-applications   odh-trusted-ca-bundle   2      10m
-redhat-ods-monitoring     odh-trusted-ca-bundle   2      10m
-redhat-ods-operator       odh-trusted-ca-bundle   2      10m
-rhods-notebooks           odh-trusted-ca-bundle   2      6m55s
+istio-system                            odh-trusted-ca-bundle   2      14m
+knative-eventing                        odh-trusted-ca-bundle   2      14m
+knative-serving                         odh-trusted-ca-bundle   2      14m
+redhat-ods-applications-auth-provider   odh-trusted-ca-bundle   2      14m
+redhat-ods-applications                 odh-trusted-ca-bundle   2      14m
+redhat-ods-monitoring                   odh-trusted-ca-bundle   2      14m
+redhat-ods-operator                     odh-trusted-ca-bundle   2      14m
+rhods-notebooks                         odh-trusted-ca-bundle   2      6m14s
 ```
 
-## (Optional) Configuring the OpenShift AI Operator logger
+## (Optional) Configure the OpenShift AI Operator logger
 
-[Section 3.5.1 source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/installing_and_uninstalling_openshift_ai_self-managed/installing-and-deploying-openshift-ai_install#configuring-the-operator-logger_operator-log) You can change the log level for OpenShift AI Operator (`development`, `""`, `production`) components by setting the .spec.devFlags.logmode flag for the DSC Initialization/DSCI custom resource during runtime. If you do not set a logmode value, the logger uses the INFO log level by default.
+[source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/Install-and-deploying-openshift-ai_install#Configure-the-operator-logger_operator-log) You can change the log level for OpenShift AI Operator (`development`, `""`, `production`) components by setting the .spec.devFlags.logmode flag for the DSC Initialization/DSCI custom resource during runtime. If you do not set a logmode value, the logger uses the INFO log level by default.
 
 Configure the log level from the OpenShift CLI by using the following command with the logmode value set to the log level that you want
 ```sh
@@ -582,754 +789,13 @@ oc get pods -l name=rhods-operator -o name -n redhat-ods-operator |  xargs -I {}
 You can also view via the console
 **Workloads > Deployments > Pods > redhat-ods-operator > Logs**
 
-## Installing KServe dependencies (~3min)
+## Enabling GPU support for OpenShift AI
 
-### Install Service Mesh
-A service mesh is an infrastructure layer that simplifies the communication between services in a (loosely coupled) microservices architecture. Red Hat OpenShift Service Mesh, which is based on the open source Istio project, addresses a variety of problems in a microservice architecture by creating a centralized point of control in an application. It adds a transparent layer on existing distributed applications without requiring any changes to the application code. It includes a collection of lightweight network proxies, known as sidecars, which are placed next to each service in the system. [source](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/service_mesh/service-mesh-2-x#ossm-about)
+In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs for RHOCP](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/enabling-gpu-support_install). Once completed, RHOAI requires an Accelerator Profile cusstome resource definition in the `redhat-ods-applications`. Currently, NVIDIA and Intel Gaudi are the supported [accelerator profiles](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/working_with_accelerators/overview-of-accelerators_accelerators#overview-of-accelerators_accelerators).
 
-It is made up of two main components: the control plane and the data plane.
+### Adding a GPU node to an existing OpenShift Container Platform cluster
 
-[Section 3.3.1 source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#manually-installing-kserve_serving-large-models)
-
-Create the required namespace for Red Hat OpenShift Service Mesh.
-
-```sh
-oc create ns istio-system
-```
-
-```sh
-# expected output
-namespaces "istio-system" already exists
-```
-
-Define the required subscription for the Red Hat OpenShift Service Mesh Operator
-
-```yaml
-apiVersion: operators.coreos.com/v1alpha1
-kind: Subscription
-metadata:
-  name: servicemeshoperator
-  namespace: openshift-operators
-spec:
-  channel: stable 
-  installPlanApproval: Automatic
-  name: servicemeshoperator
-  source: redhat-operators
-  sourceNamespace: openshift-marketplace
-  ```
-
-Apply the Service Mesh subscription to install the operator
-
-```sh
-oc create -f configs/servicemesh-subscription.yaml
-```
-
-```sh
-# expected output
-subscription.operators.coreos.com/servicemeshoperator created
-```
-
-Define a ServiceMeshControlPlane object. The control plane acts as the central management and configuration layer of the service mesh. With the control plane, administrators can define and configure the services within the mesh.
-
->Support for the Red Hat OpenShift distributed tracing platform (Jaeger) Operator is deprecated. To collect trace spans, use the Red Hat OpenShift distributed tracing platform (Tempo) Stack, This component is based on the open source Grafana Tempo project. Support for the OpenShift Elasticsearch Operator is deprecated.
-
-```yaml
-apiVersion: maistra.io/v2
-kind: ServiceMeshControlPlane
-metadata:
-  name: minimal
-  namespace: istio-system
-spec:
-  tracing:
-    type: None
-  addons:
-    grafana:
-      enabled: false
-    kiali:
-      name: kiali
-      enabled: false
-    prometheus:
-      enabled: false
-    jaeger:
-      name: jaeger
-  security:
-    dataPlane:
-      mtls: true
-    identity:
-      type: ThirdParty
-  techPreview:
-    meshConfig:
-      defaultConfig:
-        terminationDrainDuration: 35s
-  gateways:
-    ingress:
-      service:
-        metadata:
-          labels:
-            knative: ingressgateway
-  proxy:
-    networking:
-      trafficControl:
-        inbound:
-          excludedPorts:
-            - 8444
-            - 8022
-```
-
-[Service Mesh configuration definition](https://docs.openshift.com/container-platform/4.15/service_mesh/v2x/ossm-reference-smcp.html)
-
-Apply the servicemesh control plane object.
-
-```sh
-oc create -f configs/servicemesh-scmp.yaml
-```
-
-```sh
-# expected output
-servicemeshcontrolplane.maistra.io/minimal created
-```
-
-Verify the pods are running for the service mesh control plane, ingress gateway, and egress gateway
-
-```sh
-oc get pods -n istio-system
-```
-
-```sh
-# expected output
-istio-egressgateway-f9b5cf49c-c7fst    1/1     Running   0          59s
-istio-ingressgateway-c69849d49-fjswg   1/1     Running   0          59s
-istiod-minimal-5c68bf675d-whrns        1/1     Running   0          68s
-```
-
-FeatureTrack error fix. There are two objects that are in an error state after installation at this point.
-
-FeatureTracker Phase: Error
-redhat-ods-applications-mesh-metrics-collection
-redhat-ods-applications-mesh-control-plane-creation
-
-```sh
-# get the mutatingwebhook
-oc get MutatingWebhookConfiguration -A | grep -i maistra
-
-# delete the mutatingwebhook
-oc delete MutatingWebhookConfiguration/openshift-operators.servicemesh-resources.maistra.io -A
-
-# get the validatingwebhook
-oc get ValidatingWebhookConfiguration -A | grep -i maistra
-
-# delete the validatingwebhook
-oc delete ValidatingWebhookConfiguration/openshift-operators.servicemesh-resources.maistra.io -A
-
-# delete the FeatureTracker
-oc delete FeatureTracker/redhat-ods-applications-mesh-control-plane-creation -A
-oc delete FeatureTracker/redhat-ods-applications-mesh-metrics-collection -A
-```
-
-### Creating a Knative Serving instance
-
-[Section 3.3.1.2 source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#creating-a-knative-serving-instance_serving-large-models)
-
-Define the Serverless operator ns, operatorgroup, and subscription
-
-```yaml
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  annotations:
-    openshift.io/display-name: "Red Hat OpenShift Serverless"
-  labels:
-    openshift.io/cluster-monitoring: 'true'
-  name: openshift-serverless
----
-apiVersion: operators.coreos.com/v1
-kind: OperatorGroup
-metadata:
-  name: serverless-operator
-  namespace: openshift-serverless
-spec: {}
----
-apiVersion: operators.coreos.com/v1alpha1
-kind: Subscription
-metadata:
-  name: serverless-operator
-  namespace: openshift-serverless
-spec:
-  channel: stable 
-  name: serverless-operator 
-  source: redhat-operators 
-  sourceNamespace: openshift-marketplace 
-```
-
-Install the Serverless Operator objects
-
-```sh
-oc create -f configs/serverless-operator.yaml
-```
-
-```sh
-# expected output
-namespace/openshift-serverless created
-operatorgroup.operators.coreos.com/serverless-operator created
-subscription.operators.coreos.com/serverless-operator created
-```
-
-Define a ServiceMeshMember object in a YAML file called serverless-smm.yaml
-
-```yaml
-apiVersion: maistra.io/v1
-kind: ServiceMeshMember
-metadata:
-  name: default
-  namespace: knative-serving
-spec:
-  controlPlaneRef:
-    namespace: istio-system
-    name: minimal
-```
-
-Apply the ServiceMeshMember object in the istio-system namespace
-
-```sh
-oc project -n istio-system && oc apply -f configs/serverless-smm.yaml
-```
-
-```sh
-# expected output
-Using project "default" on server "https://api.cluster-9ngld.9ngld.sandbox2808.opentlc.com:6443".
-servicemeshmember.maistra.io/default created
-```
-
-Define a KnativeServing object in a YAML file called serverless-istio.yaml
-
->adds the following actions to each of the activator and autoscaler pods:
-
-1. Injects an Istio sidecar to the pod. This makes the pod part of the service mesh.
-1. Enables the Istio sidecar to rewrite the HTTP liveness and readiness probes for the pod.
-
->Service Mesh sidecars are essential for managing communication and offer capabilities like finding services, balancing loads, controlling traffic, and ensuring security.
-
-```yaml
-apiVersion: operator.knative.dev/v1beta1
-kind: KnativeServing
-metadata:
-  name: knative-serving
-  namespace: knative-serving
-  annotations:
-    serverless.openshift.io/default-enable-http2: "true"
-spec:
-  workloads:
-    - name: net-istio-controller
-      env:
-        - container: controller
-          envVars:
-            - name: ENABLE_SECRET_INFORMER_FILTERING_BY_CERT_UID
-              value: 'true'
-    - annotations:
-        sidecar.istio.io/inject: "true" 
-        sidecar.istio.io/rewriteAppHTTPProbers: "true" 
-      name: activator
-    - annotations:
-        sidecar.istio.io/inject: "true"
-        sidecar.istio.io/rewriteAppHTTPProbers: "true"
-      name: autoscaler
-  ingress:
-    istio:
-      enabled: true
-  config:
-    features:
-      kubernetes.podspec-affinity: enabled
-      kubernetes.podspec-nodeselector: enabled
-      kubernetes.podspec-tolerations: enabled
-```
-
-Apply the KnativeServing object in the specified knative-serving namespace
-
-```sh
-oc create -f configs/serverless-istio.yaml
-```
-
-```sh
-# expected output
-knativeserving.operator.knative.dev/knative-serving created
-```
-
-(Optional) use a TLS certificate to secure the mapped service from [source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#creating-a-knative-serving-instance_serving-large-models)
-
-Review the default ServiceMeshMemberRoll object in the istio-system namespace and confirm that it includes the knative-serving namespace.
-```sh
-oc describe smmr default -n istio-system
-```
-
-```yaml
-# expected output
-...  
-Member Statuses:
-    Conditions:
-      Last Transition Time:  2024-07-25T22:15:59Z
-      Status:                True
-      Type:                  Reconciled
-    Namespace:               knative-serving
-  Members:
-    knative-serving
-...
-```
-
-```sh
-oc get smmr default -n istio-system -o jsonpath='{.status.memberStatuses}'
-```
-
-```sh
-# expected output TODO
-[{"conditions":[{"lastTransitionTime":"2024-07-16T18:09:10Z","status":"Unknown","type":"Reconciled"}],"namespace":"knative-serving"}]
-```
-
-Verify creation of the Knative Serving instance
-```sh
-oc get pods -n knative-serving
-```
-
-```sh
-# expected output
-activator-5cf876c6cf-jtvs2                                    0/1     Running     0             91s
-activator-5cf876c6cf-ntf79                                    0/1     Running     0             76s
-autoscaler-84655b4df5-w9lmc                                   1/1     Running     0             91s
-autoscaler-84655b4df5-zznlw                                   1/1     Running     0             91s
-autoscaler-hpa-986bb8687-llms8                                1/1     Running     0             90s
-autoscaler-hpa-986bb8687-qtgln                                1/1     Running     0             90s
-controller-84cb7b64bc-9654q                                   1/1     Running     0             89s
-controller-84cb7b64bc-bdhps                                   1/1     Running     0             83s
-net-istio-controller-6498db6ccb-4ddvd                         0/1     Running     2 (24s ago)   89s
-net-istio-controller-6498db6ccb-f66mv                         0/1     Running     2 (24s ago)   89s
-net-istio-webhook-79cbc7c4d4-r6gln                            1/1     Running     0             89s
-net-istio-webhook-79cbc7c4d4-snd7k                            1/1     Running     0             89s
-storage-version-migration-serving-serving-1.12-1.33.0-6v9ll   0/1     Completed   0             89s
-webhook-6bb9cd8c97-46lz4                                      1/1     Running     0             90s
-webhook-6bb9cd8c97-cxm2n                                      1/1     Running     0             75s
-```
-
-#### Creating secure gateways for Knative Serving (4min)
-
-[Section 3.3.1.3 source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#creating-secure-gateways-for-knative-serving_serving-large-models)
-
-Why? To secure traffic between your Knative Serving instance and the service mesh, you must create secure gateways for your Knative Serving instance.
-
-The initial steps to generate a root signed certificate were completed previous
-
-Verify the wildcard certificate
-```sh
-openssl verify -CAfile ${BASE_DIR}/root.crt ${BASE_DIR}/wildcard.crt
-```
-
-```sh
-# expected output
-/tmp/kserve/wildcard.crt: OK
-```
-
-Export the wildcard key and certificate that were created by the script to new environment variables
-
-```sh
-export TARGET_CUSTOM_CERT=${BASE_DIR}/wildcard.crt
-export TARGET_CUSTOM_KEY=${BASE_DIR}/wildcard.key
-```
-
-Create a TLS secret in the istio-system namespace using the environment variables that you set for the wildcard certificate and key
-```sh
-oc create secret tls wildcard-certs --cert=${TARGET_CUSTOM_CERT} --key=${TARGET_CUSTOM_KEY} -n istio-system
-```
-
-```sh
-# expected output
-secret/wildcard-certs created
-```
-
->Defines a service in the istio-system namespace for the Knative local gateway.
-Defines an ingress gateway in the knative-serving namespace. The gateway uses the TLS secret you created earlier in this procedure. The ingress gateway handles external traffic to Knative.
-Defines a local gateway for Knative in the knative-serving namespace.
-
-Create a serverless-gateway.yaml YAML file with the following contents
-
-```yaml
-apiVersion: v1
-kind: Service 
-metadata:
-  labels:
-    experimental.istio.io/disable-gateway-port-translation: "true"
-  name: knative-local-gateway
-  namespace: istio-system
-spec:
-  ports:
-    - name: http2
-      port: 80
-      protocol: TCP
-      targetPort: 8081
-  selector:
-    knative: ingressgateway
-  type: ClusterIP
----
-apiVersion: networking.istio.io/v1beta1
-kind: Gateway
-metadata:
-  name: knative-ingress-gateway 
-  namespace: knative-serving
-spec:
-  selector:
-    knative: ingressgateway
-  servers:
-    - hosts:
-        - '*'
-      port:
-        name: https
-        number: 443
-        protocol: HTTPS
-      tls:
-        credentialName: wildcard-certs
-        mode: SIMPLE
----
-apiVersion: networking.istio.io/v1beta1
-kind: Gateway
-metadata:
- name: knative-local-gateway 
- namespace: knative-serving
-spec:
- selector:
-   knative: ingressgateway
- servers:
-   - port:
-       number: 8081
-       name: https
-       protocol: HTTPS
-     tls:
-       mode: ISTIO_MUTUAL
-     hosts:
-       - "*"
-```
-
-Apply the serverless-gateways.yaml file to create the defined resources
-```sh
-oc apply -f configs/serverless-gateway.yaml
-```
-
-```sh
-# expected output
-service/knative-local-gateway unchanged
-gateway.networking.istio.io/knative-ingress-gateway created
-gateway.networking.istio.io/knative-local-gateway created
-```
-
-Review the gateways that you created
-```sh
-oc get gateway --all-namespaces
-```
-
-Expected Output:
-
-```sh
-NAMESPACE         NAME                      AGE
-knative-serving   knative-ingress-gateway   2m
-knative-serving   knative-local-gateway     2m
-```
-
-### Manually adding an authorization provider (~4min)
-
-[Section 3.3.3 source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#manually-adding-an-authorization-provider_serving-large-models)
-
-Why? Adding an authorization provider allows you to enable token authorization for models that you deploy on the platform, which ensures that only authorized parties can make inference requests to the models.
-
-Create subscription for the Authorino Operator
-
-```yaml
-apiVersion: operators.coreos.com/v1alpha1
-kind: Subscription
-metadata:
-  name: authorino-operator
-  namespace: openshift-operators
-spec:
-  channel: managed-services
-  installPlanApproval: Automatic
-  name: authorino-operator
-  source: redhat-operators
-  sourceNamespace: openshift-marketplace
-  # startingCSV: authorino-operator.v1.0.1
-```
-
-Apply the Authorino operator
-```sh
-oc create -f configs/authorino-subscription.yaml
-```
-
-```sh
-# expected output
-subscription.operators.coreos.com/authorino-operator created
-```
-
-Create a namespace to install the Authorino instance
-```sh
-oc create ns redhat-ods-applications-auth-provider
-```
-
-```sh
-# expected output
-namespace/redhat-ods-applications-auth-provider created
-```
-
-Enroll the new namespace for the Authorino instance in your existing OpenShift Service Mesh instance, create a new YAML file authorino-smm.yaml with the following contents
-
-```yaml
-  apiVersion: maistra.io/v1
-  kind: ServiceMeshMember
-  metadata:
-    name: default
-    namespace: redhat-ods-applications-auth-provider
-  spec:
-    controlPlaneRef:
-      namespace: istio-system
-      name: minimal
-```
-
-Create the ServiceMeshMember resource on your cluster
-```sh
-oc create -f configs/authorino-smm.yaml
-```
-
-```sh
-# expected output
-servicemeshmember.maistra.io/default created
-```
-
-Configure an Authorino instance, create a new YAML file as shown
-
-```yaml
-  apiVersion: operator.authorino.kuadrant.io/v1beta1
-  kind: Authorino
-  metadata:
-    name: authorino
-    namespace: redhat-ods-applications-auth-provider
-  spec:
-    authConfigLabelSelectors: security.opendatahub.io/authorization-group=default
-    clusterWide: true
-    listener:
-      tls:
-        enabled: false
-    oidcServer:
-      tls:
-        enabled: false
-```
-
-Create the Authorino resource on your cluster.
-```sh
-oc create -f configs/authorino-instance.yaml
-```
-
-```sh
-# expected output
-authorino.operator.authorino.kuadrant.io/authorino created
-```
-
-Patch the Authorino deployment to inject an Istio sidecar, which makes the Authorino instance part of your OpenShift Service Mesh instance
-```sh
-oc patch deployment authorino -n redhat-ods-applications-auth-provider -p '{"spec": {"template":{"metadata":{"labels":{"sidecar.istio.io/inject":"true"}}}} }'
-```
-
-```sh
-# expected output
-deployment.apps/authorino patched
-```
-
-Check the pods (and containers) that are running in the namespace that you created for the Authorino instance, as shown in the following example
-```sh
-oc get pods -n redhat-ods-applications-auth-provider -o="custom-columns=NAME:.metadata.name,STATUS:.status.phase,CONTAINERS:.spec.containers[*].name"
-```
-
-```sh
-# expected output
-NAME                         STATUS    CONTAINERS
-authorino-75585d99bd-vh65n   Running   authorino,istio-proxy
-```
-
-#### Configuring an OpenShift Service Mesh instance to use Authorino (~6min)
-
-[Section 3.3.3.3 source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#configuring-service-mesh-instance-to-use-authorino_serving-large-models)
-
-Why? you must configure your OpenShift Service Mesh instance to use Authorino as an authorization provider
-
-Create a new YAML file with the following contents `servicemesh-smcp-patch.yaml`
-
-```yaml
-spec:
- techPreview:
-   meshConfig:
-     extensionProviders:
-     - name: redhat-ods-applications-auth-provider
-       envoyExtAuthzGrpc:
-         service: authorino-authorino-authorization.redhat-ods-applicatiions-auth-provider.svc.cluster.local
-         port: 50051
-```
-
-Use the oc patch command to apply the YAML file to your OpenShift Service Mesh instance
-
-```sh
-oc patch smcp minimal --type merge -n istio-system --patch-file configs/files/servicemesh-smcp-patch.yaml
-```
-
-```sh
-# expected output
-servicemeshcontrolplane.maistra.io/minimal patched
-```
-
-Inspect the ConfigMap object for your OpenShift Service Mesh instance
-```sh
-oc get configmap istio-minimal -n istio-system --output=jsonpath={.data.mesh}
-```
-
-```sh
-# expected output
-defaultConfig:
-  discoveryAddress: istiod-minimal.istio-system.svc:15012
-  proxyMetadata:
-    ISTIO_META_DNS_AUTO_ALLOCATE: "true"
-    ISTIO_META_DNS_CAPTURE: "true"
-    PROXY_XDS_VIA_AGENT: "true"
-  terminationDrainDuration: 35s
-  tracing: {}
-dnsRefreshRate: 300s
-enablePrometheusMerge: true
-extensionProviders:
-- envoyExtAuthzGrpc:
-    port: 50051
-    service: authorino-authorino-authorization.redhat-ods-applicatiions-auth-provider.svc.cluster.local
-  name: redhat-ods-applications-auth-provider
-ingressControllerMode: "OFF"
-rootNamespace: istio-system
-trustDomain: null
-```
-
-Confirm that you see output that the Authorino instance has been successfully added as an extension provider
-
-#### Configuring authorization for KServe (~3min)
-
-[Section 3.3.3.4 source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#configuring-authorization-for-kserve_serving-large-models)
-
-Why? you must create a global AuthorizationPolicy resource that is applied to the KServe predictor pods that are created when you deploy a model. In addition, to account for the multiple network hops that occur when you make an inference request to a model, you must create an EnvoyFilter resource that continually resets the HTTP host header to the one initially included in the inference request.
-
-Create a new YAML file with the following contents:
-
-```yaml
-apiVersion: security.istio.io/v1beta1
-kind: AuthorizationPolicy
-metadata:
-  name: kserve-predictor
-spec:
-  action: CUSTOM
-  provider:
-     name: redhat-ods-applications-auth-provider 
-  rules:
-     - to:
-          - operation:
-               notPaths:
-                  - /healthz
-                  - /debug/pprof/
-                  - /metrics
-                  - /wait-for-drain
-  selector:
-     matchLabels:
-        component: predictor
-```
-
-Create the AuthorizationPolicy resource in the namespace for your OpenShift Service Mesh instance
-```sh
-oc create -n istio-system -f configs/servicemesh-authorization-policy.yaml
-```
-
-```sh
-# expected output
-authorizationpolicy.security.istio.io/kserve-predictor created
-```
-
-Create another new YAML file with the following contents:
-The EnvoyFilter resource shown continually resets the HTTP host header to the one initially included in any inference request.
-
-```yaml
-apiVersion: networking.istio.io/v1alpha3
-kind: EnvoyFilter
-metadata:
-  name: activator-host-header
-spec:
-  priority: 20
-  workloadSelector:
-    labels:
-      component: predictor
-  configPatches:
-  - applyTo: HTTP_FILTER
-    match:
-      listener:
-        filterChain:
-          filter:
-            name: envoy.filters.network.http_connection_manager
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: envoy.filters.http.lua
-        typed_config:
-          '@type': type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
-          inlineCode: |
-           function envoy_on_request(request_handle)
-              local headers = request_handle:headers()
-              if not headers then
-                return
-              end
-              local original_host = headers:get("k-original-host")
-              if original_host then
-                port_seperator = string.find(original_host, ":", 7)
-                if port_seperator then
-                  original_host = string.sub(original_host, 0, port_seperator-1)
-                end
-                headers:replace('host', original_host)
-              end
-            end
-```
-
-Create the EnvoyFilter resource in the namespace for your OpenShift Service Mesh instance
-```sh
-oc create -n istio-system -f configs/servicemesh-envoyfilter.yaml
-```
-
-```sh
-# expected output
-envoyfilter.networking.istio.io/activator-host-header created
-```
-
-Check that the AuthorizationPolicy resource was successfully created.
-```sh
-oc get authorizationpolicies -n istio-system
-```
-
-```sh
-# expected output
-NAME               AGE
-kserve-predictor   62s
-```
-
-Check that the EnvoyFilter resource was successfully created.
-```sh
-oc get envoyfilter -n istio-system
-```
-
-Example Output:
-
-```sh
-NAME                                AGE
-activator-host-header               101s
-metadata-exchange-1.6-minimal       56m
-tcp-metadata-exchange-1.6-minimal   56m
-```
-
-## Enabling GPU support in OpenShift AI
-
-[Section 5 source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/installing_and_uninstalling_openshift_ai_self-managed/enabling-gpu-support_install)
-
-### Adding a GPU node to an existing OpenShift Container Platform cluster (12min)
+You can copy and modify a default compute machine set configuration to create a GPU-enabled machine set and machines for the AWS EC2 cloud provider.
 
 [source](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/machine_management/managing-compute-machines-with-the-machine-api#nvidia-gpu-aws-adding-a-gpu-node_creating-machineset-aws)
 
@@ -1341,7 +807,7 @@ oc get nodes
 ```sh
 # expected output
 NAME                                        STATUS   ROLES                         AGE     VERSION
-ip-10-x-xx-xxx.us-east-x.compute.internal   Ready    control-plane,master,worker   5h11m   v1.28.10+a2c84a5
+ip-10-x-xx-xxx.us-xxxx-x.compute.internal   Ready    control-plane,master,worker   5h11m   v1.28.10+a2c84a5
 ```
 
 View the machines and machine sets that exist in the openshift-machine-api namespace
@@ -1352,12 +818,7 @@ oc get machinesets -n openshift-machine-api
 ```sh
 # expected output
 NAME                                    DESIRED   CURRENT   READY   AVAILABLE   AGE
-cluster-xxxxx-xxxxx-worker-us-east-xc   0         0                             5h13m
-```
-
-View the machines that exist in the openshift-machine-api namespace
-```sh
-oc get machines -n openshift-machine-api | egrep worker
+cluster-xxxxx-xxxxx-worker-us-xxxx-xc   0         0                             5h13m
 ```
 
 Make a copy of one of the existing compute MachineSet definitions and output the result to a YAML file
@@ -1372,16 +833,16 @@ oc get machineset <your-machineset-name> -n openshift-machine-api -o yaml > scra
 
 Update the following fields:
 
-- [ ] `.spec.replicas` from `0` to `2`
-- [ ] `.metadata.name` to a name containing `gpu`.
-- [ ] `.spec.selector.matchLabels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
-- [ ] `.spec.template.metadata.labels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
-- [ ] `.spec.template.spec.providerSpec.value.instanceType` to `g4dn.4xlarge`.
+- [ ] ~Line 13`.metadata.name` to a name containing `-gpu`.
+- [ ] ~Line 18 `.spec.replicas` from `0` to `2`
+- [ ] ~Line 22`.spec.selector.matchLabels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
+- [ ] ~Line 29 `.spec.template.metadata.labels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
+- [ ] ~Line 51 `.spec.template.spec.providerSpec.value.instanceType` to `g4dn.4xlarge`.
 
 Remove the following fields:
 
-- [ ] `uid`
-- [ ] `generation`
+- [ ] ~Line 10 `generation`
+- [ ] ~Line 16 `uid` (becomes line 15 if you delete line 10 first)
 
 Apply the configuration to create the gpu machine
 
@@ -1391,7 +852,7 @@ oc apply -f scratch/machineset.yaml
 
 ```sh
 # expected output
-machineset.machine.openshift.io/cluster-xxxx-xxxx-worker-us-east-gpu created
+machineset.machine.openshift.io/cluster-xxxx-xxxx-worker-us-xxxx-gpu created
 ```
 
 Verify the gpu machineset you created is running
@@ -1402,7 +863,7 @@ oc -n openshift-machine-api get machinesets | grep gpu
 
 ```sh
 # expected output
-cluster-xxxxx-xxxxx-worker-us-east-xc-gpu   2         2         2       2           6m37s
+cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu   2         2         2       2           6m37s
 ```
 
 View the Machine object that the machine set created
@@ -1413,11 +874,13 @@ oc -n openshift-machine-api get machines | grep gpu
 
 ```sh
 # expected output
-cluster-xxxxx-xxxxx-worker-us-east-xc-gpu-29whc   Running   g4dn.4xlarge   us-east-2   us-east-2c   7m59s
-cluster-xxxxx-xxxxx-worker-us-east-xc-gpu-nr59d   Running   g4dn.4xlarge   us-east-2   us-east-2c   7m59s
+cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu-29whc   Running   g4dn.4xlarge   us-xxxx-x   us-xxxx-xc   7m59s
+cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu-nr59d   Running   g4dn.4xlarge   us-xxxx-x   us-xxxx-xc   7m59s
 ```
 
-### Deploying the Node Feature Discovery Operator (12-30min)
+### Deploying the Node Feature Discovery Operator (takes time)
+
+After the GPU-enabled node is created, you need to discover the GPU-enabled node so it can be scheduled. To do this, install the Node Feature Discovery (NFD) Operator. The NFD operator is a tool for OCP administrators that makes it easy to detect and understand the hardware features and configurations of a cluster's nodes. With this operator, administrators can easily gather information about their nodes that can be used for scheduling, resource management, and more by controlling the life cycle of NFD.
 
 [source](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/machine_management/managing-compute-machines-with-the-machine-api#nvidia-gpu-aws-deploying-the-node-feature-discovery-operator_creating-machineset-aws)
 
@@ -1504,7 +967,8 @@ subscription.operators.coreos.com/nfd created
 Verify the operator is installed and running
 
 ```sh
-oc get pods -n openshift-nfd
+# watch the pods create in the new project
+oc get pods -n openshift-nfd -w
 ```
 
 ```sh
@@ -1513,7 +977,9 @@ NAME                                      READY   STATUS    RESTARTS   AGE
 nfd-controller-manager-78758c57f7-7xfh4   2/2     Running   0          48s
 ```
 
-Create an NodeFeatureDiscovery instance via the CLI or UI (recommended)
+After Install the NFD Operator, you Create instance that installs the `nfd-master` and one `nfd-worker` pod for each compute node in the `openshift-nfd` namespace.
+
+Create an NodeFeatureDiscovery instance via the CLI or UI (recommended). Pay attention the `spec.operand.image` from quay.io, the `sources.pci.deviceClassWhitelist`, and `sources.pci.deviceLabelFields`
 
 ```yaml
 kind: NodeFeatureDiscovery
@@ -1539,11 +1005,18 @@ spec:
             - "vendor"
 ```
 
+[source](https://docs.openshift.com/container-platform/4.15/hardware_enablement/psap-node-feature-discovery-operator.html#Configure-node-feature-discovery-operator-sources_psap-node-feature-discovery-operator):
+
+- `sources.pci.deviceClassWhitelist` is a list of [PCI device class IDs](https://admin.pci-ids.ucw.cz/read/PD) for which to publish a label. It can be specified as a main class only (for example, `03`) or full class-subclass combination (for example `0300`). The former implies that all subclasses are accepted. The format of the labels can be further configured with deviceLabelFields.
+- `sources.pci.deviceLabelFields` is the set of PCI ID fields to use when constructing the name of the feature label. Valid fields are `class`, `vendor`, `device`, `subsystem_vendor` and `subsystem_device`. With the example config above, NFD would publish labels such as `feature.node.kubernetes.io/pci-<vendor-id>.present=true`
+
 Create the nfd instance object
 
 ```sh
 oc apply -f configs/nfd-instance.yaml
 ```
+
+This creates NFD pods in the `openshift-nfd` namespace that poll RHOCP nodes for hardware resources and catalogue them.
 
 ```sh
 # expected output
@@ -1551,9 +1024,34 @@ nodefeaturediscovery.nfd.openshift.io/nfd-instance created
 ```
 
 ![IMPORTANT]
-The NFD Operator uses vendor PCI IDs to identify hardware in a node. NVIDIA uses the PCI ID 10de.
+The NFD Operator uses vendor PCI IDs to identify hardware in a node.
+
+Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/member-companies?combine=10de):
+
+- `10de`  NVIDIA
+- `1d0f` AWS
+- `1002` AMD
+- `8086` Intel
+
+Verify the GPU device (NVIDIA uses the PCI ID `10de`) is discovered on the GPU node. This mean the NFD Operator correctly identified the node from the GPU-enabled MachineSet.
+
+```sh
+oc describe node | egrep 'Roles|pci' | grep -v master
+```
+
+```sh
+# expected output
+Roles:              worker
+                    feature.node.kubernetes.io/pci-10de.present=true
+                    feature.node.kubernetes.io/pci-1d0f.present=true
+                    feature.node.kubernetes.io/pci-1d0f.present=true
+Roles:              worker
+                    feature.node.kubernetes.io/pci-10de.present=true
+                    feature.node.kubernetes.io/pci-1d0f.present=true
+```
 
 Verify the NFD pods are `Running` on the cluster nodes polling for devices
+
 ```sh
 oc get pods -n openshift-nfd
 ```
@@ -1585,12 +1083,17 @@ Roles:              worker
                     feature.node.kubernetes.io/pci-1d0f.present=true
 ```
 
-Verify the NVIDIA GPU is discovered
-10de appears in the node feature list for the GPU-enabled node. This mean the NFD Operator correctly identified the node from the GPU-enabled MachineSet.
+### Install the NVIDIA GPU Operator
 
-### Installing the NVIDIA GPU Operator (10min)
+Kubernetes provides access to special hardware resources such as NVIDIA GPUs, NICs, Infiniband adapters and other devices through the [device plugin framework](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/). However, Configure and managing nodes with these hardware resources requires configuration of multiple software components such as drivers, container runtimes or other libraries which are difficult and prone to errors. The NVIDIA GPU Operator uses the [operator framework](https://coreos.com/blog/introducing-operator-framework) within Kubernetes to automate the management of all NVIDIA software components needed to provision GPU. These components include:
 
-[source](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/install-gpu-ocp.html#installing-the-nvidia-gpu-operator-using-the-cli)
+1. the NVIDIA drivers (to enable CUDA) for creating high-performance, GPU-accelerated applications
+1. Kubernetes device plugin for GPUs to advertise system hardware resources to the Kubelet
+1. the NVIDIA Container Toolkit to build and run GPU accelerated containers
+1. automatic node labelling using [GPU Feature Discovery (GFD)](https://github.com/NVIDIA/gpu-feature-discovery)
+1. [NVIDIA Data Center GPU Manager (DCGM)](https://developer.nvidia.com/dcgm) for active health monitoring, comprehensive diagnostics, system alerts and governance policies including power and clock management
+
+[source](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/install-gpu-ocp.html#Install-the-nvidia-gpu-operator-using-the-cli)
 
 List the available operators for installation searching for 'gpu'
 
@@ -1651,20 +1154,23 @@ operatorgroup.operators.coreos.com/nvidia-gpu-operator-group created
 Run the following command to get the channel value
 
 ```sh
-oc get packagemanifest gpu-operator-certified -n openshift-marketplace -o jsonpath='{.status.defaultChannel}'
+# set channel value
+CHANNEL=$(oc get packagemanifest gpu-operator-certified -n openshift-marketplace -o jsonpath='{.status.defaultChannel}')
+```
+
+```sh
+# echo the channel
+echo $CHANNEL
 ```
 
 ```sh
 # expected output
-v24.3
+v24.6
 ```
 
 Run the following commands to get the startingCSV
 
 ```sh
-# set channel value from output
-CHANNEL=v24.3
-
 # run the command to get the startingCSV
 oc get packagemanifests/gpu-operator-certified -n openshift-marketplace -ojson | jq -r '.status.channels[] | select(.name == "'$CHANNEL'") | .currentCSV'
 ```
@@ -1703,16 +1209,17 @@ oc apply -f configs/nvidia-gpu-operator-subscription.yaml
 subscription.operators.coreos.com/gpu-operator-certified created
 ```
 
-Verify an install plan has been created
+Verify an install plan has been created. Be patient.
 
 ```sh
-oc get installplan -n nvidia-gpu-operator
+# you can watch the installplan instances get created
+oc get installplan -n nvidia-gpu-operator -w
 ```
 
 ```sh
 # expected output
 NAME            CSV                              APPROVAL    APPROVED
-install-q9rnm   gpu-operator-certified.v24.3.0   Automatic   true
+install-xxxx    gpu-operator-certified.v24.3.0   Automatic   true
 ```
 
 (Optional) Approve the install plan if not `Automatic`
@@ -1761,21 +1268,26 @@ daemonset.apps/nvidia-node-status-exporter                     2         2      
 daemonset.apps/nvidia-operator-validator                       0         0         0       0            0           nvidia.com/gpu.deploy.operator-validator=true                                                                         22s
 ```
 
-(Optional) When the NVIDIA operator completes labeling the nodes, you can add a label to the GPU node Role as `gpu, worker` for readability (cosmetic)
+(Optional) When the NVIDIA operator completes labeling the nodes, you can add a label to the GPU node Role as `gpu, worker` for readability (cosmetic). You may have to rerun this command for multilpe nodes.
 
 ```sh
 oc label node -l nvidia.com/gpu.machine node-role.kubernetes.io/gpu=''
 ```
 
 ```sh
+# expected output
+node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal labeled
+```
+
+```sh
 oc get nodes
 ```
 
-```
+```sh
 # expected output
 NAME                                        STATUS   ROLES                         AGE   VERSION
-ip-10-0-xx-xxx.us-east-2.compute.internal   Ready    gpu,worker                    19h   v1.28.10+a2c84a5
-ip-10-0-xx-xxx.us-east-2.compute.internal   Ready    gpu,worker                    19h   v1.28.10+a2c84a5
+ip-10-x-xx-xxx.us-xxxx-x.compute.internal   Ready    gpu,worker                    19h   v1.28.10+a2c84a5
+ip-10-x-xx-xxx.us-xxxx-x.compute.internal   Ready    gpu,worker                    19h   v1.28.10+a2c84a5
 ...
 ```
 
@@ -1793,16 +1305,16 @@ oc -n openshift-machine-api \
 
 ```sh
 # expected output
-machineset.machine.openshift.io/cluster-xxxxx-xxxxx-worker-us-east-xc-gpu patched
+machineset.machine.openshift.io/cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu patched
 ```
 
-### (Optional) Running a sample GPU Application (1min)
+### (Optional) Running a sample GPU Application
 
 [Sample App](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/install-gpu-ocp.html#running-a-sample-gpu-application)
 
 Run a simple CUDA VectorAdd sample, which adds two vectors together to ensure the GPUs have bootstrapped correctly
 
-```sh
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -1881,8 +1393,8 @@ oc get pod -o wide -l openshift.driver-toolkit=true
 ```sh
 # expected output
 NAME                                                  READY   STATUS    RESTARTS   AGE   IP            NODE                                       NOMINATED NODE   READINESS GATES
-nvidia-driver-daemonset-415.92.202407091355-0-64sml   2/2     Running   2          21h   10.130.0.8    ip-10-0-22-25.us-east-2.compute.internal   <none>           <none>
-nvidia-driver-daemonset-415.92.202407091355-0-clp7f   2/2     Running   2          21h   10.129.0.10   ip-10-0-22-15.us-east-2.compute.internal   <none>           <none>
+nvidia-driver-daemonset-415.92.202407091355-0-64sml   2/2     Running   2          21h   10.xxx.0.x    ip-10-0-22-25.us-xxxx-x.compute.internal   <none>           <none>
+nvidia-driver-daemonset-415.92.202407091355-0-clp7f   2/2     Running   2          21h   10.xxx.0.xx   ip-10-0-22-15.us-xxxx-x.compute.internal   <none>           <none>
 ```
 
 With the Pod and node name, run the nvidia-smi on the correct node.
@@ -1918,7 +1430,7 @@ Fri Jul 26 20:06:33 2024
 1. The first table reflects the information about all available GPUs (the example shows one GPU).
 1. The second table provides details on the processes using the GPUs.
 
-### Enabling the GPU Monitoring Dashboard (3min)
+### Enabling the GPU Monitoring Dashboard
 
 [source](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/enable-gpu-monitoring-dashboard.html)
 
@@ -1981,7 +1493,7 @@ oc label configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed "c
 configmap/nvidia-dcgm-exporter-dashboard labeled
 ```
 
-View the created resource and verify the labels
+View the created resource and verify the labels for the `dashboard` and `odc-dashboard`
 
 ```sh
 oc -n openshift-config-managed get cm nvidia-dcgm-exporter-dashboard --show-labels
@@ -1995,9 +1507,11 @@ nvidia-dcgm-exporter-dashboard   1      3m28s   console.openshift.io/dashboard=t
 
 View the NVIDIA DCGM Exporter Dashboard from the OCP UI from Administrator and Developer
 
-### Installing the NVIDIA GPU administration dashboard (5min)
+### Install the NVIDIA GPU administration dashboard
 
-[source](https://docs.openshift.com/container-platform/4.12/observability/monitoring/nvidia-gpu-admin-dashboard.html)
+This is a dedicated administration dashboard for NVIDIA GPU usage visualization Web Console. The dashboard relies mostly on Prometheus metrics exposed by the NVIDIA DCGM Exporter, but the default exposed metrics are not enough for the dashboard to render the required gauges. Therefore, the DGCM exporter is configured to expose a custom set of metrics, as shown here.
+
+[source](https://docs.openshift.com/container-platform/4.15/observability/monitoring/nvidia-gpu-admin-dashboard.html)
 
 Add the Helm repository
 
@@ -2082,11 +1596,13 @@ clusterpolicy.nvidia.com/gpu-cluster-policy patched
 
 You should receive a message on the console "Web console update is available" > Refresh the web console.
 
-#### Go to Compute > GPUs
+>NOTE: If your gauges are not displaying, you can go to your user (top right menu dropdown) > User Preferences > change your theme to `Light`.
 
->Notice the `Telsa T4 Single-Instance` at the top of the screen. This GPU is not shareable (i.e. sliced, partitioned, fractioned) yet.
+#### Viewing the GPU Dashboard
 
-The dashboard relies mostly on Prometheus metrics exposed by the NVIDIA DCGM Exporter, but the default exposed metrics are not enough for the dashboard to render the required gauges. Therefore, the DGCM exporter is configured to expose a custom set of metrics, as shown here.
+Go to Compute > GPUs
+
+>Notice the `Telsa T4 Single-Instance` at the top of the screen. This GPU is NOT shareable (i.e. sliced, partitioned, fractioned) yet. As Manfred Manns lyrics go, be ready to be `Blinded by the light`.
 
 ```sh
 oc get cm console-plugin-nvidia-gpu -n nvidia-gpu-operator -o yaml
@@ -2137,15 +1653,15 @@ oc -n nvidia-gpu-operator get all -l app.kubernetes.io/name=console-plugin-nvidi
 
 Why? By default, you get one workload per GPU. This is inefficient for certain use cases. [How can you share a GPU to 1:N workloads](https://docs.openshift.com/container-platform/4.15/architecture/nvidia-gpu-architecture-overview.html#nvidia-gpu-prerequisites_nvidia-gpu-architecture-overview):
 
-For NVIDIA:
+For NVIDIA GPU there are a few methods to optimize GPU utilization:
 
 - [Time-slicing NVIDIA GPUs](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/time-slicing-gpus-in-openshift.html#)
 - [Multi-Instance GPU (MIG)](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/mig-ocp.html)
 - [NVIDIA vGPUs](https://docs.nvidia.com/datacenter/cloud-native/openshift/23.9.2/nvaie-with-ocp.html?highlight=passthrough#openshift-container-platform-on-vmware-vsphere-with-nvidia-vgpus)
 
-### Configuring GPUs with time slicing (3min)
+### Configure GPUs with time slicing
 
-[source](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/time-slicing-gpus-in-openshift.html#configuring-gpus-with-time-slicing)
+[source](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/time-slicing-gpus-in-openshift.html#Configure-gpus-with-time-slicing)
 
 The following sections show you how to configure NVIDIA Tesla T4 GPUs, as they do not support MIG, but can easily accept multiple small jobs.
 
@@ -2159,7 +1675,7 @@ You configure GPU time-slicing by performing the following high-level steps:
 
 >Important: The ConfigMap name is `device-plugin-config` and the profile name is `time-sliced-8`. These names are important as you can change them for your purposes. You can list multiple GPU profiles like in the [ai-gitops-catalog](https://github.com/redhat-na-ssa/demo-ai-gitops-catalog/blob/main/components/operators/gpu-operator-certified/instance/components/time-sliced-4/patch-device-plugin-config.yaml). Also, [see Applying multi-node configuration](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/gpu-sharing.html#applying-multiple-node-specific-configurations)
 
-On a machine with one GPU, the following config map configures Kubernetes so that the node advertises 8 GPU resources. A machine with two GPUs advertises 16 GPUs, and so on. [source](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/gpu-sharing.html#about-configuring-gpu-time-slicing)
+On a machine with one GPU, the following config map configures Kubernetes so that the node advertises 8 GPU resources. A machine with two GPUs advertises 16 GPUs, and so on. [source](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/gpu-sharing.html#about-Configure-gpu-time-slicing)
 
 ```yaml
 apiVersion: v1
@@ -2211,8 +1727,8 @@ oc label --overwrite node \
 
 ```sh
 # expected output
-node/ip-10-0-29-207.us-east-2.compute.internal labeled
-node/ip-10-0-36-189.us-east-2.compute.internal labeled
+node/ip-10-0-29-207.us-xxxx-x.compute.internal labeled
+node/ip-10-0-36-189.us-xxxx-x.compute.internal labeled
 ```
 
 Patch the NVIDIA GPU Operator ClusterPolicy to use the timeslicing configuration by default.
@@ -2234,7 +1750,6 @@ The applied configuration creates eight replicas for Tesla T4 GPUs, so the nvidi
 oc get node --selector=nvidia.com/gpu.product=Tesla-T4-SHARED -o json | jq '.items[0].status.capacity'
 ```
 
-The `-SHARED` product name suffix ensures that you can specify a node selector to assign pods to nodes with time-sliced GPUs.
 
 ```sh
 # expected output
@@ -2255,6 +1770,8 @@ Verify that GFD labels have been added to indicate time-sharing.
 1. The `nvidia.com/gpu.product` label includes a `-SHARED` suffix to the product name.
 1. The `nvidia.com/gpu.replicas` label matches the reported capacity.
 
+>The `-SHARED` product name suffix ensures that you can specify a node selector to assign pods to nodes with time-sliced GPUs.
+
 ```sh
 oc get node --selector=nvidia.com/gpu.product=Tesla-T4-SHARED -o json \
  | jq '.items[0].metadata.labels' | grep nvidia
@@ -2270,7 +1787,7 @@ oc get node --selector=nvidia.com/gpu.product=Tesla-T4-SHARED -o json \
   ...
 ```
 
-### Configure Taints and Tolerations (3min)
+### Configure Taints and Tolerations
 
 Why? Prevent non-GPU workloads from being scheduled on the GPU nodes.
 
@@ -2278,6 +1795,12 @@ Taint the GPU nodes with `nvidia.com/gpu`. This MUST match the Accelerator profi
 
 ```sh
 oc adm taint node -l nvidia.com/gpu.machine nvidia.com/gpu=:NoSchedule --overwrite
+```
+
+```sh
+# expected output
+node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal modified
+node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal modified
 ```
 
 Edit the `ClusterPolicy` in the NVIDIA GPU Operator under the `nvidia-gpu-operator` project. Add the below section to `.spec.daemonsets:`
@@ -2300,10 +1823,48 @@ Cordon the GPU node, drain the GPU tainted nodes and terminate workloads
 oc adm drain -l nvidia.com/gpu.machine --ignore-daemonsets --delete-emptydir-data
 ```
 
+```sh
+# expected output
+node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal cordoned
+node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal cordoned
+...
+evicting pod nvidia-gpu-operator/console-plugin-nvidia-gpu-754ddf45-8nfx5
+evicting pod openshift-nfd/nfd-controller-manager-69fc4d5fb9-sflpw
+evicting pod nvidia-gpu-operator/nvidia-cuda-validator-5v7lx
+pod/nvidia-cuda-validator-5v7lx evicted
+pod/console-plugin-nvidia-gpu-754ddf45-8nfx5 evicted
+pod/nfd-controller-manager-69fc4d5fb9-sflpw evicted
+node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal drained
+...
+evicting pod nvidia-gpu-operator/gpu-operator-97655fdc-kgpb4
+evicting pod sandbox/cuda-vectoradd
+evicting pod openshift-marketplace/619c4bd263651f3b6508183066a8f9f3ef96907a573bfcd1d5252721a5csdd4
+evicting pod openshift-operator-lifecycle-manager/collect-profiles-28709130-jqpcm
+evicting pod nvidia-gpu-operator/nvidia-cuda-validator-fvwnh
+evicting pod openshift-operator-lifecycle-manager/collect-profiles-28709145-mxvx7
+evicting pod openshift-operator-lifecycle-manager/collect-profiles-28709160-p87sh
+evicting pod openshift-marketplace/4e6357cf195932a62fceaa1d7eae5734b36af199315bc628f91659603bd95p9
+pod/collect-profiles-28709130-jqpcm evicted
+pod/cuda-vectoradd evicted
+pod/619c4bd263651f3b6508183066a8f9f3ef96907a573bfcd1d5252721a5csdd4 evicted
+pod/collect-profiles-28709145-mxvx7 evicted
+pod/collect-profiles-28709160-p87sh evicted
+pod/4e6357cf195932a62fceaa1d7eae5734b36af199315bc628f91659603bd95p9 evicted
+pod/nvidia-cuda-validator-fvwnh evicted
+pod/gpu-operator-97655fdc-kgpb4 evicted
+node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal drained
+```
+
 Allow the GPU node to be schedulable again per tolerations
 
 ```sh
 oc adm uncordon -l nvidia.com/gpu.machine
+```
+
+```sh
+# expected output
+node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal uncordoned
+node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal uncordoned
 ```
 
 Get the name of the gpu node
@@ -2320,21 +1881,37 @@ oc -n openshift-machine-api \
   --type=merge --patch '{"spec":{"template":{"spec":{"taints":[{"key":"nvidia.com/gpu","value":"","effect":"NoSchedule"}]}}}}'
 ```
 
-Tolerations will be set in the RHOAI accelerator profiles that match the Taint key.
+>IMPORTANT: Tolerations will be set in the RHOAI accelerator profiles that match the Taint key.
 
-### (Optional) Configuring the cluster autoscaler
+### (Optional) Configure the cluster autoscaler
 
 [source](https://docs.openshift.com/container-platform/4.15/machine_management/applying-autoscaling.html)
 
-## Configuring distributed workloads
+## Configure distributed workloads
 
-[source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads)
+Why?
+1. You can iterate faster and experiment more frequently because of the reduced processing time.
+1. You can use larger datasets, which can lead to more accurate models.
+1. You can use complex models that could not be trained on a single node.
+1. You can submit distributed workloads at any time, and the system then schedules the distributed workload when the required resources are available.
+
+Distributed Workloads is made of up a series of components.
+
+1. CodeFlare Operator - Secures deployed Ray clusters and grants access to their URLs
+1. CodeFlare SDK - Defines and controls the remote distributed compute jobs and infrastructure for any Python-based environment
+1. KubeRay - Manages remote Ray clusters on OpenShift for running distributed compute workloads
+1. Kueue - Manages quotas and how distributed workloads consume them, and manages the queueing of distributed workloads with respect to quotas
+
+You can run distributed workloads from data science pipelines, from Jupyter notebooks, or from Microsoft Visual Studio Code files.
+
+[source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/working_with_distributed_workloads/Configure-distributed-workloads_distributed-workloads)
 
 Components required for Distributed Workloads
 
 1. dashboard
 1. workbenches
 1. datasciencepipelines
+1. codeflare operator
 1. codeflare
 1. kueue
 1. ray
@@ -2352,10 +1929,13 @@ kuberay-operator-bf97858f4-zg45s                                  1/1     Runnin
 kueue-controller-manager-77c758b595-hgrz7                         1/1     Running   8 (10m ago)    21h
 ```
 
-### Configuring quota management for distributed workloads (~5min)
+### Configure quota management for distributed workloads
 
-Create an empty Kueue resource flavor
-Why? Resources in a cluster are typically not homogeneous. A ResourceFlavor is an object that represents these resource variations (i.e. Nvidia A100 versus T4 GPUs) and allows you to associate them with cluster nodes through labels, taints and tolerations.
+#### Create an empty Kueue resource flavor
+
+Why? Resources in a cluster are typically not homogeneous. A ResourceFlavor is an object that describes these resource variations (i.e. Nvidia A100 versus T4 GPUs) and allows you to associate them with cluster nodes through labels, taints and tolerations.
+
+A cluster administrator can create an empty ResourceFlavor object named `default-flavor`, without any labels or taints, as follows:
 
 ```yaml
 apiVersion: kueue.x-k8s.io/v1beta1
@@ -2369,6 +1949,8 @@ spec:
     key: nvidia.com/gpu
 ```
 
+>In OpenShift AI 2.10, Red Hat supports only a single cluster queue per cluster (that is, homogenous clusters), and only empty resource flavors.
+
 Apply the configuration to create the `default-flavor`
 
 ```sh
@@ -2380,8 +1962,11 @@ oc apply -f configs/rhoai-kueue-default-flavor.yaml
 resourceflavor.kueue.x-k8s.io/default-flavor created
 ```
 
-Create a cluster queue to manage the empty Kueue resource flavor
-Why? A ClusterQueue is a cluster-scoped object that governs a pool of resources such as pods, CPU, memory, and hardware accelerators. Only batch administrators should create ClusterQueue objects.
+#### Create a cluster queue to manage the empty Kueue resource flavor
+
+Why? The Kueue ClusterQueue object manages a pool of cluster resources such as pods, CPUs, memory, and accelerators. A cluster can have multiple cluster queues, and each cluster queue can reference multiple resource flavors.
+
+Cluster administrators can configure cluster queues to define the resource flavors that the queue manages, and assign a quota for each resource in each resource flavor. Cluster administrators can also configure usage limits and queueing strategies to apply fair sharing rules across multiple cluster queues in a cluster.
 
 ```yaml
 apiVersion: kueue.x-k8s.io/v1beta1
@@ -2403,14 +1988,14 @@ spec:
         nominalQuota: 5
 ```
 
-What is this cluster-queue doing? This ClusterQueue admits Workloads if and only if:
+What is this cluster-queue doing? The example configures a cluster queue to assign a quota of 9 CPUs, 36 GiB memory, 5 pods, and 5 NVIDIA GPUs.
 
 - The sum of the CPU requests is less than or equal to 9.
 - The sum of the memory requests is less than or equal to 36Gi.
 - The total number of pods is less than or equal to 5.
 
 ![IMPORTANT]
-Replace the example quota values (9 CPUs, 36 GiB memory, and 5 NVIDIA GPUs) with the appropriate values for your cluster queue. The cluster queue will start a distributed workload only if the total required resources are within these quota limits. Only homogenous NVIDIA GPUs are supported.
+Replace the example quota values (9 CPUs, 36 GiB memory, and 5 NVIDIA GPUs) with the appropriate values for your cluster queue. The cluster queue will start a distributed workload only if the total required resources are within these quota limits, otherwise the cluster queue does not admit the distributed workload.. Only homogenous NVIDIA GPUs are supported.
 
 Apply the configuration to create the `cluster-queue`
 
@@ -2423,8 +2008,11 @@ oc apply -f configs/rhoai-kueue-cluster-queue.yaml
 clusterqueue.kueue.x-k8s.io/cluster-queue created
 ```
 
-Create a local queue that points to your cluster queue
-Why? A LocalQueue is a namespaced object that groups closely related Workloads that belong to a single namespace. Users submit jobs to a LocalQueue, instead of to a ClusterQueue directly.
+#### Create a local queue that points to your cluster queue
+
+Why? A LocalQueue is a namespaced object that groups closely related Workloads that belong to a single namespace. Users submit jobs to a LocalQueue, instead of to a ClusterQueue directly. A cluster administrator can optionally define one local queue in a project as the default local queue for that project.
+
+When Configure a distributed workload, the user specifies the local queue name. If a cluster administrator configured a default local queue, the user can omit the local queue specification from the distributed workload code.
 
 ```yaml
 apiVersion: kueue.x-k8s.io/v1beta1
@@ -2438,13 +2026,15 @@ spec:
   clusterQueue: cluster-queue
 ```
 
+In this example, the kueue.x-k8s.io/default-queue: "true" annotation defines this local queue as the default local queue for the `sandbox` project. If a user submits a distributed workload in the `sandbox` project and that distributed workload does not specify a local queue in the cluster configuration, Kueue automatically routes the distributed workload to the `local-queue-test` local queue. The distributed workload can then access the resources that the cluster-queue cluster queue manages.
+
 ![NOTE]
 Update the `name` and `namespace` accordingly.
 
 Apply the configuration to create the local-queue object
 
 ```sh
-oc new-project sandbox
+oc project sandbox
 oc apply -f configs/rhoai-kueue-local-queue.yaml
 ```
 
@@ -2467,7 +2057,7 @@ NAME               CLUSTERQUEUE    PENDING WORKLOADS   ADMITTED WORKLOADS
 local-queue-test   cluster-queue   0 
 ```
 
-### (Optional) Configuring the CodeFlare Operator (~5min)
+### (Optional) Configure the CodeFlare Operator (~5min)
 
 Get the `codeflare-operator-config` configmap
 
@@ -2475,11 +2065,11 @@ Get the `codeflare-operator-config` configmap
 oc get cm codeflare-operator-config -n redhat-ods-applications -o yaml
 ```
 
-In the `codeflare-operator-config`, data:config.yaml:kuberay section, you can patch the [following](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-the-codeflare-operator_distributed-workloads)
+In the `codeflare-operator-config`, data:config.yaml:kuberay section, you can patch the [following](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/working_with_distributed_workloads/Configure-distributed-workloads_distributed-workloads#Configure-the-codeflare-operator_distributed-workloads)
 
-1. ingressDomain option is null (ingressDomain: "") by default.
-1. mTLSEnabled option is enabled (mTLSEnabled: true) by default.
-1. rayDashboardOauthEnabled option is enabled (rayDashboardOAuthEnabled: true) by default.
+1. `ingressDomain` option is null (ingressDomain: "") by default.
+1. `mTLSEnabled` option is enabled (mTLSEnabled: true) by default.
+1. `rayDashboardOauthEnabled` option is enabled (rayDashboardOAuthEnabled: true) by default.
 
 ```yaml
 kuberay:
@@ -2519,7 +2109,7 @@ Access the RHOAI Dashboard > Settings.
 
 #### Add a new Accelerator Profile (~3min)
 
-[Enabling GPU support in OpenShift AI](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/installing_and_uninstalling_openshift_ai_self-managed/enabling-gpu-support_install)
+[Enabling GPU support in OpenShift AI](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/enabling-gpu-support_install)
 
 RHOAI dashboard and check the **Settings > Accelerator profiles** - There should be none listed.
 
