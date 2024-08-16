@@ -1,7 +1,5 @@
 # Notes - OVERVIEW
 
-
-
 Overview of the features in Red Hat OpenShift dependencies.
 
 |Component            |Purpose     |Dependency   |Resources          |Description      |
@@ -48,17 +46,6 @@ Overview of the features in Red Hat OpenShift dependencies.
     1. Ability to control the remote distributed compute jobs and infrastructure
     1. Ability to manage remote Ray clusters on OpenShift
     1. Ability to run distributed workloads from data science pipelines, from Jupyter notebooks, or from Microsoft Visual Studio Code files.
-
-## Default Operations
-
-RHOAI creates 4x OCP Projects
-
-1. `redhat-ods-operator` project contains the Red Hat OpenShift AI Operator.
-1. `redhat-ods-applications` project installs the dashboard and other required components of OpenShift AI.
-1. `redhat-ods-monitoring` project contains services for monitoring.
-1. `rhods-notebooks` project is where notebook environments are deployed by default.
-
-> Do not install independent software vendor (ISV) applications in namespaces associated with OpenShift AI.
 
 ## Tips
 

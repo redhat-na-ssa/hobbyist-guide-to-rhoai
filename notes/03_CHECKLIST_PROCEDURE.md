@@ -1268,7 +1268,10 @@ daemonset.apps/nvidia-node-status-exporter                     2         2      
 daemonset.apps/nvidia-operator-validator                       0         0         0       0            0           nvidia.com/gpu.deploy.operator-validator=true                                                                         22s
 ```
 
-(Optional) When the NVIDIA operator completes labeling the nodes, you can add a label to the GPU node Role as `gpu, worker` for readability (cosmetic). You may have to rerun this command for multilpe nodes.
+With the daemonset deployed, NVIDIA GPUs have the `nvidia-device-plugin` and can be requested by a container using the `nvidia.com/gpu` resource type. The [NVIDIA device plugin](https://github.com/NVIDIA/k8s-device-plugin?tab=readme-ov-file#shared-access-to-gpus) has a number of options, like MIG Strategy, that can be configured for it.
+
+#### GPU Node Role Label
+When the NVIDIA operator completes labeling the nodes, you can add a label to the GPU node Role as `gpu, worker` for readability (cosmetic). You may have to rerun this command for multilpe nodes.
 
 ```sh
 oc label node -l nvidia.com/gpu.machine node-role.kubernetes.io/gpu=''
@@ -1307,6 +1310,8 @@ oc -n openshift-machine-api \
 # expected output
 machineset.machine.openshift.io/cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu patched
 ```
+
+At this time, the Nvidia operator creates an extended resource called `nvidia.com/gpu` on the nodes. `nvidia.com/gpu` is only used as a resource identifier, not anything else, in the context of differentiating GPU models (i.e. L40s, H100, V100, etc.). Node Selectors and Pod Affinity can still be configured arbitrarily. Later in this procedure, Distributed Workloads, `Kueue`, allows more granularity than that (including capacity reservation at the cluster and namespace levels). If you have heterogeneous GPUs in a single node, this becomes more difficult and outside the capabilities of any of those solutions.
 
 ### (Optional) Running a sample GPU Application
 
@@ -1651,13 +1656,18 @@ oc -n nvidia-gpu-operator get all -l app.kubernetes.io/name=console-plugin-nvidi
 
 ### GPU sharing methods
 
-Why? By default, you get one workload per GPU. This is inefficient for certain use cases. [How can you share a GPU to 1:N workloads](https://docs.openshift.com/container-platform/4.15/architecture/nvidia-gpu-architecture-overview.html#nvidia-gpu-prerequisites_nvidia-gpu-architecture-overview):
+Why? By default, you get one workload per GPU. This is inefficient for most use cases. [How can you share a GPU to 1:N workloads](https://docs.openshift.com/container-platform/4.15/architecture/nvidia-gpu-architecture-overview.html#nvidia-gpu-prerequisites_nvidia-gpu-architecture-overview):
 
 For NVIDIA GPU there are a few methods to optimize GPU utilization:
 
-- [Time-slicing NVIDIA GPUs](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/time-slicing-gpus-in-openshift.html#)
-- [Multi-Instance GPU (MIG)](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/mig-ocp.html)
-- [NVIDIA vGPUs](https://docs.nvidia.com/datacenter/cloud-native/openshift/23.9.2/nvaie-with-ocp.html?highlight=passthrough#openshift-container-platform-on-vmware-vsphere-with-nvidia-vgpus)
+|Sharing Method|Description|
+|--------------|-----------|
+|[Time-slicing NVIDIA GPUs](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/time-slicing-gpus-in-openshift.html#)|Allows workloads sharing a GPU to interleave with each other. Nothing special is done to isolate workloads. Each workload has access to the GPU memory and runs in the same fault-domain as others (meaning if one workload crashes, they all do)|
+|[Multi-Process Service](https://docs.nvidia.com/deploy/mps/)|A control daemon is used to manage access to the shared GPU. MPS does space partitioning and allows memory and compute resources to be explicitly partitioned and enforces these limits per workload.|
+|[Multi-Instance GPU (MIG)](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/mig-ocp.html)|Allows you to split your hardware resources into multiple GPU instances, each exposed to the operating system as an independent CUDA-enabled GPU. They operate completely isolated from each other using dedicated hardware resources.|
+|[NVIDIA vGPUs](https://docs.nvidia.com/datacenter/cloud-native/openshift/23.9.2/nvaie-with-ocp.html?highlight=passthrough#openshift-container-platform-on-vmware-vsphere-with-nvidia-vgpus)|Creates virtual GPUs that can be shared across multiple virtual machines. Guest VMs use the NVIDIA vGPUs in the same manner as a physical GPU that has been passed through by the hypervisor. Requires NVIDIA AI Enterprise (NVAIE).|
+
+>Note: The use of time-slicing and MPS are mutually exclusive.
 
 ### Configure GPUs with time slicing
 
@@ -1665,7 +1675,7 @@ For NVIDIA GPU there are a few methods to optimize GPU utilization:
 
 The following sections show you how to configure NVIDIA Tesla T4 GPUs, as they do not support MIG, but can easily accept multiple small jobs.
 
-The NVIDIA GPU Operator enables oversubscription of GPUs through a set of extended options for the NVIDIA Kubernetes Device Plugin. GPU time-slicing enables workloads that are scheduled on oversubscribed GPUs to interleave with one another.
+The NVIDIA GPU Operator enables oversubscription of GPUs through a set of extended options for the NVIDIA Kubernetes Device Plugin. Users can share access to a GPU by running their workloads on one of these predefined instances instead of the full GPU.
 
 You configure GPU time-slicing by performing the following high-level steps:
 

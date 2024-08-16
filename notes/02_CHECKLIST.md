@@ -19,6 +19,7 @@ This is checklist of the technical steps needed to complete the installation and
     - [ ] Adding a GPU node to an existing RHOCP
     - [ ] Deploying the `Red Hat Node Feature Discovery (NFD) Operator`
     - [ ] Install the `NVIDIA GPU Operator`
+      - [ ] GPU Node Role Label
     - [ ] (Optional) Running a sample GPU Application
     - [ ] Enabling the GPU Monitoring Dashboard
     - [ ] Install the NVIDIA GPU administration dashboard
