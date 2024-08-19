@@ -623,7 +623,7 @@ featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-servin
 
 ## Adding a CA bundle
 
-TODO Why add CA Bundle
+A CA bundle is a collection of root certificates that helps establish trust in SSL/TLS connections. When a client, like a web browser, connects to a server using SSL/TLS, the server provides its SSL certificate. The client then uses the CA bundle to verify that the certificate was issued by a trusted CA and that it hasn't been revoked. If the CA bundle can't verify the certificate, the client will usually display a warning or error message indicating that the connection is untrustworthy.
 
 [source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/working-with-certificates_certs#adding-a-ca-bundle_certs)
 
@@ -726,7 +726,7 @@ certificateCERTIFICATECERTIFICATESDFCERTIFICATEcertificateCERTIFICATE
 Open your dscinitialization object `default-dsci` via the CLI or terminal
 `oc edit dscinitialization -n redhat-ods-applications`
 
-In the spec section, add the custom root signed certificate to the customCABundle field for trustedCABundle, as shown in the following example:
+In the spec section, add the custom root signed certificate to the customCABundle field for trustedCABundle, as shown in the following example ( DON'T FORGET THE PIPE `|`):
 
 ```yaml
 spec:
@@ -853,6 +853,7 @@ Remove the following fields:
 
 - [ ] ~Line 10 `generation`
 - [ ] ~Line 16 `uid` (becomes line 15 if you delete line 10 first)
+- [ ] other fields as desired
 
 Apply the configuration to create the gpu machine
 
@@ -879,7 +880,7 @@ cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu   2         2         2       2       
 View the Machine object that the machine set created
 
 ```sh
-oc -n openshift-machine-api get machines | grep gpu
+oc -n openshift-machine-api get machines -w | grep gpu
 ```
 
 ```sh
@@ -984,6 +985,7 @@ oc get pods -n openshift-nfd -w
 ```sh
 # expected output
 NAME                                      READY   STATUS    RESTARTS   AGE
+...
 nfd-controller-manager-78758c57f7-7xfh4   2/2     Running   0          48s
 ```
 
@@ -1038,10 +1040,12 @@ The NFD Operator uses vendor PCI IDs to identify hardware in a node.
 
 Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/member-companies?combine=10de):
 
-- `10de`  NVIDIA
-- `1d0f` AWS
-- `1002` AMD
-- `8086` Intel
+|PCI id|Vendor|
+|------|------|
+|`10de`|NVIDIA|
+|`1d0f`| AWS  |
+|`1002`| AMD  |
+|`8086`| Intel|
 
 Verify the GPU device (NVIDIA uses the PCI ID `10de`) is discovered on the GPU node. This mean the NFD Operator correctly identified the node from the GPU-enabled MachineSet.
 
@@ -1187,11 +1191,13 @@ oc get packagemanifests/gpu-operator-certified -n openshift-marketplace -ojson |
 
 ```sh
 # expected output
-gpu-operator-certified.v24.3.0
+gpu-operator-certified.v24.6.1
 ```
 
 Create the following Subscription CR and save the YAML
 Update the `channel` and `startingCSV` fields with the information returned
+
+**You may need to update/verify the channel.**
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -1200,12 +1206,11 @@ metadata:
   name: gpu-operator-certified
   namespace: nvidia-gpu-operator
 spec:
-  channel: "v24.3"
+  channel: "v24.6"
   installPlanApproval: Automatic
   name: gpu-operator-certified
   source: certified-operators
   sourceNamespace: openshift-marketplace
-  # startingCSV: "gpu-operator-certified.v24.3.0"
 ```
 
 Apply the Subscription CR
@@ -1229,7 +1234,8 @@ oc get installplan -n nvidia-gpu-operator -w
 ```sh
 # expected output
 NAME            CSV                              APPROVAL    APPROVED
-install-xxxx    gpu-operator-certified.v24.3.0   Automatic   true
+...
+install-295r6   gpu-operator-certified.v24.6.1   Automatic   true
 ```
 
 (Optional) Approve the install plan if not `Automatic`
@@ -1241,7 +1247,7 @@ INSTALL_PLAN=$(oc get installplan -n nvidia-gpu-operator -oname)
 Create the cluster policy
 
 ```sh
-oc get csv -n nvidia-gpu-operator gpu-operator-certified.v24.3.0 -o jsonpath='{.metadata.annotations.alm-examples}' | jq '.[0]' > scratch/nvidia-gpu-clusterpolicy.json
+oc get csv -n nvidia-gpu-operator gpu-operator-certified.v24.6.1 -o jsonpath='{.metadata.annotations.alm-examples}' | jq '.[0]' > scratch/nvidia-gpu-clusterpolicy.json
 ```
 
 Apply the clusterpolicy
@@ -1290,6 +1296,7 @@ oc label node -l nvidia.com/gpu.machine node-role.kubernetes.io/gpu=''
 ```sh
 # expected output
 node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal labeled
+node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal labeled
 ```
 
 ```sh
@@ -1299,6 +1306,7 @@ oc get nodes
 ```sh
 # expected output
 NAME                                        STATUS   ROLES                         AGE   VERSION
+...
 ip-10-x-xx-xxx.us-xxxx-x.compute.internal   Ready    gpu,worker                    19h   v1.28.10+a2c84a5
 ip-10-x-xx-xxx.us-xxxx-x.compute.internal   Ready    gpu,worker                    19h   v1.28.10+a2c84a5
 ...
@@ -1393,16 +1401,10 @@ NAME             READY   STATUS      RESTARTS   AGE
 cuda-vectoradd   0/1     Completed   0          54s
 ```
 
-Get information about the GPU
-
-```sh
-oc project nvidia-gpu-operator
-```
-
 View the new pods
 
 ```sh
-oc get pod -o wide -l openshift.driver-toolkit=true
+oc get pod -o wide -l openshift.driver-toolkit=true -n nvidia-gpu-operator
 ```
 
 ```sh
@@ -1910,6 +1912,7 @@ oc -n openshift-machine-api \
 ## Configure distributed workloads
 
 Why?
+
 1. You can iterate faster and experiment more frequently because of the reduced processing time.
 1. You can use larger datasets, which can lead to more accurate models.
 1. You can use complex models that could not be trained on a single node.
@@ -1953,7 +1956,7 @@ kueue-controller-manager-77c758b595-hgrz7                         1/1     Runnin
 
 #### Create an empty Kueue resource flavor
 
-Why? Resources in a cluster are typically not homogeneous. A ResourceFlavor is an object that describes these resource variations (i.e. Nvidia A100 versus T4 GPUs) and allows you to associate them with cluster nodes through labels, taints and tolerations.
+Resources in a cluster are typically not homogeneous. A ResourceFlavor is an object that describes these resource variations (i.e. Nvidia A100 versus T4 GPUs) and allows you to associate them with cluster nodes through labels, taints and tolerations.
 
 A cluster administrator can create an empty ResourceFlavor object named `default-flavor`, without any labels or taints, as follows:
 
@@ -1969,7 +1972,7 @@ spec:
     key: nvidia.com/gpu
 ```
 
->In OpenShift AI 2.10, Red Hat supports only a single cluster queue per cluster (that is, homogenous clusters), and only empty resource flavors.
+In OpenShift AI 2.10, Red Hat supports only a single cluster queue per cluster (that is, homogenous clusters), and only empty resource flavors.
 
 Apply the configuration to create the `default-flavor`
 
@@ -1984,7 +1987,7 @@ resourceflavor.kueue.x-k8s.io/default-flavor created
 
 #### Create a cluster queue to manage the empty Kueue resource flavor
 
-Why? The Kueue ClusterQueue object manages a pool of cluster resources such as pods, CPUs, memory, and accelerators. A cluster can have multiple cluster queues, and each cluster queue can reference multiple resource flavors.
+The Kueue ClusterQueue object manages a pool of cluster resources such as pods, CPUs, memory, and accelerators. A cluster can have multiple cluster queues, and each cluster queue can reference multiple resource flavors.
 
 Cluster administrators can configure cluster queues to define the resource flavors that the queue manages, and assign a quota for each resource in each resource flavor. Cluster administrators can also configure usage limits and queueing strategies to apply fair sharing rules across multiple cluster queues in a cluster.
 
@@ -2030,7 +2033,7 @@ clusterqueue.kueue.x-k8s.io/cluster-queue created
 
 #### Create a local queue that points to your cluster queue
 
-Why? A LocalQueue is a namespaced object that groups closely related Workloads that belong to a single namespace. Users submit jobs to a LocalQueue, instead of to a ClusterQueue directly. A cluster administrator can optionally define one local queue in a project as the default local queue for that project.
+A LocalQueue is a namespaced object that groups closely related Workloads that belong to a single namespace. Users submit jobs to a LocalQueue, instead of to a ClusterQueue directly. A cluster administrator can optionally define one local queue in a project as the default local queue for that project.
 
 When Configure a distributed workload, the user specifies the local queue name. If a cluster administrator configured a default local queue, the user can omit the local queue specification from the distributed workload code.
 
@@ -2054,7 +2057,10 @@ Update the `name` and `namespace` accordingly.
 Apply the configuration to create the local-queue object
 
 ```sh
+# go to sandbox
 oc project sandbox
+
+## create local queue
 oc apply -f configs/rhoai-kueue-local-queue.yaml
 ```
 
@@ -2138,6 +2144,7 @@ Check the current configmap
 ```sh
 oc get cm migration-gpu-status -n redhat-ods-applications -o yaml
 ```
+
 ```sh
 # expected output
 apiVersion: v1
@@ -2145,11 +2152,10 @@ data:
   migratedCompleted: "true"
 kind: ConfigMap
 metadata:
-  creationTimestamp: "2024-07-16T17:43:10Z"
+  ...
   name: migration-gpu-status
   namespace: redhat-ods-applications
-  resourceVersion: "48442"
-  uid: 1724c41a-8bbc-4619-a55f-df029d98f2ff
+  ...
 ```
 
 Delete the migration-gpu-status ConfigMap
