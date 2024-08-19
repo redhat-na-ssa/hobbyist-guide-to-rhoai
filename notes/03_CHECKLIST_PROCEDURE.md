@@ -25,7 +25,11 @@ source <(oc completion bash)
 Git clone this repository to your local editor
 
 ```sh
+# git clone
 git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
+
+# change dir
+cd hobbyist-guide-to-rhoai
 ```
 
 ## Add administrative users
@@ -39,7 +43,10 @@ For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPass
 Create an htpasswd file to store the user and password information
 
 ```sh
+# create scratch dir
 mkdir scratch
+
+# create htpass file
 htpasswd -c -B -b scratch/users.htpasswd <username> <password>
 ```
 
@@ -116,6 +123,14 @@ You will have to a few minutes for the account to resolve.
 oc get co authentication -w
 ```
 
+Wait until you see the co refresh to `0s`
+
+```sh
+# expected output
+NAME             VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE   MESSAGE
+authentication   4.16.6    True        False         False      0s  
+```
+
 As kubeadmin, assign the cluster-admin role to perform administrator level tasks. [See default cluster roles](https://docs.openshift.com/container-platform/4.15/authentication/using-rbac.html#default-roles_using-rbac)
 
 ```sh
@@ -127,18 +142,7 @@ oc adm policy add-cluster-role-to-user cluster-admin <user>
 clusterrole.rbac.authorization.k8s.io/cluster-admin added: "<username>"
 ```
 
-```sh
-oc get users 
-```
-
 If needed, see [Updating users for an htpasswd identity provider](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html-single/authentication_and_authorization/index#identity-provider-htpasswd-update-users_configuring-htpasswd-identity-provider)
-
-```sh
-# expected output
-
-NAME    UID                                    FULL NAME   IDENTITIES
-admin   5cdea351-fd1d-4b81-9e75-1f05d34104d4               htpasswd:admin
-```
 
 Log in to the cluster as a user from your identity provider, entering the password when prompted
 
@@ -185,14 +189,13 @@ subscription.operators.coreos.com/web-terminal created
 
 From the OCP Web Console, Refresh the browser and click the `>_` icon in the top right of the window. This can serve as your browser based CLI.
 
+>Note: you can [customize the terminal](https://github.com/redhat-na-ssa/demo-ai-gitops-catalog/tree/main/components/operators/web-terminal) with custom tooling and styles.
+
 You can `git clone` in the instance and complete the rest of the procedure.
 
 ```sh
 # clone in the web terminal
 git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
-
-# check the dir
-ls
 
 # change directory
 cd hobbyist-guide-to-rhoai/
@@ -205,23 +208,29 @@ mkdir scratch
 
 Before you install RHOAI, it is important to understand how it's dependencies will be managed as it be automated or not. Below are required and **use-case dependent operators**:
 
-1. `Red Hat OpenShift Serverless Operator` (if RHOAI KServe is planned for serving, this is required)
-1. `Red Hat OpenShift Service Mesh Operator` (if RHOAI KServe is planned for serving, this is required)
-1. `Red Hat Authorino Operator` (if you want to authenticate KServe model API endpoints with a route, RHOAI recommended)
-1. `Red Hat Node Feature Discovery (NFD) Operator` (if additional hardware features are beiing utilized, like GPU)
-1. `NVIDIA GPU Operator` (if NVIDIA GPU accelerators exist)
-1. `NVIDIA Network Operator` (if NVIDIA Infiniband accelerators exist)
-1. `Kernel Module Management (KMM) Operator` (if Intel Gaudi/AMD accelerators exist)
-1. `HabanaAI Operator` (if Intel Gaudi accelerators exist)
-1. `AMD GPU Operator` (if AMD accelerators exist)
+| Operator                                        | Description                                                           |
+|-------------------------------------------------|-----------------------------------------------------------------------|
+|`Red Hat OpenShift Serverless Operator`          | if RHOAI KServe is planned for serving, this is required              |
+|`Red Hat OpenShift Service Mesh Operator`        | if RHOAI KServe is planned for serving, this is required              |
+|`Red Hat Authorino Operator`                     | if you want to authenticate KServe model API endpoints with a route   |
+|`Red Hat Node Feature Discovery (NFD) Operator`  | if additional hardware features are being utilized, like GPU          |
+|`NVIDIA GPU Operator`                            | if NVIDIA GPU accelerators exist                                      |
+|`NVIDIA Network Operator`                        | if NVIDIA Infiniband accelerators exist                               |
+|`Kernel Module Management (KMM) Operator`        | if Intel Gaudi/AMD accelerators exist                                 |
+|`HabanaAI Operator`                              | if Intel Gaudi accelerators exist                                     |
+|`AMD GPU Operator`                               | if AMD accelerators exist                                             |
 
->NOTE: NFD and KMM operators exists with other patterns, these are the most common.
+>NOTE: `NFD` and `KMM` operators exists with other patterns, these are the most common.
+
+## RHOAI Component States
 
 There are 3x RHOAI Operator dependency states to be set: `Managed`, `Removed`, and `Unmanaged`.
 
-1. `Managed` = The RHOAI Operator manages the dependency (i.e. Service Mesh, Serverless, etc.). RHOAI manages the operands, not the operators. This is where FeatureTrackers come into play.
-1. `Removed` = The RHOAI Operator removes the dependency. Changing from `Managed` to `Removed` does remove the dependency.
-1. `Unmanaged` = The RHAOI Operator does not manage the dependency allowing for an administrator to manage it instead.  Changing from `Managed` to `Unmanaged` does not remove the dependency. For example, this is important when the customer has an existing Service Mesh. It won't create it when it doesn't exist, but you can make manual changes.
+| State      |   Description                                                            |
+|------------|--------------------------------------------------------------------------|
+|`Managed`   |The RHOAI Operator manages the dependency (i.e. `Service Mesh`, `Serverless`, etc.). RHOAI manages the operands, not the operators. This is where `FeatureTrackers` come into play.|
+|`Removed`   | The RHOAI Operator removes the dependency. Changing from `Managed` to `Removed` does remove the dependency|
+|`Unmanaged` | The RHAOI Operator does not manage the dependency allowing for an administrator to manage it instead.  Changing from `Managed` to `Unmanaged` does not remove the dependency. For example, this is important when the customer has an existing Service Mesh. It won't create it when it doesn't exist, but you can make manual changes.|
 
 ### Install RHOAI KServe dependencies
 
@@ -478,21 +487,22 @@ When you install the Red Hat OpenShift AI Operator in the OpenShift cluster, the
 1. You or your data scientists must create additional projects for the applications that will use your machine learning models.
 
 ```sh
-oc get projects | grep -E "redhat-ods|rhods"
+oc get projects -w | grep -E "redhat-ods|rhods"
 ```
 
 ```sh
 # expected output
-redhat-ods-applications                                           Active
-redhat-ods-monitoring                                             Active
-redhat-ods-operator                                               Active
-rhods-notebooks                                                   Active
+redhat-ods-operator                                                               Active
+redhat-ods-monitoring                                                             Active
+redhat-ods-applications                                                           Active
+redhat-ods-applications                                                           Active
+redhat-ods-applications-auth-provider                                             Active
 ```
 
 >IMPORTANT
 Do not install independent software vendor (ISV) applications in namespaces associated with OpenShift AI.
 
-The RHOAI Operator is installed with a 'default-dcsi' object with the following. Notice how the `serviceMesh` is `Managed`. By default, RHOAI is managing `ServiceMesh`.
+The RHOAI Operator is installed with a `default-dcsi` object with the following. Notice how the `serviceMesh` is `Managed`. By default, RHOAI is managing `ServiceMesh`.
 
 ```sh
 oc describe DSCInitialization -n redhat-ods-operator
@@ -551,7 +561,7 @@ spec:
       serving:
         ingressGateway:
           certificate:
-            type: OpenshiftDefaultIngress
+            type: SelfSigned
         managementState: Managed
         name: knative-serving
       managementState: Managed
@@ -576,7 +586,7 @@ spec:
 Create the DSC object
 
 ```sh
-oc create -f configs/rhoai-operator-dsc.yaml 
+oc create -f configs/rhoai-operator-dsc.yaml
 ```
 
 ```sh
