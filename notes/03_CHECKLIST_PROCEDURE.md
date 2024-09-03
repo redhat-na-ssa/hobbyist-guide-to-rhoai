@@ -5,8 +5,11 @@ Acronyms:
 - RHOCP = Red Hat OpenShift Container Platform
 - RHOAI = Red Hat OpenShift AI
 - ODH = Open Data Hub
+- CR = Custom Resource
 
 >Intended commands to be executed from the root directory of the hobbyist-guide. The majority of the configurations to be applied are already created, with the exception of the ones that prompts you for specifics that are either created in the command or dumped to a `scratch` dir that is in the `.gitignore`.
+
+>CR/Yaml is displayed on the page for review. The majority are provided for you in the `/configs` directory of this repo for ease of use.
 
 ## Access the cluster via your client CLI
 
@@ -30,15 +33,17 @@ git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
 
 # change dir
 cd hobbyist-guide-to-rhoai
+
+# you may need to change branches depending on your scenario (i.e. sa-bootcamp)
 ```
 
 ## Add administrative users
 
-Only users with cluster administrator privileges can install and configure OpenShift AI.
+Only users with cluster administrator privileges can install and configure RHOAI.
 
-You may be logged into the cluster as user `kubeadmin` which is an automatically generated temporary user that should not be used as a best practice. See 06_APPENDIX.md for more details on best practices and patching if needed.
+You may be logged into the cluster as user `kubeadmin`, which is an automatically generated temporary user that should not be used as a best practice. See 06_APPENDIX.md for more details on best practices and patching if needed.
 
-For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPasswd updates the files that store usernames and password for authentication of HTTP users. RHOAI uses the same IdP as Red Hat OpenShift Container Platform, such as: [htpasswd, keystone, LDAP, basic-authentication, request-header, GitHub, GitLab, Google, OpenID Connect](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/authentication_and_authorization/understanding-identity-provider#supported-identity-providers).
+For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPasswd updates the files that store usernames and password for authentication of HTTP users. RHOAI uses the same IdP as RHOCP, such as: [htpasswd, keystone, LDAP, basic-authentication, request-header, GitHub, GitLab, Google, OpenID Connect](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/authentication_and_authorization/understanding-identity-provider#supported-identity-providers).
 
 Create an htpasswd file to store the user and password information
 
@@ -59,7 +64,7 @@ Adding password for user <username>
 Create a secret to represent the htpasswd file
 
 ```sh
-# git clone
+# create secret
 oc create secret generic htpasswd-secret --from-file=htpasswd=scratch/users.htpasswd -n openshift-config
 ```
 
@@ -69,7 +74,7 @@ secret/htpasswd-secret created
 ```
 
 ```sh
-# this creates a secret/htpasswd-secret object in openshift-config
+# verify you created a secret/htpasswd-secret object in openshift-config project
 oc get secret/htpasswd-secret -n openshift-config
 ```
 
@@ -79,7 +84,7 @@ NAME              TYPE     DATA   AGE
 htpasswd-secret   Opaque   1      4m46s
 ```
 
-Define the custom resource for htpasswd
+Review the CR for htpasswd
 
 ```yaml
 apiVersion: config.openshift.io/v1
@@ -149,10 +154,13 @@ Log in to the cluster as a user from your identity provider, entering the passwo
 NOTE: You may need to add the parameter `--insecure-skip-tls-verify=true` if your clusters api endpoint does not have a trusted cert.
 
 ```sh
-oc login --insecure-skip-tls-verify=true -u <username> -p <password>
+# get your cluster info
+oc cluster-info 
+
+oc login https://api.cluster-<id>.<id>.sandbox.opentlc.com:6443 --insecure-skip-tls-verify=true -u <username> -p <password>
 ```
 
-The remainder of the procedure should be completed with the new cluster-admin <user>.
+The remainder of the procedure should be completed with the new cluster-admin `<username>`.
 
 ## (Optional) Install the Web Terminal Operator
 
@@ -160,7 +168,7 @@ The Web Terminal Operator provides users with the ability to create a terminal i
 
 >[NOTE] We could not do this sooner as `kubeadmin` is able to install the Web Terminal Operator, however unable to create web terminal instances [source](https://github.com/redhat-developer/web-terminal-operator/issues/162).
 
-Create a subscription object for the Web Terminal.
+Review the subscription object for the Web Terminal.
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -271,7 +279,7 @@ oc create ns istio-system
 namespace/istio-system created
 ```
 
-Define the required subscription for the Red Hat OpenShift Service Mesh Operator
+Review the required subscription for the Red Hat OpenShift Service Mesh Operator
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -308,7 +316,7 @@ OpenShift Serverless provides Kubernetes native building blocks that enable deve
 
 [source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#creating-a-knative-serving-instance_serving-large-models)
 
-Define the Serverless operator ns, operatorgroup, and subscription
+Review the Serverless operator ns, operatorgroup, and subscription
 
 ```yaml
 ---
@@ -340,7 +348,7 @@ spec:
   sourceNamespace: openshift-marketplace 
 ```
 
-Install the Serverless Operator objects
+Create the Serverless Operator objects
 
 ```sh
 oc create -f configs/serverless-operator.yaml
@@ -359,7 +367,7 @@ For `Unmanaged` deployments additional steps need to be executed. See the Define
 
 In order to front services with Auth{n,z}, Authorino provides an authorization proxy (using Envoy) for publicly  exposed [KServe inference endpoint](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#manually-adding-an-authorization-provider_serving-large-models). You can enable token authorization for models that you expose outside the platform to ensure that only authorized parties can make inference requests.
 
-Create subscription for the Authorino Operator
+Review subscription for the Authorino Operator
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -375,7 +383,7 @@ spec:
   sourceNamespace: openshift-marketplace
 ```
 
-Apply the Authorino subscription
+Create the Authorino subscription
 ```sh
 oc create -f configs/authorino-subscription.yaml
 ```
@@ -387,7 +395,7 @@ subscription.operators.coreos.com/authorino-operator created
 
 For `Unmanaged` deployments additional steps need to be executed. See the Configure Authorino for Unmanaged deployments in the 06_APPENDIX.md
 
-## Install the Red Hat OpenShift AI Operator
+## Install the RHOAI Operator
 
 [source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/Install-and-deploying-openshift-ai_install#Install-the-openshift-data-science-operator_operator-install)
 
@@ -407,7 +415,7 @@ openshift-operators    web-terminal                                             
 openshift-serverless   serverless-operator                                                 serverless-operator     redhat-operators   stable
 ```
 
-Create a namespace object CR
+Review the RHOAI namespace object CR
 
 ```yaml
 apiVersion: v1
@@ -416,7 +424,7 @@ metadata:
   name: redhat-ods-operator
 ```
 
-Create the namespace in your OpenShift Container Platform cluster
+Create the namespace in your RHOCP cluster
 
 ```sh
 oc create -f configs/rhoai-operator-ns.yaml
@@ -427,7 +435,7 @@ oc create -f configs/rhoai-operator-ns.yaml
 namespace/redhat-ods-operator created
 ```
 
-Create an OperatorGroup object CR
+Review the RHOAI OperatorGroup object CR
 
 ```yaml
 apiVersion: operators.coreos.com/v1
@@ -437,7 +445,7 @@ metadata:
   namespace: redhat-ods-operator 
 ```
 
-Create the OperatorGroup object 
+Create the OperatorGroup object
 
 ```sh
 oc create -f configs/rhoai-operator-group.yaml
@@ -448,7 +456,7 @@ oc create -f configs/rhoai-operator-group.yaml
 operatorgroup.operators.coreos.com/rhods-operator created
 ```
 
-Create a Subscription object CR file, for example, rhoai-operator-subscription.yaml
+Review the RHOAI Subscription CR
 
 >Understanding `update channels`. We are using `stable` channel as this gives customers access to the stable product features. `fast` can lead to an inconsistent experience as it is only supported for 1 month and it updated every month. [source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html-single/Install_and_unInstall_openshift_ai_self-managed/index#understanding-update-channels_install).
 
@@ -476,27 +484,27 @@ oc create -f configs/rhoai-operator-subscription.yaml
 subscription.operators.coreos.com/rhods-operator created
 ```
 
-Check the created projects `redhat-ods-applications|redhat-ods-monitoring|redhat-ods-operator`
-
-When you install the Red Hat OpenShift AI Operator in the OpenShift cluster, the following new projects are created:
-
-1. `redhat-ods-operator` contains the Red Hat OpenShift AI Operator.
-1. `redhat-ods-applications` installs the dashboard and other required components of OpenShift AI.
-1. `redhat-ods-monitoring` contains services for monitoring.
-1. `rhods-notebooks` is where an individual user notebook environments are deployed by default.
-1. You or your data scientists must create additional projects for the applications that will use your machine learning models.
+Verify at least these projects are created `redhat-ods-applications|redhat-ods-monitoring|redhat-ods-operator`
 
 ```sh
 oc get projects -w | grep -E "redhat-ods|rhods"
 ```
 
+When you install the RHOAI Operator in the OpenShift cluster, the following new projects are created:
+
+1. `redhat-ods-operator` contains the RHOAI Operator.
+1. `redhat-ods-applications` installs the dashboard and other required components of OpenShift AI.
+1. `redhat-ods-monitoring` contains services for monitoring.
+Note
+- `rhods-notebooks` is where an individual user notebook environments are deployed by default.
+- You or your data scientists must create additional projects for the applications that will use your machine learning models.
+
 ```sh
 # expected output
-redhat-ods-operator                                                               Active
-redhat-ods-monitoring                                                             Active
-redhat-ods-applications                                                           Active
 redhat-ods-applications                                                           Active
 redhat-ods-applications-auth-provider                                             Active
+redhat-ods-monitoring                                                             Active
+redhat-ods-operator                                                               Active
 ```
 
 >IMPORTANT
@@ -510,7 +518,6 @@ oc describe DSCInitialization -n redhat-ods-operator
 
 ```yaml
 # expected output
-
 ...
 apiVersion: dscinitialization.opendatahub.io/v1
 kind: DSCInitialization
@@ -538,9 +545,9 @@ spec:
 ...
 ```
 
-### Install and managing Red Hat OpenShift AI components
+### Install and managing RHOAI components
 
-In order to use the RHOAI Operator, you must create a DataScienceCluster instance. Create a DataScienceCluster object custom resource (CR) file, for example, rhoai-operator-dsc.yaml
+In order to use the RHOAI Operator, you must create a DataScienceCluster instance. Review the DataScienceCluster object CR
 
 ```yaml
 apiVersion: datasciencecluster.opendatahub.io/v1
@@ -595,7 +602,7 @@ oc create -f configs/rhoai-operator-dsc.yaml
 datasciencecluster.datasciencecluster.opendatahub.io/default-dsc created
 ```
 
-For `Unmanaged` dependencies, see the Install and managing Red Hat OpenShift AI components on the 06_APPENDIX.md.
+For `Unmanaged` dependencies, see the Install and managing RHOAI components on the 06_APPENDIX.md.
 
 The RHOAI Operator has instances deployed as a result of Install the operator.
 
@@ -777,9 +784,9 @@ redhat-ods-operator                     odh-trusted-ca-bundle   2      14m
 rhods-notebooks                         odh-trusted-ca-bundle   2      6m14s
 ```
 
-## (Optional) Configure the OpenShift AI Operator logger
+## (Optional) Configure the RHOAI Operator logger
 
-[source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/Install-and-deploying-openshift-ai_install#Configure-the-operator-logger_operator-log) You can change the log level for OpenShift AI Operator (`development`, `""`, `production`) components by setting the .spec.devFlags.logmode flag for the DSC Initialization/DSCI custom resource during runtime. If you do not set a logmode value, the logger uses the INFO log level by default.
+[source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/Install-and-deploying-openshift-ai_install#Configure-the-operator-logger_operator-log) You can change the log level for RHOAI Operator (`development`, `""`, `production`) components by setting the .spec.devFlags.logmode flag for the DSC Initialization/DSCI CR during runtime. If you do not set a logmode value, the logger uses the INFO log level by default.
 
 Configure the log level from the OpenShift CLI by using the following command with the logmode value set to the log level that you want
 ```sh
@@ -791,7 +798,7 @@ oc patch dsci default-dsci -p '{"spec":{"devFlags":{"logmode":"development"}}}' 
 dscinitialization.dscinitialization.opendatahub.io/default-dsci patched
 ```
 
-Viewing the OpenShift AI Operator log
+Viewing the RHOAI Operator log
 ```sh
 oc get pods -l name=rhods-operator -o name -n redhat-ods-operator |  xargs -I {} oc logs -f {} -n redhat-ods-operator
 ```
@@ -799,11 +806,11 @@ oc get pods -l name=rhods-operator -o name -n redhat-ods-operator |  xargs -I {}
 You can also view via the console
 **Workloads > Deployments > Pods > redhat-ods-operator > Logs**
 
-## Enabling GPU support for OpenShift AI
+## Enabling GPU support for RHOAI
 
 In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs for RHOCP](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/enabling-gpu-support_install). Once completed, RHOAI requires an Accelerator Profile cusstome resource definition in the `redhat-ods-applications`. Currently, NVIDIA and Intel Gaudi are the supported [accelerator profiles](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/working_with_accelerators/overview-of-accelerators_accelerators#overview-of-accelerators_accelerators).
 
-### Adding a GPU node to an existing OpenShift Container Platform cluster
+### Adding a GPU node to an existing RHOCP cluster
 
 You can copy and modify a default compute machine set configuration to create a GPU-enabled machine set and machines for the AWS EC2 cloud provider.
 
@@ -834,20 +841,23 @@ cluster-xxxxx-xxxxx-worker-us-xxxx-xc   0         0                             
 Make a copy of one of the existing compute MachineSet definitions and output the result to a YAML file
 
 ```sh
-# get your machineset names
-oc get machineset -n openshift-machine-api
+# get your machineset name --no-headers removes the headers from the output. awk '{print $1}'. extracts the first column.
+head -n 1 limits the output to the first entry.
+MACHINESET_COPY=$(oc get machinesets -n openshift-machine-api --no-headers | awk '{print $1}' | head -n 1)
 
 # make a copy of an existing machineset definition
-oc get machineset <your-machineset-name> -n openshift-machine-api -o yaml > scratch/machineset.yaml
+oc get machineset $MACHINESET_COPY -n openshift-machine-api -o yaml > scratch/machineset.yaml
 ```
 
-Update the following fields:
+Edit the downloaded machineset.yaml and update the following fields:
 
 - [ ] ~Line 13`.metadata.name` to a name containing `-gpu`.
 - [ ] ~Line 18 `.spec.replicas` from `0` to `2`
 - [ ] ~Line 22`.spec.selector.matchLabels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
 - [ ] ~Line 29 `.spec.template.metadata.labels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
 - [ ] ~Line 51 `.spec.template.spec.providerSpec.value.instanceType` to `g4dn.4xlarge`.
+
+You can use `sed` or `yq` commands. However, sed is more limited and error-prone for complex YAML manipulations. If you have yq installed (a powerful YAML processor), it's much easier to handle such updates.
 
 Remove the following fields:
 
@@ -1121,7 +1131,7 @@ amd-gpu-operator                                   Community Operators   8h
 gpu-operator-certified                             Certified Operators   8h
 ```
 
-Create a Namespace custom resource (CR) that defines the nvidia-gpu-operator namespace
+Create a Namespace CR that defines the nvidia-gpu-operator namespace
 
 ```yaml
 apiVersion: v1
@@ -1972,7 +1982,7 @@ spec:
     key: nvidia.com/gpu
 ```
 
-In OpenShift AI 2.10, Red Hat supports only a single cluster queue per cluster (that is, homogenous clusters), and only empty resource flavors.
+In RHOAI 2.10, Red Hat supports only a single cluster queue per cluster (that is, homogenous clusters), and only empty resource flavors.
 
 Apply the configuration to create the `default-flavor`
 
@@ -2135,7 +2145,7 @@ Access the RHOAI Dashboard > Settings.
 
 #### Add a new Accelerator Profile (~3min)
 
-[Enabling GPU support in OpenShift AI](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/enabling-gpu-support_install)
+[Enabling GPU support in RHOAI](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/enabling-gpu-support_install)
 
 RHOAI dashboard and check the **Settings > Accelerator profiles** - There should be none listed.
 
@@ -2279,11 +2289,11 @@ Refer to [A Guide to High Availability / Disaster Recovery for Applications on O
 
 #### Control plane backup and restore operations
 
-You must [back up etcd](https://docs.openshift.com/container-platform/4.15/backup_and_restore/control_plane_backup_and_restore/backing-up-etcd.html#backup-etcd) data before shutting down a cluster; etcd is the key-value store for OpenShift Container Platform, which persists the state of all resource objects.
+You must [back up etcd](https://docs.openshift.com/container-platform/4.15/backup_and_restore/control_plane_backup_and_restore/backing-up-etcd.html#backup-etcd) data before shutting down a cluster; etcd is the key-value store for RHOCP, which persists the state of all resource objects.
 
 #### Application backup and restore operations
 
-The OpenShift API for Data Protection (OADP) product safeguards customer applications on OpenShift Container Platform. It offers comprehensive disaster recovery protection, covering OpenShift Container Platform applications, application-related cluster resources, persistent volumes, and internal images. OADP is also capable of backing up both containerized applications and virtual machines (VMs).
+The OpenShift API for Data Protection (OADP) product safeguards customer applications on RHOCP. It offers comprehensive disaster recovery protection, covering RHOCP applications, application-related cluster resources, persistent volumes, and internal images. OADP is also capable of backing up both containerized applications and virtual machines (VMs).
 
 However, OADP does not serve as a disaster recovery solution for [etcd](https://docs.openshift.com/container-platform/4.15/backup_and_restore/control_plane_backup_and_restore/backing-up-etcd.html#backup-etcd) or OpenShift Operators.
 
