@@ -50,7 +50,12 @@ you should use the internal K8s service as the server value
 
 Shorter and easier to remember
 ```sh
-server = "https://kubernetes.default.svc",
+# TLS verify with https service
+server = "https://kubernetes.default",
+skip_tls=False
+
+# Skip TLS verify with http service
+server = "http://kubernetes.default",
 skip_tls=True
 ``````
 

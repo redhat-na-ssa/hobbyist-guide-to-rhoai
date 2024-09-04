@@ -533,7 +533,7 @@ spec:
   serviceMesh:
     auth:
       audiences:
-        - 'https://kubernetes.default.svc'
+        - 'https://kubernetes.default'
     controlPlane:
       metricsCollection: Istio
       name: data-science-smcp
