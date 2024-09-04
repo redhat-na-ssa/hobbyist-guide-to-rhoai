@@ -43,8 +43,21 @@ auth = TokenAuthentication(
 auth.login()
 ```
 
-you can also use the internal K8s service as the server value
+(Recommended) Change TLS trust certificate, this will always work and prevent unnecessary hops.
+
+you should use the internal K8s service as the server value
 `server = "https://kubernetes.default.svc.cluster.local:443">`
+
+Shorter and easier to remember
+```sh
+# TLS verify with https service
+server = "https://kubernetes.default",
+skip_tls=False
+
+# Skip TLS verify with http service
+server = "http://kubernetes.default",
+skip_tls=True
+``````
 
 You may need to create a local-queue in your project - see the CHECKLIST_PROCEDURE "Create a local queue that points to your cluster queue"
 
