@@ -23,6 +23,6 @@ Starting from a single RHOCP control-plane, master, worker we will provision the
 │   ├── 03_CHECKLIST_PROCEDURE.md       # Additional detailed steps
 │   ├── 04_TUTORIAL_FRAUD.md            # Notes for the fraud detection demo
 │   ├── 05_TUTORIAL_DISTR_WORKLOADS.md  # Notes for the distributed workloads demo
-│   ├── 06_APPENDIX.md                  # Additional configurations for Unmanaged dependencies
+│   ├── _APPENDIX.md                  # Additional configurations for Unmanaged dependencies
 │   └── configs                         # These are the config files used in the 03_CHECKLIST_PROCEDURE.md
 ```
