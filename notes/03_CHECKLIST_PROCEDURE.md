@@ -41,7 +41,7 @@ cd hobbyist-guide-to-rhoai
 
 Only users with cluster administrator privileges can install and configure RHOAI.
 
-You may be logged into the cluster as user `kubeadmin`, which is an automatically generated temporary user that should not be used as a best practice. See 06_APPENDIX.md for more details on best practices and patching if needed.
+You may be logged into the cluster as user `kubeadmin`, which is an automatically generated temporary user that should not be used as a best practice. See _APPENDIX.md for more details on best practices and patching if needed.
 
 For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPasswd updates the files that store usernames and password for authentication of HTTP users. RHOAI uses the same IdP as RHOCP, such as: [htpasswd, keystone, LDAP, basic-authentication, request-header, GitHub, GitLab, Google, OpenID Connect](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/authentication_and_authorization/understanding-identity-provider#supported-identity-providers).
 
@@ -306,7 +306,7 @@ oc create -f configs/servicemesh-subscription.yaml
 subscription.operators.coreos.com/servicemeshoperator created
 ```
 
-For `Unmanaged` configuration details, see the 06_APPENDIX.md.
+For `Unmanaged` configuration details, see the _APPENDIX.md.
 
 #### Install Red Hat OpenShift Serverless Operator
 
@@ -361,7 +361,7 @@ operatorgroup.operators.coreos.com/serverless-operator created
 subscription.operators.coreos.com/serverless-operator created
 ```
 
-For `Unmanaged` deployments additional steps need to be executed. See the Define a ServiceMeshMember for Serverless in the 06_APPENDIX.md
+For `Unmanaged` deployments additional steps need to be executed. See the Define a ServiceMeshMember for Serverless in the _APPENDIX.md
 
 #### Install Red Hat Authorino Operator
 
@@ -393,7 +393,7 @@ oc create -f configs/authorino-subscription.yaml
 subscription.operators.coreos.com/authorino-operator created
 ```
 
-For `Unmanaged` deployments additional steps need to be executed. See the Configure Authorino for Unmanaged deployments in the 06_APPENDIX.md
+For `Unmanaged` deployments additional steps need to be executed. See the Configure Authorino for Unmanaged deployments in the _APPENDIX.md
 
 ## Install the RHOAI Operator
 
@@ -602,7 +602,7 @@ oc create -f configs/rhoai-operator-dsc.yaml
 datasciencecluster.datasciencecluster.opendatahub.io/default-dsc created
 ```
 
-For `Unmanaged` dependencies, see the Install and managing RHOAI components on the 06_APPENDIX.md.
+For `Unmanaged` dependencies, see the Install and managing RHOAI components on the _APPENDIX.md.
 
 The RHOAI Operator has instances deployed as a result of Install the operator.
 
