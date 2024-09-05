@@ -458,7 +458,7 @@ operatorgroup.operators.coreos.com/rhods-operator created
 
 Review the RHOAI Subscription CR
 
->Understanding `update channels`. We are using `stable` channel as this gives customers access to the stable product features. `fast` can lead to an inconsistent experience as it is only supported for 1 month and it updated every month. [source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html-single/Install_and_unInstall_openshift_ai_self-managed/index#understanding-update-channels_install).
+>Understanding `update channels`. We are using `stable` channel as this gives customers access to the stable product features. `fast` can lead to an inconsistent experience as it is only supported for 1 month and it updated every month. [source](https://access.redhat.com/articles/rhoai-supported-configs).
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -495,7 +495,8 @@ When you install the RHOAI Operator in the OpenShift cluster, the following new 
 1. `redhat-ods-operator` contains the RHOAI Operator.
 1. `redhat-ods-applications` installs the dashboard and other required components of OpenShift AI.
 1. `redhat-ods-monitoring` contains services for monitoring.
-Note
+
+Note:
 - `rhods-notebooks` is where an individual user notebook environments are deployed by default.
 - You or your data scientists must create additional projects for the applications that will use your machine learning models.
 
@@ -786,7 +787,7 @@ rhods-notebooks                         odh-trusted-ca-bundle   2      6m14s
 
 ## (Optional) Configure the RHOAI Operator logger
 
-[source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/Install-and-deploying-openshift-ai_install#Configure-the-operator-logger_operator-log) You can change the log level for RHOAI Operator (`development`, `""`, `production`) components by setting the .spec.devFlags.logmode flag for the DSC Initialization/DSCI CR during runtime. If you do not set a logmode value, the logger uses the INFO log level by default.
+You can change the log level for RHOAI Operator (`development`, `""`, `production`) components by setting the .spec.devFlags.logmode flag for the DSC Initialization/DSCI CR during runtime. If you do not set a logmode value, the logger uses the INFO log level by default. [source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/Install-and-deploying-openshift-ai_install#Configure-the-operator-logger_operator-log).
 
 Configure the log level from the OpenShift CLI by using the following command with the logmode value set to the log level that you want
 ```sh
@@ -808,7 +809,7 @@ You can also view via the console
 
 ## Enabling GPU support for RHOAI
 
-In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs for RHOCP](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/enabling-gpu-support_install). Once completed, RHOAI requires an Accelerator Profile cusstome resource definition in the `redhat-ods-applications`. Currently, NVIDIA and Intel Gaudi are the supported [accelerator profiles](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/working_with_accelerators/overview-of-accelerators_accelerators#overview-of-accelerators_accelerators).
+In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs for RHOCP](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/enabling-gpu-support_install). Once completed, RHOAI requires an Accelerator Profile custom resource definition in the `redhat-ods-applications`. Currently, NVIDIA and Intel Gaudi are the supported [accelerator profiles](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/working_with_accelerators/overview-of-accelerators_accelerators#overview-of-accelerators_accelerators).
 
 ### Adding a GPU node to an existing RHOCP cluster
 
@@ -1045,7 +1046,7 @@ This creates NFD pods in the `openshift-nfd` namespace that poll RHOCP nodes for
 nodefeaturediscovery.nfd.openshift.io/nfd-instance created
 ```
 
-![IMPORTANT]
+>[IMPORTANT]
 The NFD Operator uses vendor PCI IDs to identify hardware in a node.
 
 Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/member-companies?combine=10de):
@@ -1109,7 +1110,7 @@ Roles:              worker
 
 ### Install the NVIDIA GPU Operator
 
-Kubernetes provides access to special hardware resources such as NVIDIA GPUs, NICs, Infiniband adapters and other devices through the [device plugin framework](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/). However, Configure and managing nodes with these hardware resources requires configuration of multiple software components such as drivers, container runtimes or other libraries which are difficult and prone to errors. The NVIDIA GPU Operator uses the [operator framework](https://coreos.com/blog/introducing-operator-framework) within Kubernetes to automate the management of all NVIDIA software components needed to provision GPU. These components include:
+Kubernetes provides access to special hardware resources such as NVIDIA GPUs, NICs, Infiniband adapters and other devices through the [device plugin framework](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/). However, configuring and managing nodes with these hardware resources requires configuration of multiple software components such as drivers, container runtimes or other libraries which are difficult and prone to errors. The NVIDIA GPU Operator uses the [operator framework](https://coreos.com/blog/introducing-operator-framework) within Kubernetes to automate the management of all NVIDIA software components needed to provision GPU. These components include:
 
 1. the NVIDIA drivers (to enable CUDA) for creating high-performance, GPU-accelerated applications
 1. Kubernetes device plugin for GPUs to advertise system hardware resources to the Kubelet
