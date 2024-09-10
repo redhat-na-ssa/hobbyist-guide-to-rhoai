@@ -7,45 +7,40 @@ Red Hat supports the base notebook image, whereas the additional packages are th
 
 In this example, we'll take the existing RHOAI `Minimal Python` notebook image and add OS and Python packages for ODBC database connections.
 
-Get the link to the GitHub repo for the `Minimal Python` notebook image.
+We will use the `2024.1` image tag of the `Minimal Python` base image and its corresponding Git commit files to modify the image.
+
+Set environment variables.
 
 ```sh
-oc get is s2i-minimal-notebook -n redhat-ods-applications -o jsonpath='{.metadata.annotations.opendatahub\.io\/notebook-image-url}{"\n"}'
+BASE_IMAGE=`oc get istag s2i-minimal-notebook:2024.1 -n redhat-ods-applications -o jsonpath='{.image.dockerImageReference}'`
+BUILD_COMMIT=`oc get is s2i-minimal-notebook -n redhat-ods-applications -o jsonpath='{.spec.tags[?(@.name=="2024.1")].annotations.opendatahub\.io\/notebook-build-commit}'`
+BASE_REPO=`https://github.com/red-hat-data-services/notebooks/tree/${BUILD_COMMIT}/jupyter/minimal
 ```
+
+Navigate to the repo for the commit `${BUILD_COMMIT}` that was used to create the image.
 
 ```sh
-# expected output
-https://github.com/red-hat-data-services/notebooks/tree/main/jupyter/minimal
+echo $BASE_REPO
 ```
 
-Navigate to this repo -> `ubi9-python-3.9` -> `Pipfile`
-
-You need a copy of the Pipfile and Pipfile lock.
-
-Download the raw versions of these files
+Download the raw versions of the Pipfile and Pipfile lock files.
 
 ```sh
-curl -o Pipfile https://raw.githubusercontent.com/red-hat-data-services/notebooks/main/jupyter/minimal/ubi9-python-3.9/Pipfile
-curl -o Pipfile.lock https://raw.githubusercontent.com/red-hat-data-services/notebooks/main/jupyter/minimal/ubi9-python-3.9/Pipfile.lock
+curl -o Pipfile $BASE_REPO/ubi9-python-3.9/Pipfile
+curl -o Pipfile.lock $BASE_REPO/ubi9-python-3.9/Pipfile.lock
 ```
 
-Add Python package `pyodbc` to the Pipfile and Pipfile lock
+Add Python package `pyodbc` to the Pipfile and Pipfile lock.
 
 ```sh
 pipenv upgrade "pyodbc~=5.1.0"
-```
-
-Get the image reference for the `Minimal Python` notebook base image `2024.1` tag.
-
-```sh
-MINIMAL_PYTHON_BASE_IMAGE=`oc get istag s2i-minimal-notebook:2024.1 -n redhat-ods-applications -o jsonpath='{.image.dockerImageReference}'`
 ```
 
 Now create a Containerfile. In the Containerfile, add the OS package `unixODBC` which is required for the `pyodbc` module. Also add the `jq` package to demonstrate installing multiple OS packages.
 
 ```sh
 cat > Containerfile <<EOF
-FROM $MINIMAL_PYTHON_BASE_IMAGE
+FROM $BASE_IMAGE
 
 # Install OS packages
 USER 0
