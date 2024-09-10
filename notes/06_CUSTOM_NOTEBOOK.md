@@ -20,12 +20,13 @@ https://github.com/red-hat-data-services/notebooks/tree/main/jupyter/minimal
 
 Navigate to this repo -> `ubi9-python-3.9` -> `Pipfile`
 
-You need a copy of this Pipfile to add Python packages.
+You need a copy of the Pipfile and Pipfile lock..
 
-Download the raw version of this file
+Download the raw versions of these files
 
 ```sh
 curl -o Pipfile https://raw.githubusercontent.com/red-hat-data-services/notebooks/main/jupyter/minimal/ubi9-python-3.9/Pipfile
+curl -o Pipfile.lock https://raw.githubusercontent.com/red-hat-data-services/notebooks/main/jupyter/minimal/ubi9-python-3.9/Pipfile.lock
 ```
 
 Add Python package `pyodbc` to the Pipfile
@@ -38,10 +39,10 @@ pyodbc = "~=5.1.0"\
 ' Pipfile
 ```
 
-Create a Pipfile lock using the updated Pipfile
+Update the Pipfile lock with the new dependency
 
 ```sh
-pipenv lock
+pipenv upgrade pyodbc 
 ```
 
 Get the image reference for the `Minimal Python` notebook base image `2024.1` tag.
