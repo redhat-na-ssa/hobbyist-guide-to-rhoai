@@ -14,7 +14,7 @@ Set environment variables.
 ```sh
 BASE_IMAGE=`oc get istag s2i-minimal-notebook:2024.1 -n redhat-ods-applications -o jsonpath='{.image.dockerImageReference}'`
 BUILD_COMMIT=`oc get is s2i-minimal-notebook -n redhat-ods-applications -o jsonpath='{.spec.tags[?(@.name=="2024.1")].annotations.opendatahub\.io\/notebook-build-commit}'`
-BASE_REPO=`https://github.com/red-hat-data-services/notebooks/tree/${BUILD_COMMIT}/jupyter/minimal
+BASE_REPO=https://github.com/red-hat-data-services/notebooks/tree/${BUILD_COMMIT}/jupyter/minimal
 ```
 
 Navigate to the repo for the commit `${BUILD_COMMIT}` that was used to create the image.
@@ -26,8 +26,8 @@ echo $BASE_REPO
 Download the raw versions of the Pipfile and Pipfile lock files.
 
 ```sh
-curl -o Pipfile $BASE_REPO/ubi9-python-3.9/Pipfile
-curl -o Pipfile.lock $BASE_REPO/ubi9-python-3.9/Pipfile.lock
+curl -o Pipfile https://raw.githubusercontent.com/red-hat-data-services/notebooks/${BUILD_COMMIT}/jupyter/minimal/ubi9-python-3.9/Pipfile
+curl -o Pipfile.lock https://raw.githubusercontent.com/red-hat-data-services/notebooks/${BUILD_COMMIT}/jupyter/minimal/ubi9-python-3.9/Pipfile.lock
 ```
 
 Add Python package `pyodbc` to the Pipfile and Pipfile lock.
@@ -36,7 +36,7 @@ Add Python package `pyodbc` to the Pipfile and Pipfile lock.
 pipenv upgrade "pyodbc~=5.1.0"
 ```
 
-Now create a Containerfile. In the Containerfile, add the OS package `unixODBC` which is required for the `pyodbc` module. Also add the `jq` package to demonstrate installing multiple OS packages.
+Now create a Containerfile. In the Containerfile, add the OS package `unixODBC` which is required for the `pyodbc` module.
 
 ```sh
 cat > Containerfile <<EOF
@@ -45,7 +45,7 @@ FROM $BASE_IMAGE
 # Install OS packages
 USER 0
 
-RUN INSTALL_PKGS="jq unixODBC" && \
+RUN INSTALL_PKGS="unixODBC" && \
     yum install -y --setopt=tsflags=nodocs \$INSTALL_PKGS && \
     yum -y clean all --enablerepo='*'
 
