@@ -1425,10 +1425,10 @@ nvidia-driver-daemonset-415.92.202407091355-0-64sml   2/2     Running   2       
 nvidia-driver-daemonset-415.92.202407091355-0-clp7f   2/2     Running   2          21h   10.xxx.0.xx   ip-10-0-22-15.us-xxxx-x.compute.internal   <none>           <none>
 ```
 
-With the Pod and node name, run the nvidia-smi on the correct node.
+Run nvidia-smi on one of the pods in the daemonset
 
 ```sh
-oc exec -it nvidia-driver-daemonset-410.84.202203290245-0-xxgdv -- nvidia-smi
+oc exec -it daemonset/nvidia-device-plugin-daemonset -n nvidia-gpu-operator -- nvidia-smi
 ```
 
 ```sh
