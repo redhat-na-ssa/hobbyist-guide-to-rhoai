@@ -46,7 +46,7 @@ auth.login()
 (Recommended) Change TLS trust certificate, this will always work and prevent unnecessary hops.
 
 you should use the internal K8s service as the server value
-`server = "https://kubernetes.default.svc.cluster.local:443">`
+`server = "https://kubernetes.default.svc.cluster.local:443"`
 
 Shorter and easier to remember
 ```sh
