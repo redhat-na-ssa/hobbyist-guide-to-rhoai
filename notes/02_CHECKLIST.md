@@ -51,6 +51,7 @@ This is checklist of the technical steps needed to complete the installation and
 
 - [ ] Review RHOAI Dashboard Settings
   - [ ] Notebook Images
+  - [ ] Custom Images
   - [ ] Cluster Settings
     - [ ] Model Serving Platforms
     - [ ] PVC Size
