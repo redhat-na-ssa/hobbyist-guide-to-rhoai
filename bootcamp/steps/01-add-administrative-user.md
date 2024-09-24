@@ -1,24 +1,19 @@
 ## 1. Add administrative user
 
-### Info
 Only users with cluster administrator privileges can install and configure RHOAI.
 
 You may be logged into the cluster as user `kubeadmin`, which is an automatically generated temporary user that should not be used as a best practice. See _APPENDIX.md for more details on best practices and patching if needed.
 
-For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPasswd updates the files that store usernames and password for authentication of HTTP users. RHOAI uses the same IdP as RHOCP, such as: [htpasswd, keystone, LDAP, basic-authentication, request-header, GitHub, GitLab, Google, OpenID Connect](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/authentication_and_authorization/understanding-identity-provider#supported-identity-providers).
+For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPasswd updates the files that store usernames and password for authentication of HTTP users. RHOAI uses the same IdP as RHOCP, such as: htpasswd, keystone, LDAP, basic-authentication, request-header, GitHub, GitLab, Google, OpenID Connect. [More info](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/authentication_and_authorization/understanding-identity-provider#supported-identity-providers).
 
 ### Steps
 
-- Create scratch directory
-    - ```sh
-        mkdir scratch
-        ```
 - Create an htpasswd file to store the user and password information
 
     - ```sh
         htpasswd -c -B -b scratch/users.htpasswd <username> <password>
         ```
-    - ```sh
+         ```sh
         # Expected output
         Adding password for user <username>
         ```
@@ -29,7 +24,7 @@ For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPass
         oc create secret generic htpasswd-secret --from-file=htpasswd=scratch/users.htpasswd -n openshift-config
         ```
 
-    - ```sh
+         ```sh
         # expected output
         secret/htpasswd-secret created
         ```
@@ -39,7 +34,7 @@ For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPass
     - ```sh
         oc get secret/htpasswd-secret -n openshift-config
         ```
-    - ```sh
+         ```sh
         # expected output
         NAME              TYPE     DATA   AGE
         htpasswd-secret   Opaque   1      4m46s
@@ -50,7 +45,7 @@ For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPass
     - ```sh
         oc apply -f configs/htpasswd-cr.yaml
         ```
-    - ```sh
+         ```sh
         # expected output
         oauth.config.openshift.io/cluster configured
         ```
@@ -67,7 +62,7 @@ For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPass
         oc get co authentication -w
         ```
 
-    - ```sh
+         ```sh
         Wait until you see the co refresh to `0s`
         
         # expected output
@@ -80,7 +75,7 @@ For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPass
         oc adm policy add-cluster-role-to-user cluster-admin admin1
         ```
 
-    - ```sh
+         ```sh
         # expected output
         clusterrole.rbac.authorization.k8s.io/cluster-admin added: "<username>"
         ```

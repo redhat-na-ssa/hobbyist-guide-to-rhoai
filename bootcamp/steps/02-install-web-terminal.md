@@ -1,9 +1,8 @@
 ## 2. (Optional) Install the web terminal
 
-### Info
-The Web Terminal Operator provides users with the ability to create a terminal instance embedded in the OpenShift Console. This is useful to provide a consistent terminal experience for those using Microsoft OS or MacOS. It also minimizes context switching between the browser and local client. [docs](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/web_console/web-terminal).
+The Web Terminal Operator provides users with the ability to create a terminal instance embedded in the OpenShift Console. This is useful to provide a consistent terminal experience for those using Microsoft OS or MacOS. It also minimizes context switching between the browser and local client. [More info](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/web_console/web-terminal).
 
->[NOTE] We could not do this sooner as `kubeadmin` is able to install the Web Terminal Operator, however unable to create web terminal instances [source](https://github.com/redhat-developer/web-terminal-operator/issues/162).
+>[NOTE] We could not do this sooner as `kubeadmin` is able to install the Web Terminal Operator, however unable to create web terminal instances. [More info](https://github.com/redhat-developer/web-terminal-operator/issues/162).
 
 ### Steps
 
@@ -12,7 +11,7 @@ The Web Terminal Operator provides users with the ability to create a terminal i
   - ```sh
     oc apply -f configs/web-terminal-subscription.yaml
     ```
-  - ```sh
+    ```sh
     # expected output
     subscription.operators.coreos.com/web-terminal configured
     ```
