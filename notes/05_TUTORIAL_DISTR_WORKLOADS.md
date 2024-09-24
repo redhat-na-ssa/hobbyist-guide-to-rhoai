@@ -8,6 +8,14 @@
 
 * You created a resource flavor, cluster queue, and a local queue in project `sandbox` following [this section](https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai/blob/sa-bootcamp/notes/03_CHECKLIST_PROCEDURE.md#configure-quota-management-for-distributed-workloads).
 
+### Permissions
+
+Allow service accounts in the sandbox project to edit resources.
+
+```sh
+oc adm policy add-role-to-group edit system:serviceaccounts:sandbox -n sandbox
+```
+
 ### Create shared storage
 
 
