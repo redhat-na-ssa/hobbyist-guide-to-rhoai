@@ -46,7 +46,7 @@ helm install minio --namespace minio --set replicas=1 --set persistence.enabled=
 
 1. Access the RHOAI Dashboard
 1. Access the `sandbox` project
-1. Create a workebench using the `Standard Data Science` notebook and set the following environment variables as Secrets (see [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.13/html/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects) if needed):
+1. Create a workbench using the `Standard Data Science` notebook and set the following environment variables as Secrets (see [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.13/html/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects) if needed):
     1. `ACCESS_KEY` = `rootuser`
     1. `SECRET_KEY` = `rootuser123`
     1. `ENDPOINT_URL` = `http://minio.minio:9000`
