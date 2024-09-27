@@ -7,8 +7,10 @@ In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs
 You can copy and modify a default compute machine set configuration to create a GPU-enabled machine set and machines for the AWS EC2 cloud provider. [More Info](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/machine_management/managing-compute-machines-with-the-machine-api#nvidia-gpu-aws-adding-a-gpu-node_creating-machineset-aws)
 
 ### Steps
+
 - View the existing nodes
-    - ```sh
+
+  - ```sh
         oc get nodes
         ```
 
@@ -19,7 +21,8 @@ You can copy and modify a default compute machine set configuration to create a 
         ```
 
 - View the machines and machine sets that exist in the openshift-machine-api namespace
-    - ```sh
+
+  - ```sh
         oc get machinesets -n openshift-machine-api
         ```
 
@@ -31,7 +34,7 @@ You can copy and modify a default compute machine set configuration to create a 
 
 - Make a copy of one of the existing compute MachineSet definitions and output the result to a YAML file
 
-    - ```sh
+  - ```sh
         # get your machineset name --no-headers removes the headers from the output. awk '{print $1}'. extracts the first column.
         head -n 1 limits the output to the first entry.
         MACHINESET_COPY=$(oc get machinesets -n openshift-machine-api --no-headers | awk '{print $1}' | head -n 1)
@@ -42,18 +45,19 @@ You can copy and modify a default compute machine set configuration to create a 
 
 - Edit the downloaded machineset.yaml and update the following fields:
 
-    - ```
+  - ```
         - [ ] ~Line 13`.metadata.name` to a name containing `-gpu`.
         - [ ] ~Line 18 `.spec.replicas` from `0` to `2`
         - [ ] ~Line 22`.spec.selector.matchLabels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
         - [ ] ~Line 29 `.spec.template.metadata.labels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
         - [ ] ~Line 51 `.spec.template.spec.providerSpec.value.instanceType` to `g4dn.4xlarge`.
         ```
+
 >You can use `sed` or `yq` commands. However, sed is more limited and error-prone for complex YAML manipulations. If you have yq installed (a powerful YAML processor), it's much easier to handle such updates.
 
 - Remove the following fields:
 
-    - ```
+  - ```
         - [ ] ~Line 10 `generation`
         - [ ] ~Line 16 `uid` (becomes line 15 if you delete line 10 first)
         - [ ] other fields as desired
@@ -61,7 +65,7 @@ You can copy and modify a default compute machine set configuration to create a 
 
 - Apply the configuration to create the gpu machine
 
-    - ```sh
+  - ```sh
         oc apply -f scratch/machineset.yaml
         ```
 
@@ -72,7 +76,7 @@ You can copy and modify a default compute machine set configuration to create a 
 
 - Verify the gpu machineset you created is running
 
-    - ```sh
+  - ```sh
         oc -n openshift-machine-api get machinesets | grep gpu
         ```
 
@@ -83,7 +87,7 @@ You can copy and modify a default compute machine set configuration to create a 
 
 - View the Machine object that the machine set created
 
-    - ```sh
+  - ```sh
         oc -n openshift-machine-api get machines -w | grep gpu
         ```
 
@@ -99,9 +103,10 @@ After the GPU-enabled node is created, you need to discover the GPU-enabled node
 [More Info](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/machine_management/managing-compute-machines-with-the-machine-api#nvidia-gpu-aws-deploying-the-node-feature-discovery-operator_creating-machineset-aws)
 
 ### Steps
+
 - List the available operators for installation searching for Node Feature Discovery (NFD)
 
-    - ```sh
+  - ```sh
         oc get packagemanifests -n openshift-marketplace | grep nfd
         ```
 
@@ -113,7 +118,7 @@ After the GPU-enabled node is created, you need to discover the GPU-enabled node
 
 - Apply the Namespace object
 
-    - ```sh
+  - ```sh
         oc apply -f configs/nfd-operator-ns.yaml
         ```
 
@@ -124,7 +129,7 @@ After the GPU-enabled node is created, you need to discover the GPU-enabled node
 
 - Apply the OperatorGroup object
 
-    - ```sh
+  - ```sh
         oc apply -f configs/nfd-operator-group.yaml
         ```
 
@@ -135,7 +140,7 @@ After the GPU-enabled node is created, you need to discover the GPU-enabled node
 
 - Apply the Subscription object
 
-    - ```sh
+  - ```sh
         oc apply -f configs/nfd-operator-sub.yaml
         ```
 
@@ -146,7 +151,7 @@ After the GPU-enabled node is created, you need to discover the GPU-enabled node
 
 - Verify the operator is installed and running
 
-    - ```sh
+  - ```sh
         # watch the pods create in the new project
         oc get pods -n openshift-nfd -w
         ```
@@ -161,22 +166,22 @@ After the GPU-enabled node is created, you need to discover the GPU-enabled node
         After Install the NFD Operator, you create instance that installs the `nfd-master` and one `nfd-worker` pod for each compute node in the `openshift-nfd` namespace.
 [More Info](https://docs.openshift.com/container-platform/4.15/hardware_enablement/psap-node-feature-discovery-operator.html#Configure-node-feature-discovery-operator-sources_psap-node-feature-discovery-operator)
 
-
 - Create the nfd instance object
 
-    - ```sh
+  - ```sh
         oc apply -f configs/nfd-instance.yaml
         ```
+
         ```sh
         # expected output
         nodefeaturediscovery.nfd.openshift.io/nfd-instance created
         ```
+
         This creates NFD pods in the `openshift-nfd` namespace that poll RHOCP nodes for hardware resources and catalogue them.
 
         A bit information about fields in `nfd-instance.yaml`
-        - `sources.pci.deviceClassWhitelist` is a list of [PCI device class IDs](https://admin.pci-ids.ucw.cz/read/PD) for which to publish a label. It can be specified as a main class only (for example, `03`) or full class-subclass combination (for example `0300`). The former implies that all subclasses are accepted. The format of the labels can be further configured with deviceLabelFields.
-        - `sources.pci.deviceLabelFields` is the set of PCI ID fields to use when constructing the name of the feature label. Valid fields are `class`, `vendor`, `device`, `subsystem_vendor` and `subsystem_device`. With the example config above, NFD would publish labels such as `feature.node.kubernetes.io/pci-<vendor-id>.present=true`
-
+    - `sources.pci.deviceClassWhitelist` is a list of [PCI device class IDs](https://admin.pci-ids.ucw.cz/read/PD) for which to publish a label. It can be specified as a main class only (for example, `03`) or full class-subclass combination (for example `0300`). The former implies that all subclasses are accepted. The format of the labels can be further configured with deviceLabelFields.
+    - `sources.pci.deviceLabelFields` is the set of PCI ID fields to use when constructing the name of the feature label. Valid fields are `class`, `vendor`, `device`, `subsystem_vendor` and `subsystem_device`. With the example config above, NFD would publish labels such as `feature.node.kubernetes.io/pci-<vendor-id>.present=true`
 
 >[IMPORTANT]
 The NFD Operator uses vendor PCI IDs to identify hardware in a node.
@@ -192,7 +197,7 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 
 - Verify the GPU device (NVIDIA uses the PCI ID `10de`) is discovered on the GPU node. This mean the NFD Operator correctly identified the node from the GPU-enabled MachineSet.
 
-    - ```sh
+  - ```sh
         oc describe node | egrep 'Roles|pci' | grep -v master
         ```
 
@@ -209,7 +214,7 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 
 - Verify the NFD pods are `Running` on the cluster nodes polling for devices
 
-    - ```sh
+  - ```sh
         oc get pods -n openshift-nfd
         ```
 
@@ -225,7 +230,7 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 
 - Verify the NVIDIA GPU is discovered
 
-    - ```sh
+  - ```sh
             # list your nodes
             oc get nodes
 
@@ -256,7 +261,7 @@ Kubernetes provides access to special hardware resources such as NVIDIA GPUs, NI
 
 - List the available operators for installation searching for Node Feature Discovery (NFD)
 
-    - ```sh
+  - ```sh
         oc get packagemanifests -n openshift-marketplace | grep gpu
         ```
 
@@ -268,7 +273,7 @@ Kubernetes provides access to special hardware resources such as NVIDIA GPUs, NI
 
 - Apply the Namespace object YAML file
 
-    - ```sh
+  - ```sh
         oc apply -f configs/nvidia-gpu-operator-ns.yaml
         ```
 
@@ -279,7 +284,7 @@ Kubernetes provides access to special hardware resources such as NVIDIA GPUs, NI
 
 - Apply the OperatorGroup YAML file
 
-    - ```sh
+  - ```sh
         oc apply -f configs/nvidia-gpu-operator-group.yaml 
         ```
 
@@ -290,12 +295,12 @@ Kubernetes provides access to special hardware resources such as NVIDIA GPUs, NI
 
 - Run the following command to get the channel value
 
-    - ```sh
+  - ```sh
         # set channel value
         CHANNEL=$(oc get packagemanifest gpu-operator-certified -n openshift-marketplace -o jsonpath='{.status.defaultChannel}')
         ```
 
-    - ```sh
+  - ```sh
         # echo the channel
         echo $CHANNEL
         ```
@@ -307,7 +312,7 @@ Kubernetes provides access to special hardware resources such as NVIDIA GPUs, NI
 
 - Run the following commands to get the startingCSV
 
-    - ```sh
+  - ```sh
         # run the command to get the startingCSV
         oc get packagemanifests/gpu-operator-certified -n openshift-marketplace -ojson | jq -r '.status.channels[] | select(.name == "'$CHANNEL'") | .currentCSV'
         ```
@@ -332,7 +337,7 @@ Kubernetes provides access to special hardware resources such as NVIDIA GPUs, NI
 
 - Verify an install plan has been created. Be patient.
 
-    - ```sh
+  - ```sh
         # you can watch the installplan instances get created
         oc get installplan -n nvidia-gpu-operator -w
         ```
@@ -346,19 +351,19 @@ Kubernetes provides access to special hardware resources such as NVIDIA GPUs, NI
 
 - (Optional) Approve the install plan if not `Automatic`
 
-    - ```sh
+  - ```sh
         INSTALL_PLAN=$(oc get installplan -n nvidia-gpu-operator -oname)
         ```
 
 - Create the cluster policy
 
-    - ```sh
+  - ```sh
         oc get csv -n nvidia-gpu-operator gpu-operator-certified.v24.6.1 -o jsonpath='{.metadata.annotations.alm-examples}' | jq '.[0]' > scratch/nvidia-gpu-clusterpolicy.json
         ```
 
 - Apply the clusterpolicy
 
-    - ```sh
+  - ```sh
         oc apply -f scratch/nvidia-gpu-clusterpolicy.json
         ```
 
@@ -371,7 +376,7 @@ Kubernetes provides access to special hardware resources such as NVIDIA GPUs, NI
 
 - Verify the successful installation of the NVIDIA GPU Operator
 
-    - ```sh
+  - ```sh
         oc get pods,daemonset -n nvidia-gpu-operator
         ```
 
@@ -393,9 +398,10 @@ Kubernetes provides access to special hardware resources such as NVIDIA GPUs, NI
 With the daemonset deployed, NVIDIA GPUs have the `nvidia-device-plugin` and can be requested by a container using the `nvidia.com/gpu` resource type. The [NVIDIA device plugin](https://github.com/NVIDIA/k8s-device-plugin?tab=readme-ov-file#shared-access-to-gpus) has a number of options, like MIG Strategy, that can be configured for it.
 
 ### Label GPU Nodes
-- When the NVIDIA operator completes labeling the nodes, you can add a label to the GPU node Role as `gpu, worker` for readability (cosmetic). You may have to rerun this command for multilpe nodes.
 
-    - ```sh
+- When the NVIDIA operator completes labeling the nodes, you can add a label to the GPU node Role as `gpu, worker` for readability (cosmetic). You may have to rerun this command for multiple nodes.
+
+  - ```sh
         oc label node -l nvidia.com/gpu.machine node-role.kubernetes.io/gpu=''
         ```
 
@@ -403,24 +409,25 @@ With the daemonset deployed, NVIDIA GPUs have the `nvidia-device-plugin` and can
             # expected output
             node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal labeled
             node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal labeled
-            ```
-
-    - ```sh
-        oc get nodes
         ```
 
-        ```sh
-            # expected output
-            NAME                                        STATUS   ROLES                         AGE   VERSION
-            ...
-            ip-10-x-xx-xxx.us-xxxx-x.compute.internal   Ready    gpu,worker                    19h   v1.28.10+a2c84a5
-            ip-10-x-xx-xxx.us-xxxx-x.compute.internal   Ready    gpu,worker                    19h   v1.28.10+a2c84a5
-            ...
-            ```
+  - ```sh
+
+        oc get nodes
+    ```
+
+    ```sh
+        # expected output
+        NAME                                        STATUS   ROLES                         AGE   VERSION
+        ...
+        ip-10-x-xx-xxx.us-xxxx-x.compute.internal   Ready    gpu,worker                    19h   v1.28.10+a2c84a5
+        ip-10-x-xx-xxx.us-xxxx-x.compute.internal   Ready    gpu,worker                    19h   v1.28.10+a2c84a5
+        ...
+    ```
 
 - In order to apply this label to new machines/nodes:
 
-    - ```sh
+  - ```sh
         # set an env value
         MACHINE_SET_TYPE=$(oc -n openshift-machine-api get machinesets.machine.openshift.io -o name | grep gpu | head -n1)
 
@@ -430,9 +437,9 @@ With the daemonset deployed, NVIDIA GPUs have the `nvidia-device-plugin` and can
         --type=merge --patch '{"spec":{"template":{"spec":{"metadata":{"labels":{"node-role.kubernetes.io/gpu":""}}}}}}'
         ```
 
-        ```sh
-        # expected output
-        machineset.machine.openshift.io/cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu patched
-        ```
+    ```sh
+    # expected output
+    machineset.machine.openshift.io/cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu patched
+    ```
 
 At this time, the Nvidia operator creates an extended resource called `nvidia.com/gpu` on the nodes. `nvidia.com/gpu` is only used as a resource identifier, not anything else, in the context of differentiating GPU models (i.e. L40s, H100, V100, etc.). Node Selectors and Pod Affinity can still be configured arbitrarily. Later in this procedure, Distributed Workloads, `Kueue`, allows more granularity than that (including capacity reservation at the cluster and namespace levels). If you have heterogeneous GPUs in a single node, this becomes more difficult and outside the capabilities of any of those solutions.
