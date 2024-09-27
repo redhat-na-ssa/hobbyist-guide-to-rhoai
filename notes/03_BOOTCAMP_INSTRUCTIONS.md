@@ -9,24 +9,24 @@
 - Login to the cluster via terminal
 
   - ```sh
-        oc login <openshift_cluster_url> -u <admin_username> -p <password>
+      oc login <openshift_cluster_url> -u <admin_username> -p <password>
     ```
 
 - Git clone this repository
 
   - ```sh
-        git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
+      git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
     ```
 
   - ```sh
-        # checkout sa-bootcamp branch
-        git checkout sa-bootcamp
+      # checkout sa-bootcamp branch
+      git checkout sa-bootcamp
     ```
 
 - Create scratch directory
 
   - ```sh
-        mkdir scratch
+      mkdir scratch
     ```
 
 ## Installation Steps
@@ -53,25 +53,25 @@
 - **Option 1** (Fix KubeAdmin bindings and add administrative user)
 
   - ```sh
-        make add-admin-user
+      make add-admin-user
     ```
 
 - **Option 2** (Install RHOAI and all necessary operators)
 
   - ```sh
-        make install-operators
+      make install-operators
     ```
 
 - **Option 3** (Enable GPU support and add GPU nodes)
 
   - ```sh
-        make create-gpu-node
+      make create-gpu-node
     ```
 
 - **Option 4** (Perform full cluster setup, which covers above options as well)
 
   - ```sh
-        make setup-cluster
+      make setup-cluster
     ```
 
 > NOTE: `Steps 10 - 13 needs to be done manually for now`
