@@ -1,28 +1,35 @@
 # RHOAI BootCamp Installation Instructions
 
 ## Pre-reqs
+>
 >Intended commands to be executed from the root directory of the hobbyist-guide. The majority of the configurations to be applied are already created, with the exception of the ones that prompts you for specifics that are either created in the command or dumped to a `scratch` dir that is ignored in the `.gitignore`.
 
 - Have an OpenShift cluster ready with recommended config
 - Install OpenShift CLI [Link](https://docs.openshift.com/container-platform/4.16/cli_reference/openshift_cli/getting-started-cli.html)
 - Login to the cluster via terminal
-    - ```sh
+
+  - ```sh
         oc login <openshift_cluster_url> -u <admin_username> -p <password>
-        ```
+    ```
+
 - Git clone this repository
-    - ```sh
+
+  - ```sh
         git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
-        ```
-    - ```sh
+    ```
+
+  - ```sh
         # checkout sa-bootcamp branch
         git checkout sa-bootcamp
         ```
-- Create scratch directory
-    - ```sh
-        mkdir scratch
-        ```
 
-## Intallation Steps
+- Create scratch directory
+
+  - ```sh
+        mkdir scratch
+    ```
+
+## Installation Steps
 
 1. [Add administrative user](/bootcamp/steps/01-add-administrative-user.md)
 1. [(Optional) Install the web terminal](/bootcamp/steps/02-install-web-terminal.md)
@@ -42,22 +49,29 @@
 
 > You can avail automation to bring yourself upto speed.
 > Automation has 4 different options:
+
 - **Option 1** (Fix KubeAdmin bindings and add administrative user)
-    - ```sh
+
+  - ```sh
         make add-admin-user
-        ```
+    ```
+
 - **Option 2** (Install RHOAI and all necessary operators)
-    - ```sh
+
+  - ```sh
         make install-operators
-        ```
+    ```
+
 - **Option 3** (Enable GPU support and add GPU nodes)
-    - ```sh
+
+  - ```sh
         make create-gpu-node
-        ```
+    ```
 
 - **Option 4** (Perform full cluster setup, which covers above options as well)
-    - ```sh
+
+  - ```sh
         make setup-cluster
-        ```
+    ```
 
 > NOTE: `Steps 10 - 13 needs to be done manually for now`
