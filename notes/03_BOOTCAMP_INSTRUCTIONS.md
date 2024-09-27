@@ -21,7 +21,7 @@
   - ```sh
         # checkout sa-bootcamp branch
         git checkout sa-bootcamp
-        ```
+    ```
 
 - Create scratch directory
 
@@ -47,7 +47,7 @@
 
 ## Automation Key
 
-> You can avail automation to bring yourself upto speed.
+> You can avail automation to bring yourself up to speed.
 > Automation has 4 different options:
 
 - **Option 1** (Fix KubeAdmin bindings and add administrative user)
