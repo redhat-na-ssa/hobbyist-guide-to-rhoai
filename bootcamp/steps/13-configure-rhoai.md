@@ -147,3 +147,9 @@ You must [back up etcd](https://docs.openshift.com/container-platform/4.15/backu
 The OpenShift API for Data Protection (OADP) product safeguards customer applications on RHOCP. It offers comprehensive disaster recovery protection, covering RHOCP applications, application-related cluster resources, persistent volumes, and internal images. OADP is also capable of backing up both containerized applications and virtual machines (VMs).
 
 However, OADP does not serve as a disaster recovery solution for [etcd](https://docs.openshift.com/container-platform/4.15/backup_and_restore/control_plane_backup_and_restore/backing-up-etcd.html#backup-etcd) or OpenShift Operators.
+
+## Automation key
+
+- From this repo's root directory, run below command
+    - ```sh
+        ./bootcamp/scripts/runstep.sh -s 13

@@ -92,3 +92,11 @@ For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPass
     ```
 
 > NOTE: The remainder of the procedure should be completed with the new cluster-admin `<username>`.
+
+
+## Automation key
+
+- From this repo's root directory, run below command
+    - ```sh
+        ./bootcamp/scripts/runstep.sh -s 1
+        ```

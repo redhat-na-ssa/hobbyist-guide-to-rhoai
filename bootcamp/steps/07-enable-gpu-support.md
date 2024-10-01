@@ -436,3 +436,9 @@ With the daemonset deployed, NVIDIA GPUs have the `nvidia-device-plugin` and can
         ```
 
 At this time, the Nvidia operator creates an extended resource called `nvidia.com/gpu` on the nodes. `nvidia.com/gpu` is only used as a resource identifier, not anything else, in the context of differentiating GPU models (i.e. L40s, H100, V100, etc.). Node Selectors and Pod Affinity can still be configured arbitrarily. Later in this procedure, Distributed Workloads, `Kueue`, allows more granularity than that (including capacity reservation at the cluster and namespace levels). If you have heterogeneous GPUs in a single node, this becomes more difficult and outside the capabilities of any of those solutions.
+
+## Automation key
+
+- From this repo's root directory, run below command
+    - ```sh
+        ./bootcamp/scripts/runstep.sh -s 7

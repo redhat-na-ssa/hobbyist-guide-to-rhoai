@@ -93,3 +93,10 @@ In order to front services with Auth{n,z}, Authorino provides an authorization p
         ```
 
 >For `Unmanaged` deployments additional steps need to be executed. See the Configure Authorino for Unmanaged deployments in the _APPENDIX.md
+
+## Automation key
+
+- From this repo's root directory, run below command
+    - ```sh
+        ./bootcamp/scripts/runstep.sh -s 3
+        ```

@@ -217,3 +217,9 @@ You should receive a message on the console "Web console update is available" > 
     - ```sh
         oc -n nvidia-gpu-operator get all -l app.kubernetes.io/name=console-plugin-nvidia-gpu
         ```
+
+## Automation key
+
+- From this repo's root directory, run below command
+    - ```sh
+        ./bootcamp/scripts/runstep.sh -s 9

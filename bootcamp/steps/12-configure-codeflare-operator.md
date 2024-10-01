@@ -19,3 +19,9 @@ In the `codeflare-operator-config`, data:config.yaml:kuberay section, you can pa
     - ```sh
         oc apply -f configs/rhoai-codeflare-operator-config.yaml
         ```
+
+## Automation key
+
+- From this repo's root directory, run below command
+    - ```sh
+        ./bootcamp/scripts/runstep.sh -s 12

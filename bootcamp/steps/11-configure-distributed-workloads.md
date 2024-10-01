@@ -133,3 +133,9 @@ How do users known what queues they can submit jobs to? Users submit jobs to a L
         NAME               CLUSTERQUEUE    PENDING WORKLOADS   ADMITTED WORKLOADS
         local-queue-test   cluster-queue   0 
         ```
+
+## Automation key
+
+- From this repo's root directory, run below command
+    - ```sh
+        ./bootcamp/scripts/runstep.sh -s 11

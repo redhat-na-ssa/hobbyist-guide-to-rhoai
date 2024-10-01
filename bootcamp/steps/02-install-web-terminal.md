@@ -32,3 +32,10 @@ cd hobbyist-guide-to-rhoai/
 # make scratch dir
 mkdir scratch
 ```
+
+## Automation key
+
+- From this repo's root directory, run below command
+    - ```sh
+        ./bootcamp/scripts/runstep.sh -s 2
+        ```

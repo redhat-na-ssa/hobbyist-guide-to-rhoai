@@ -145,3 +145,9 @@ you can use `:34,53s/^/       /` to indent the pasted cert
         redhat-ods-operator                     odh-trusted-ca-bundle   2      14m
         rhods-notebooks                         odh-trusted-ca-bundle   2      6m14s
         ```
+
+## Automation key
+
+- From this repo's root directory, run below command
+    - ```sh
+        ./bootcamp/scripts/runstep.sh -s 5

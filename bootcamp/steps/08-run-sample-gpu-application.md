@@ -100,3 +100,9 @@ Run a simple CUDA VectorAdd sample app [(More Info)](https://docs.nvidia.com/dat
 
     1. The first table reflects the information about all available GPUs (the example shows one GPU).
     1. The second table provides details on the processes using the GPUs.
+
+## Automation key
+
+- From this repo's root directory, run below command
+    - ```sh
+        ./bootcamp/scripts/runstep.sh -s 8

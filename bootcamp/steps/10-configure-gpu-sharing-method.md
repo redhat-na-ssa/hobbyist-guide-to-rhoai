@@ -224,3 +224,9 @@ Why? Prevent non-GPU workloads from being scheduled on the GPU nodes.
         ```
 
 >IMPORTANT: Tolerations will be set in the RHOAI accelerator profiles that match the Taint key.
+
+## Automation key
+
+- From this repo's root directory, run below command
+    - ```sh
+        ./bootcamp/scripts/runstep.sh -s 10

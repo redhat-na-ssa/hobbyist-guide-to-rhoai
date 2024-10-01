@@ -21,3 +21,9 @@ You can change the log level for RHOAI Operator (`development`, `""`, `productio
 
 >You can also view via the console
 **Workloads > Deployments > Pods > redhat-ods-operator > Logs**
+
+## Automation key
+
+- From this repo's root directory, run below command
+    - ```sh
+        ./bootcamp/scripts/runstep.sh -s 6
