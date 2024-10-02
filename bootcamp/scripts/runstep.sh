@@ -133,55 +133,10 @@ setup(){
 
     create_log_file
 
-    case $s in
-        0)
-            logbanner "Running all steps"
-            step_1
-            step_2
-            step_3
-            step_4
-            step_5
-            step_6
-            step_7
-            step_8
-            step_9
-            step_10
-            step_11
-            step_12
-            step_13
-        ;;
-        1)
-            step_1
-        ;;
-        2)
-            step_2
-        ;;
-        3)
-            step_3
-        ;;
-        4)
-            step_4
-        ;;
-        5)
-            step_5
-        ;;
-        6)
-            step_6
-        ;;
-        7)
-            step_7
-        ;;
-        8)
-            step_8
-        ;;
-        9)
-            step_9
-        ;;
-        *)
-            logerror "Invalid step number"
-            help
-        ;;
-    esac
-}
+    for (( i=1; i <= $s; i++ ))
+    do
+        echo "Running step $i"
+        eval "step_$i"
+    done
 
 setup
