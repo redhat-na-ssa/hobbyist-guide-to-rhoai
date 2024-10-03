@@ -1592,7 +1592,7 @@ Verify the NVIDIA GPU is discovered
 
 [source](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/install-gpu-ocp.html#installing-the-nvidia-gpu-operator-using-the-cli)
 
-List the available operators for installation searching for Node Feature Discovery (NFD)
+List the available operators for installation searching for 'gpu'
 
 ```sh
 oc get packagemanifests -n openshift-marketplace | grep gpu
