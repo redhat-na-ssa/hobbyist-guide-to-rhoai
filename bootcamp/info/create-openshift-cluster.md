@@ -9,17 +9,16 @@ Your cluster must have at least **2 worker nodes with at least 8 CPUs and 32 GiB
 ![](/bootcamp/assets/os-cluster-order.jpg)
 
 - Choose below options:
-    - Activity = Practice/Enablement
-    - Purpose = Practice for a workshop
-    - OpenShift Version
-    - Control Plane Instance Type = m6a.4xlarge
+  - Activity = Practice/Enablement
+  - Purpose = Practice for a workshop
+  - OpenShift Version
+  - Control Plane Instance Type = m6a.4xlarge
 
 - Wait for cluster to be provisioned. It takes some time so please be patient :)
 
 ### Get cluster URL and admin username and password
 
 - After cluster is provisioned, go to **Services** page on redhat demo site
-- Get 
+- Get
 
 ![](/bootcamp/assets/oc-url-user.png)
-
