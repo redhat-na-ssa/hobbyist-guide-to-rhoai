@@ -6,6 +6,8 @@ You may be logged into the cluster as user `kubeadmin`, which is an automaticall
 
 For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPasswd updates the files that store usernames and password for authentication of HTTP users. RHOAI uses the same IdP as RHOCP, such as: htpasswd, keystone, LDAP, basic-authentication, request-header, GitHub, GitLab, Google, OpenID Connect. [More info](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/authentication_and_authorization/understanding-identity-provider#supported-identity-providers).
 
+![](/bootcamp/assets/user-auth.gif)
+
 ### Steps
 
 - Create an htpasswd file to store the user and password information
