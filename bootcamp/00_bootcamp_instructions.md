@@ -15,7 +15,6 @@ Red Hat OpenShift AI is a platform for data scientists and developers of artific
 OpenShift AI provides an environment to develop, train, serve, test, and monitor AI/ML models and applications on-premise or in the cloud. [More Info](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.13/html/introduction_to_red_hat_openshift_ai/index)
 
 - Learn more about features and dependencies [(link)](/bootcamp/info/features.md)
-- Learn more about dashboard [(link)](/bootcamp/info/dashboard.md)
 
 ## Cluster Setup Steps
 
