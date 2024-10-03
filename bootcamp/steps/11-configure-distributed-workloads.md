@@ -31,16 +31,16 @@ Components required for Distributed Workloads
 
 - Verify the necessary pods are running - When the status of the codeflare-operator-manager-[pod-id], kuberay-operator-[pod-id], and kueue-controller-manager-[pod-id] pods is Running, the pods are ready to use.
 
-    - ```sh
-        oc get pods -n redhat-ods-applications | grep -E 'codeflare|kuberay|kueue'
-        ```
+  - ```sh
+      oc get pods -n redhat-ods-applications | grep -E 'codeflare|kuberay|kueue'
+    ```
 
-        ```sh
-        # expected output
-        codeflare-operator-manager-6bbff698d-74fpz                        1/1     Running   7 (107m ago)   21h
-        kuberay-operator-bf97858f4-zg45s                                  1/1     Running   8 (10m ago)    21h
-        kueue-controller-manager-77c758b595-hgrz7                         1/1     Running   8 (10m ago)    21h
-        ```
+    ```sh
+    # expected output
+    codeflare-operator-manager-6bbff698d-74fpz                        1/1     Running   7 (107m ago)   21h
+    kuberay-operator-bf97858f4-zg45s                                  1/1     Running   8 (10m ago)    21h
+    kueue-controller-manager-77c758b595-hgrz7                         1/1     Running   8 (10m ago)    21h
+    ```
 
 ### Configure quota management for distributed workloads
 
@@ -53,16 +53,17 @@ A cluster administrator can create an empty ResourceFlavor object named `default
 In RHOAI, Red Hat supports only a single cluster queue per cluster (that is, homogenous clusters), and only empty resource flavors.
 
 #### Steps
+
 - Apply the configuration to create the `default-flavor`
 
-    - ```sh
-        oc apply -f configs/rhoai-kueue-default-flavor.yaml
-        ```
+  - ```sh
+      oc apply -f configs/rhoai-kueue-default-flavor.yaml
+    ```
 
-        ```sh
-        # expected output
-        resourceflavor.kueue.x-k8s.io/default-flavor created
-        ```
+    ```sh
+    # expected output
+    resourceflavor.kueue.x-k8s.io/default-flavor created
+    ```
 
 #### Create a cluster queue to manage the empty Kueue resource flavor
 
@@ -76,21 +77,21 @@ What is this cluster-queue doing? The example configures a cluster queue to assi
 - The sum of the memory requests is less than or equal to 36Gi.
 - The total number of pods is less than or equal to 5.
 
->![IMPORTANT]
-Replace the example quota values (9 CPUs, 36 GiB memory, and 5 NVIDIA GPUs) with the appropriate values for your cluster queue. The cluster queue will start a distributed workload only if the total required resources are within these quota limits, otherwise the cluster queue does not admit the distributed workload.. Only homogenous NVIDIA GPUs are supported.
+> ![IMPORTANT]
+> Replace the example quota values (9 CPUs, 36 GiB memory, and 5 NVIDIA GPUs) with the appropriate values for your cluster queue. The cluster queue will start a distributed workload only if the total required resources are within these quota limits, otherwise the cluster queue does not admit the distributed workload.. Only homogenous NVIDIA GPUs are supported.
 
 #### Steps
 
 - Apply the configuration to create the `cluster-queue`
 
-    - ```sh
-        oc apply -f configs/rhoai-kueue-cluster-queue.yaml
-        ```
+  - ```sh
+      oc apply -f configs/rhoai-kueue-cluster-queue.yaml
+    ```
 
-        ```sh
-        # expected output
-        clusterqueue.kueue.x-k8s.io/cluster-queue created
-        ```
+    ```sh
+    # expected output
+    clusterqueue.kueue.x-k8s.io/cluster-queue created
+    ```
 
 #### Create a local queue that points to your cluster queue
 
@@ -100,42 +101,43 @@ When Configure a distributed workload, the user specifies the local queue name. 
 
 In this example, the kueue.x-k8s.io/default-queue: "true" annotation defines this local queue as the default local queue for the `sandbox` project. If a user submits a distributed workload in the `sandbox` project and that distributed workload does not specify a local queue in the cluster configuration, Kueue automatically routes the distributed workload to the `local-queue-test` local queue. The distributed workload can then access the resources that the cluster-queue cluster queue manages.
 
->![NOTE]
-Update the `name` and `namespace` accordingly.
+> ![NOTE]
+> Update the `name` and `namespace` accordingly.
 
 #### Steps
 
 - Apply the configuration to create the local-queue object
 
-    - ```sh
-        # go to sandbox
-        oc project sandbox
+  - ```sh
+      # go to sandbox
+      oc project sandbox
 
-        ## create local queue
-        oc apply -f configs/rhoai-kueue-local-queue.yaml
-        ```
+      ## create local queue
+      oc apply -f configs/rhoai-kueue-local-queue.yaml
+    ```
 
-        ```sh
-        # expected output
-        localqueue.kueue.x-k8s.io/local-queue-test created
-        ```
+    ```sh
+    # expected output
+    localqueue.kueue.x-k8s.io/local-queue-test created
+    ```
 
 How do users known what queues they can submit jobs to? Users submit jobs to a LocalQueue, instead of to a ClusterQueue directly. Tenants can discover which queues they can submit jobs to by listing the local queues in their namespace.
 
 - Verify the local queue is created
 
-    - ```sh
-        oc get -n sandbox queues
-        ```
+  - ```sh
+      oc get -n sandbox queues
+    ```
 
-        ```sh
-        # expected output
-        NAME               CLUSTERQUEUE    PENDING WORKLOADS   ADMITTED WORKLOADS
-        local-queue-test   cluster-queue   0 
-        ```
+    ```sh
+    # expected output
+    NAME               CLUSTERQUEUE    PENDING WORKLOADS   ADMITTED WORKLOADS
+    local-queue-test   cluster-queue   0
+    ```
 
-## Automation key
+## Automation key (Catch up)
 
-- From this repo's root directory, run below command
-    - ```sh
-        ./bootcamp/scripts/runstep.sh -s 11
+- From this repository's root directory, run below command
+  - ```sh
+      ./bootcamp/scripts/runstep.sh -s 11
+    ```

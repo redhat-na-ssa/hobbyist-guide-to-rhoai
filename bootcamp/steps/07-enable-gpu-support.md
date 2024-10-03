@@ -53,7 +53,7 @@ You can copy and modify a default compute machine set configuration to create a 
         - [ ] ~Line 51 `.spec.template.spec.providerSpec.value.instanceType` to `g4dn.4xlarge`.
     ```
 
->You can use `sed` or `yq` commands. However, sed is more limited and error-prone for complex YAML manipulations. If you have yq installed (a powerful YAML processor), it's much easier to handle such updates.
+> You can use `sed` or `yq` commands. However, sed is more limited and error-prone for complex YAML manipulations. If you have yq installed (a powerful YAML processor), it's much easier to handle such updates.
 
 - Remove the following fields:
 
@@ -185,17 +185,17 @@ After the GPU-enabled node is created, you need to discover the GPU-enabled node
     - `sources.pci.deviceClassWhitelist` is a list of [PCI device class IDs](https://admin.pci-ids.ucw.cz/read/PD) for which to publish a label. It can be specified as a main class only (for example, `03`) or full class-subclass combination (for example `0300`). The former implies that all subclasses are accepted. The format of the labels can be further configured with deviceLabelFields.
     - `sources.pci.deviceLabelFields` is the set of PCI ID fields to use when constructing the name of the feature label. Valid fields are `class`, `vendor`, `device`, `subsystem_vendor` and `subsystem_device`. With the example config above, NFD would publish labels such as `feature.node.kubernetes.io/pci-<vendor-id>.present=true`
 
->[IMPORTANT]
-The NFD Operator uses vendor PCI IDs to identify hardware in a node.
+> [IMPORTANT]
+> The NFD Operator uses vendor PCI IDs to identify hardware in a node.
 
 Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/member-companies?combine=10de):
 
-|PCI id|Vendor|
-|------|------|
-|`10de`|NVIDIA|
-|`1d0f`| AWS  |
-|`1002`| AMD  |
-|`8086`| Intel|
+| PCI id | Vendor |
+| ------ | ------ |
+| `10de` | NVIDIA |
+| `1d0f` | AWS    |
+| `1002` | AMD    |
+| `8086` | Intel  |
 
 - Verify the GPU device (NVIDIA uses the PCI ID `10de`) is discovered on the GPU node. This mean the NFD Operator correctly identified the node from the GPU-enabled MachineSet.
 
@@ -287,7 +287,7 @@ Kubernetes provides access to special hardware resources such as NVIDIA GPUs, NI
 - Apply the OperatorGroup YAML file
 
   - ```sh
-        oc apply -f configs/nvidia-gpu-operator-group.yaml 
+        oc apply -f configs/nvidia-gpu-operator-group.yaml
     ```
 
     ```sh
@@ -328,14 +328,14 @@ Kubernetes provides access to special hardware resources such as NVIDIA GPUs, NI
 
 - Apply the Subscription CR
 
-    ```sh
-        oc apply -f configs/nvidia-gpu-operator-subscription.yaml
-        ```
+  ````sh
+      oc apply -f configs/nvidia-gpu-operator-subscription.yaml
+      ```
 
-    ```sh
-    # expected output
-    subscription.operators.coreos.com/gpu-operator-certified created
-    ```
+  ```sh
+  # expected output
+  subscription.operators.coreos.com/gpu-operator-certified created
+  ````
 
 - Verify an install plan has been created. Be patient.
 
@@ -374,11 +374,11 @@ Kubernetes provides access to special hardware resources such as NVIDIA GPUs, NI
     clusterpolicy.nvidia.com/gpu-cluster-policy created
     ```
 
->At this point, the GPU Operator proceeds and installs all the required components to set up the NVIDIA GPUs in the OpenShift 4 cluster. Wait at least 10-20 minutes before digging deeper into any form of troubleshooting because this may take a period of time to finish.
+> At this point, the GPU Operator proceeds and installs all the required components to set up the NVIDIA GPUs in the OpenShift 4 cluster. Wait at least 10-20 minutes before digging deeper into any form of troubleshooting because this may take a period of time to finish.
 
 - Verify the successful installation of the NVIDIA GPU Operator
 
-  - ```sh
+  - ````sh
         oc get pods,daemonset -n nvidia-gpu-operator
         ```
 
@@ -395,7 +395,7 @@ Kubernetes provides access to special hardware resources such as NVIDIA GPUs, NI
     daemonset.apps/nvidia-mig-manager                              0         0         0       0            0           nvidia.com/gpu.deploy.mig-manager=true                                                                                22s
     daemonset.apps/nvidia-node-status-exporter                     2         2         2       2            2           nvidia.com/gpu.deploy.node-status-exporter=true                                                                       22s
     daemonset.apps/nvidia-operator-validator                       0         0         0       0            0           nvidia.com/gpu.deploy.operator-validator=true                                                                         22s
-    ```
+    ````
 
 With the daemonset deployed, NVIDIA GPUs have the `nvidia-device-plugin` and can be requested by a container using the `nvidia.com/gpu` resource type. The [NVIDIA device plugin](https://github.com/NVIDIA/k8s-device-plugin?tab=readme-ov-file#shared-access-to-gpus) has a number of options, like MIG Strategy, that can be configured for it.
 
@@ -446,8 +446,9 @@ With the daemonset deployed, NVIDIA GPUs have the `nvidia-device-plugin` and can
 
 At this time, the Nvidia operator creates an extended resource called `nvidia.com/gpu` on the nodes. `nvidia.com/gpu` is only used as a resource identifier, not anything else, in the context of differentiating GPU models (i.e. L40s, H100, V100, etc.). Node Selectors and Pod Affinity can still be configured arbitrarily. Later in this procedure, Distributed Workloads, `Kueue`, allows more granularity than that (including capacity reservation at the cluster and namespace levels). If you have heterogeneous GPUs in a single node, this becomes more difficult and outside the capabilities of any of those solutions.
 
-## Automation key
+## Automation key (Catch up)
 
-- From this repo's root directory, run below command
-    - ```sh
-        ./bootcamp/scripts/runstep.sh -s 7
+- From this repository's root directory, run below command
+  - ```sh
+      ./bootcamp/scripts/runstep.sh -s 7
+    ```

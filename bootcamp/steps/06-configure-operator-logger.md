@@ -4,26 +4,27 @@ You can change the log level for RHOAI Operator (`development`, `""`, `productio
 
 - Configure the log level from the OpenShift CLI by using the following command with the logmode value set to the log level that you want
 
-    - ```sh
-        oc patch dsci default-dsci -p '{"spec":{"devFlags":{"logmode":"development"}}}' --type=merge
-        ```
+  - ```sh
+      oc patch dsci default-dsci -p '{"spec":{"devFlags":{"logmode":"development"}}}' --type=merge
+    ```
 
-        ```sh
-        # expected output
-        dscinitialization.dscinitialization.opendatahub.io/default-dsci patched
-        ```
+    ```sh
+    # expected output
+    dscinitialization.dscinitialization.opendatahub.io/default-dsci patched
+    ```
 
 - Viewing the RHOAI Operator log
 
-    - ```sh
-        oc get pods -l name=rhods-operator -o name -n redhat-ods-operator |  xargs -I {} oc logs -f {} -n redhat-ods-operator
-        ```
+  - ```sh
+      oc get pods -l name=rhods-operator -o name -n redhat-ods-operator |  xargs -I {} oc logs -f {} -n redhat-ods-operator
+    ```
 
->You can also view via the console
-**Workloads > Deployments > Pods > redhat-ods-operator > Logs**
+> You can also view via the console
+> **Workloads > Deployments > Pods > redhat-ods-operator > Logs**
 
-## Automation key
+## Automation key (Catch up)
 
-- From this repo's root directory, run below command
-    - ```sh
-        ./bootcamp/scripts/runstep.sh -s 6
+- From this repository's root directory, run below command
+  - ```sh
+      ./bootcamp/scripts/runstep.sh -s 6
+    ```

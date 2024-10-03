@@ -9,11 +9,12 @@ The `ModelMesh` framework is a general-purpose model serving management/routing 
 
 `KServe` has specific dependencies and provides an interface for serving predictive and generative machine learning (ML) models.
 
-- To support the RHOAI KServe component, you must also install Operators for `Red Hat OpenShift Service Mesh` (based on `Istio`) and `Red Hat OpenShift Serverless` (based on  `Knative`). Furthermore, if you want to add an authorization provider, you must also install `Red Hat Authorino Operator` (based on `Kuadrant`).
+- To support the RHOAI KServe component, you must also install Operators for `Red Hat OpenShift Service Mesh` (based on `Istio`) and `Red Hat OpenShift Serverless` (based on `Knative`). Furthermore, if you want to add an authorization provider, you must also install `Red Hat Authorino Operator` (based on `Kuadrant`).
 
 Because `Service Mesh`, `Serverless`, and `Authorino` will be `Managed` in this procedure, we only need to install the operators. We will not configure instances (i.e. control plane, members, etc.).
 
 ## 3.1 Install RHOS Service Mesh Operator
+
 A service mesh is an infrastructure layer that simplifies the communication between services in a loosely-coupled/ microservices architecture without requiring any changes to the application code. It includes a collection of lightweight network proxies, known as sidecars, which are placed next to each service in the system.
 
 Red Hat OpenShift Service Mesh, is based on the open source Istio project.
@@ -29,74 +30,75 @@ How Istio relates to KServe:
 
 - Create the required namespace for Red Hat OpenShift Service Mesh.
 
-    - ```sh
-        oc create ns istio-system
-        ```
+  - ```sh
+      oc create ns istio-system
+    ```
 
-         ```sh
-        # expected output
-        namespace/istio-system created
-        ```
+    ```sh
+    # expected output
+    namespace/istio-system created
+    ```
+
 - Apply the Service Mesh subscription to install the operator
 
-    - ```sh
-        oc create -f configs/servicemesh-subscription.yaml
-        ```
+  - ```sh
+      oc create -f configs/servicemesh-subscription.yaml
+    ```
 
-         ```sh
-        # expected output
-        subscription.operators.coreos.com/servicemeshoperator created
-        ```
+    ```sh
+    # expected output
+    subscription.operators.coreos.com/servicemeshoperator created
+    ```
 
->NOTE: For `Unmanaged` configuration details, see the _APPENDIX.md.
+> NOTE: For `Unmanaged` configuration details, see the \_APPENDIX.md.
 
 ## 3.2 Install Red Hat OpenShift Serverless Operator
 
 Serverless computing is a method of providing backend services on an as-used basis. Servers are still used to execute code. However, developers of serverless applications are not concerned with capacity planning, configuration, management, maintenance, fault tolerance, or scaling of containers, virtual machines, or physical servers. Overall, serverless computing can simplify the process of deploying code into production.
 
-OpenShift Serverless provides Kubernetes native building blocks that enable developers to create and deploy serverless, event-driven applications on RHOCP. It's is based on the open source Knative project, which provides portability and consistency for hybrid and multi-cloud environments by a providing a platform-agnostic solution for running serverless deployments.   
-[More Info Serverless](https://docs.redhat.com/en/documentation/red_hat_openshift_serverless/1.33/html/about_openshift_serverless/about-serverless)     
+OpenShift Serverless provides Kubernetes native building blocks that enable developers to create and deploy serverless, event-driven applications on RHOCP. It's is based on the open source Knative project, which provides portability and consistency for hybrid and multi-cloud environments by a providing a platform-agnostic solution for running serverless deployments.  
+[More Info Serverless](https://docs.redhat.com/en/documentation/red_hat_openshift_serverless/1.33/html/about_openshift_serverless/about-serverless)  
 [More info Knative](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#creating-a-knative-serving-instance_serving-large-models)
 
 ### Steps
 
 - Create the Serverless Operator objects
 
-    - ```sh
-        oc create -f configs/serverless-operator.yaml
-        ```
+  - ```sh
+      oc create -f configs/serverless-operator.yaml
+    ```
 
-        ```sh
-        # expected output
-        namespace/openshift-serverless created
-        operatorgroup.operators.coreos.com/serverless-operator created
-        subscription.operators.coreos.com/serverless-operator created
-        ```
+    ```sh
+    # expected output
+    namespace/openshift-serverless created
+    operatorgroup.operators.coreos.com/serverless-operator created
+    subscription.operators.coreos.com/serverless-operator created
+    ```
 
->For `Unmanaged` deployments additional steps need to be executed. See the Define a ServiceMeshMember for Serverless in the _APPENDIX.md
+> For `Unmanaged` deployments additional steps need to be executed. See the Define a ServiceMeshMember for Serverless in the \_APPENDIX.md
 
 ## 3.3 Install Red Hat Authorino Operator
 
-In order to front services with Auth{n,z}, Authorino provides an authorization proxy (using Envoy) for publicly  exposed [KServe inference endpoint](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#manually-adding-an-authorization-provider_serving-large-models). You can enable token authorization for models that you expose outside the platform to ensure that only authorized parties can make inference requests.
+In order to front services with Auth{n,z}, Authorino provides an authorization proxy (using Envoy) for publicly exposed [KServe inference endpoint](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#manually-adding-an-authorization-provider_serving-large-models). You can enable token authorization for models that you expose outside the platform to ensure that only authorized parties can make inference requests.
 
 ### Steps
 
 - Create the Authorino subscription
-    
-    - ```sh
-        oc create -f configs/authorino-subscription.yaml
-        ```
 
-        ```sh
-        # expected output
-        subscription.operators.coreos.com/authorino-operator created
-        ```
+  - ```sh
+      oc create -f configs/authorino-subscription.yaml
+    ```
 
->For `Unmanaged` deployments additional steps need to be executed. See the Configure Authorino for Unmanaged deployments in the _APPENDIX.md
+    ```sh
+    # expected output
+    subscription.operators.coreos.com/authorino-operator created
+    ```
 
-## Automation key
+> For `Unmanaged` deployments additional steps need to be executed. See the Configure Authorino for Unmanaged deployments in the \_APPENDIX.md
 
-- From this repo's root directory, run below command
-    - ```sh
-        ./bootcamp/scripts/runstep.sh -s 3
-        ```
+## Automation key (Catch up)
+
+- From this repository's root directory, run below command
+  - ```sh
+      ./bootcamp/scripts/runstep.sh -s 3
+    ```
