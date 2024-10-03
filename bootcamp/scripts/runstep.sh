@@ -138,5 +138,6 @@ setup(){
         echo "Running step $i"
         eval "step_$i"
     done
+}
 
 setup
