@@ -96,6 +96,10 @@ For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPass
 
 > NOTE: The remainder of the procedure should be completed with the new cluster-admin `<username>`.
 
+## Validation
+
+![](/bootcamp/assets/user-auth-validation.gif)
+
 ## Automation key (catch up)
 
 - From this repository's root directory, run below command
