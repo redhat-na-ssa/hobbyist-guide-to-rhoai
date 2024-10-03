@@ -35,10 +35,12 @@ OpenShift AI provides an environment to develop, train, serve, test, and monitor
 
 ### Automation Key
 
-- To run all steps, from this repo's root directory, run below command - `sh
-  ./bootcamp/scripts/runstep.sh -s 0
-  `
-  > NOTE: `Steps 10 - 13 are NOT fully automated, and will need manual configurations`
+- To run all steps, from this repo's root directory, run below command
+  - ```sh
+    ./bootcamp/scripts/runstep.sh -s 0
+    ```
+
+> NOTE: `Steps 10 - 13 are NOT fully automated, and will need manual configurations`
 
 > For more comprehensive gitops functionality, check out below repository:  
 > [**demo-ai-gitops-catalog**](https://github.com/redhat-na-ssa/demo-ai-gitops-catalog)
