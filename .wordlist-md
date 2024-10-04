@@ -83,6 +83,7 @@ daemonset
 datasciencecluster
 DataScienceCluster
 datasciencepipelines
+datasets
 dcgm
 DCGM
 dcgmExporter
@@ -367,6 +368,8 @@ rollout
 rootNamespace
 rsa
 RStudio
+runtime
+Runtime
 runtimes
 Runtimes
 sa
@@ -471,6 +474,3 @@ yq
 zg
 zkpz
 zznlw
-Runtime
-runtime
-datasets
