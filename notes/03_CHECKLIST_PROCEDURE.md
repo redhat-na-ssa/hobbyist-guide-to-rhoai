@@ -1012,7 +1012,7 @@ metadata:
   namespace: openshift-nfd
 spec:
   operand:
-    image: 'registry.redhat.io/openshift4/ose-node-feature-discovery-rhel9@sha256:a98a205e5541550dfd46caaf52147f078101a6c6e7221b7fb7cefb9581761dcb'
+    image: 'registry.redhat.io/openshift4/ose-node-feature-discovery-rhel9@sha256:87f970597f04928da64bc924e95457140198abfb5a4f48aae77dcd327860dffd'
     servicePort: 12000
   workerConfig:
     configData: |
