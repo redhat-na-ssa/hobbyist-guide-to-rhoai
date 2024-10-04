@@ -843,7 +843,7 @@ Make a copy of one of the existing compute MachineSet definitions and output the
 
 ```sh
 # get your machineset name --no-headers removes the headers from the output. awk '{print $1}'. extracts the first column.
-head -n 1 limits the output to the first entry.
+# head -n 1 limits the output to the first entry.
 MACHINESET_COPY=$(oc get machinesets -n openshift-machine-api --no-headers | awk '{print $1}' | head -n 1)
 
 # make a copy of an existing machineset definition
