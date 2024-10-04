@@ -1000,7 +1000,7 @@ NAME                                      READY   STATUS    RESTARTS   AGE
 nfd-controller-manager-78758c57f7-7xfh4   2/2     Running   0          48s
 ```
 
-After Install the NFD Operator, you Create instance that installs the `nfd-master` and one `nfd-worker` pod for each compute node in the `openshift-nfd` namespace.
+After you install the NFD Operator, you create the instance that installs the `nfd-master` and `nfd-worker` pods for each compute node in the `openshift-nfd` namespace.
 
 Create an NodeFeatureDiscovery instance via the CLI or UI (recommended). Pay attention the `spec.operand.image` from quay.io, the `sources.pci.deviceClassWhitelist`, and `sources.pci.deviceLabelFields`
 
