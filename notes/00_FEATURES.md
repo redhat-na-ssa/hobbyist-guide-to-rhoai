@@ -1,62 +1,27 @@
 # Notes - OVERVIEW
 
-Overview of the features in Red Hat OpenShift 2.10 with dependencies.
+Overview of the features in Red Hat OpenShift dependencies.
 
-|Component            |Purpose     |Dependency   |Resources          |Description      |
-|---------------------|------------|-------------|-------------------|-----------------|
-|operator             |management  |S3 Store     |2-worker 8CPU 32GiB |Deploys and maintains the components for RHOAI       |
-|dashboard            |management  |             |                   |Admin and user primary interface   |
-|workbenches          |train       |             |                   |                 |
-|datasciencepipelines |train       |S3 Store     |                   |                 |
-|distributed workloads|train       |             |1.6 vCPU and 2 GiB |                 |
-|                     |            |dashboard    |                   |See above |
-|                     |            |datasciencepipelines    |                   |See above |
-|                     |            |CodeFlare    |                   |Secures deployed Ray clusters and grants access to their URLs |
-|                     |            |CodeFlare SDK|                   |controls the remote distributed compute jobs and infrastructure for any Python-based env|
-|                     |            |Kuberay      |                   |KubeRay manages remote Ray clusters on OCP for running distributed workloads|
-|                     |            |Kueue        |                   |Manages quotas, queuing and how distributed workloads consume them |
-|                     |            |Multi-Cluster App Dispatcher (MCAD)|                   |a K8s controller to manage batch jobs in a single or multi-cluster environment |
-|                     |            |Instascale   |                   |works with MCAD to get aggregated resources available in the K8s cluster without creating pending pods. Uses machinesets to launch instances on cloud provider |
-|modelmeshserving     |inference   |S3 Store     |                   |                 |
-|kserve               |inference   |             |4 CPUs and 16 GB   |orchestrates model serving for all types of models|
-|                     |            |ServiceMesh  |4 CPUs and 16 GB   |networking layer that manages traffic flows and enforces access policies                 |
-|                     |            |Serverless   |4 CPUs and 16 GB   |allows for serverless deployments of models|
-|                     |            |Authorino    |                   |enable token authorization for models|
+|       Component        | Sub-components | Training  |  Serving  |             Description         |
+|------------------------|----------------|-----------|-----------|---------------------------------|
+| RHOAI Operator         |                |     x     |     x     |Deploys and maintains the components for RHOAI|
+| `dashboard`            |                |     x     |     x     |Admin and user primary interface |
+| `workbenches`          |                |     x     |           |Notebooks images (i.e. Jupyter, code-server, RStudio)|
+| `datasciencepipelines` |                |     x     |           |Schedulable multi-step ML workflow execution graph|
+| `distributed-workloads`|                |     x     |           |Scalable ML library for distributed training and fine-tuning|
+|                        |   CodeFlare    |     x     |           |Secures deployed Ray clusters and grants access to their URLs|
+|                        |   CodeFlare SDK|     x     |           |Python interface for batch resource requesting, job submission, etc.|
+|                        |   Kuberay      |     x     |           |Manages remote Ray clusters on K8s for running distributed workloads|
+|                        |   Kueue        |     x     |           |Manages quotas, queuing and how distributed workloads consume them|
+|                        |   MCAD         |     x     |           |K8s controller to manage batch jobs in a single / multi-cluster env|
+|                        |   Instascale   |     x     |           |works with MCAD to launch instances on cloud provider|
+|   `modelmeshserving`   |                |           |     x     |model serving routing layer w/Triton, Seldon, OpenVINO, torchserve...|
+|   `kserve`             |                |           |     x     |serverless inference w/Triton, HuggingFace, PyTorch, TF, LightGBM...|
+|                        |  `servicemesh` |           |     x     |provides observability, traffic mgmt, and security for inference|
+|                        |    `knative`   |           |     x     |provides Autoscaling including Scale to Zero for inference|
+|                        |   `Authorino`  |           |     x     |provides token authorization for model inference APIs|
 
-1. Central Dashboard for Development and Operations for Admin and Users
-1. Curated Workbench Images (incl CUDA, PyTorch, Tensorflow, code-server)
-    1. Ability to add Custom Images
-    1. Ability to leverage accelerators (such as NVIDIA GPU)
-1. Data Science Pipelines (including Elyra notebook interface) (Kubeflow pipelines)
-1. Model Serving using ModelMesh and Kserve.
-    1. Ability to use Serverless and Event Driven Applications as wells as configure secure gateways (Knative, OpenSSL)
-    1. Ability to manage traffic flow and enforce access policies
-    1. When you have installed KServe, you can use the OpenShift AI dashboard to deploy models using pre-installed or custom model-serving runtimes:  
-      1. TGIS Standalone ServingRuntime for KServe: A runtime for serving TGI-enabled models
-      1. Caikit-TGIS ServingRuntime for KServe: A composite runtime for serving models in the Caikit format
-      1. Caikit Standalone ServingRuntime for KServe: A runtime for serving models in the Caikit embeddings format for embeddings tasks
-      1. OpenVINO Model Server: A scalable, high-performance runtime for serving models that are optimized for Intel architectures
-      1. vLLM ServingRuntime for KServe: A high-throughput and memory-efficient inference and serving runtime for large language models
-    1. Ability to use other runtimes for serving (TGIS, Caikit-TGIS, OpenVino)
-    1. Ability to enable token authorization for models that you deploy on the platform, which ensures that only authorized parties can make inference requests to the models (Authorino)
-1. Model Monitoring
-1. Distributed workloads (CodeFlare Operator, CodeFlare SDK, KubeRay, Kueue)
-    1. You can run distributed workloads from data science pipelines, from Jupyter notebooks, or from Microsoft Visual Studio Code files.
-    1. Ability to deploy Ray clusters with mTLS default
-    1. Ability to control the remote distributed compute jobs and infrastructure
-    1. Ability to manage remote Ray clusters on OpenShift
-    1. Ability to run distributed workloads from data science pipelines, from Jupyter notebooks, or from Microsoft Visual Studio Code files.
-
-## Default Operations
-
-RHOAI creates 4x OCP Projects
-
-1. `redhat-ods-operator` project contains the Red Hat OpenShift AI Operator.
-1. `redhat-ods-applications` project installs the dashboard and other required components of OpenShift AI.
-1. `redhat-ods-monitoring` project contains services for monitoring.
-1. `rhods-notebooks` project is where notebook environments are deployed by default.
-
-> Do not install independent software vendor (ISV) applications in namespaces associated with OpenShift AI.
+[Supported Configurations](https://access.redhat.com/articles/rhoai-supported-configs)
 
 ## Tips
 

@@ -1,58 +1,57 @@
 # Notes
 
-This is checklist of the technical steps needed to complete the installation and configuration of Red Hat OpenShift 2.10 and it's dependencies for use.
+This is checklist of the technical steps needed to complete the installation and configuration of Red Hat OpenShift and it's dependencies for use.
 
-```sh
-# Install the Red Hat OpenShift AI Operator
-## Access the cluster via your client CLI
-## Add administrative users
-## (Optional) Install the Web Terminal Operator
-## Install RHOAI Dependencies
-### Install RHOAI KServe dependencies
-#### Install Red Hat OpenShift Service Mesh Operator
-#### Install Red Hat OpenShift Serverless Operator
-#### Install Red Hat Authorino Operator
-## Install the Red Hat OpenShift AI Operator by using the CLI
-### Install and managing Red Hat OpenShift AI components
-## Adding a CA bundle
-## (Optional) Configure the OpenShift AI Operator logger
-## Enabling GPU support for OpenShift AI
-### Adding a GPU node to an existing OpenShift Container Platform cluster
-### Deploying the Node Feature Discovery Operator
-### Install the NVIDIA GPU Operator
-### (Optional) Running a sample GPU Application
-### Enabling the GPU Monitoring Dashboard
-### Install the NVIDIA GPU administration dashboard
-#### Viewing the GPU Dashboard
-### GPU sharing methods
-### Configure GPUs with time slicing 
-### Configure Taints and Tolerations
-### (Optional) Configure the cluster autoscaler
-## Configure distributed workloads
-### Configure quota management for distributed workloads
-#### Create an empty Kueue resource flavor
-#### Create a cluster queue to manage the empty Kueue resource flavor
-#### Create a local queue that points to your cluster queue
-### (Optional) Configure the CodeFlare Operator (~5min)
-## Administrative Configurations for RHOAI
-### Review RHOAI Dashboard Settings
-#### Notebook Images
-#### Cluster Settings
-#### Accelerator Profiles
-#### Add a new Accelerator Profile
-#### Serving Runtimes
-##### Add serving runtime
-#### User Management
-### Review Backing up data
-#### Control plane backup and restore operations
-#### Control plane backup and restore operations
-#### Application backup and restore operations
-## Answer key
-```
+- [ ] Install the `Red Hat OpenShift AI Operator (RHOAI)`
+  - [ ] Access the cluster via your client CLI
+  - [ ] Add administrative users
+  - [ ] (Optional) Install the `Web Terminal Operator`
+  - [ ] Install RHOAI Dependencies
+    - [ ] Install `RHOAI KServe` dependencies
+      - [ ] Install `Red Hat OpenShift Service Mesh Operator`
+      - [ ] Install `Red Hat OpenShift Serverless Operator`
+      - [ ] Install `Red Hat Authorino Operator`
+  - [ ] Install the `RHOAI Operator` by using the CLI
+    - [ ] Install and managing Red Hat OpenShift AI components
+  - [ ] Adding a CA bundle
+  - [ ] (Optional) Configure the OpenShift AI Operator logger
+  - [ ] Enabling GPU support for OpenShift AI
+    - [ ] Adding a GPU node to an existing RHOCP
+    - [ ] Deploying the `Red Hat Node Feature Discovery (NFD) Operator`
+    - [ ] Install the `NVIDIA GPU Operator`
+      - [ ] GPU Node Role Label
+    - [ ] (Optional) Running a sample GPU Application
+    - [ ] Enabling the GPU Monitoring Dashboard
+    - [ ] Install the NVIDIA GPU administration dashboard
+      - [ ] Viewing the GPU Dashboard
+    - [ ] GPU sharing methods
+    - [ ] Configure NVIDIA GPUs with time slicing
+    - [ ] Configure Taints and Tolerations
+    - [ ] (Optional) Configure the cluster autoscaler
+  - [ ] Configure distributed workloads
+    - [ ] Configure quota management for `RHOAI Distributed Workloads`
+      - [ ] Create an empty Kueue resource flavor
+      - [ ] Create a cluster queue to manage the empty Kueue resource flavor
+      - [ ] Create a local queue that points to your cluster queue
+    - [ ] (Optional) Configure the CodeFlare Operator (~5min)
+  - [ ] Administrative Configurations for RHOAI
+    - [ ]  Review RHOAI Dashboard Settings
+      - [ ] Notebook Images
+      - [ ] Accelerator Profiles
+      - [ ] Add a new Accelerator Profile
+      - [ ] Serving Runtimes
+        - [ ] Add serving runtime
+      - [ ] User Management
+    - [ ]  Review Backing up data
+      - [ ] Control plane backup and restore operations
+      - [ ] Application backup and restore operations
+  - [ ] Answer key
+
 ## Administrative Configurations for RHOAI
 
 - [ ] Review RHOAI Dashboard Settings
   - [ ] Notebook Images
+  - [ ] Custom Images
   - [ ] Cluster Settings
     - [ ] Model Serving Platforms
     - [ ] PVC Size

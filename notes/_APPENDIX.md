@@ -213,6 +213,60 @@ oc create -f configs/serverless-istio.yaml
 knativeserving.operator.knative.dev/knative-serving created
 ```
 
+(Optional) use a TLS certificate to secure the mapped service from [source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.11/html/serving_models/serving-large-models_serving-large-models#creating-a-knative-serving-instance_serving-large-models)
+
+Review the default ServiceMeshMemberRoll object in the istio-system namespace and confirm that it includes the knative-serving namespace.
+```sh
+oc describe smmr default -n istio-system
+```
+
+```yaml
+# expected output
+...  
+Member Statuses:
+    Conditions:
+      Last Transition Time:  2024-07-25T22:15:59Z
+      Status:                True
+      Type:                  Reconciled
+    Namespace:               knative-serving
+  Members:
+    knative-serving
+...
+```
+
+```sh
+oc get smmr default -n istio-system -o jsonpath='{.status.memberStatuses}'
+```
+
+```sh
+# expected output TODO
+[{"conditions":[{"lastTransitionTime":"2024-07-16T18:09:10Z","status":"Unknown","type":"Reconciled"}],"namespace":"knative-serving"}]
+```
+
+Verify creation of the Knative Serving instance
+```sh
+oc get pods -n knative-serving
+```
+
+```sh
+# expected output
+activator-5cf876c6cf-jtvs2                                    0/1     Running     0             91s
+activator-5cf876c6cf-ntf79                                    0/1     Running     0             76s
+autoscaler-84655b4df5-w9lmc                                   1/1     Running     0             91s
+autoscaler-84655b4df5-zznlw                                   1/1     Running     0             91s
+autoscaler-hpa-986bb8687-llms8                                1/1     Running     0             90s
+autoscaler-hpa-986bb8687-qtgln                                1/1     Running     0             90s
+controller-84cb7b64bc-9654q                                   1/1     Running     0             89s
+controller-84cb7b64bc-bdhps                                   1/1     Running     0             83s
+net-istio-controller-6498db6ccb-4ddvd                         0/1     Running     2 (24s ago)   89s
+net-istio-controller-6498db6ccb-f66mv                         0/1     Running     2 (24s ago)   89s
+net-istio-webhook-79cbc7c4d4-r6gln                            1/1     Running     0             89s
+net-istio-webhook-79cbc7c4d4-snd7k                            1/1     Running     0             89s
+storage-version-migration-serving-serving-1.12-1.33.0-6v9ll   0/1     Completed   0             89s
+webhook-6bb9cd8c97-46lz4                                      1/1     Running     0             90s
+webhook-6bb9cd8c97-cxm2n                                      1/1     Running     0             75s
+```
+
 #### Creating secure gateways for Knative Serving (4min)
 
 [Section 3.3.1.3 source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#creating-secure-gateways-for-knative-serving_serving-large-models)
