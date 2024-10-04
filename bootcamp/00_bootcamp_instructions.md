@@ -1,4 +1,5 @@
 # Red Hat OpenShift AI BootCamp
+
 [![Spelling](https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai/actions/workflows/spellcheck.yml/badge.svg)](https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai/actions/workflows/spellcheck.yml)
 
 **Acronyms**:
