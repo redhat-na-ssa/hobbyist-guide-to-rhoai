@@ -1,10 +1,13 @@
 #!/bin/bash
+
+# shellcheck disable=SC1091
+
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 PARENT_DIR="${SCRIPT_DIR%/*}"
-PROJECT_DIR="${PARENT_DIR%/*}"
+# PROJECT_DIR="${PARENT_DIR%/*}"
 
-source ${PARENT_DIR}/scripts/logging.sh
-source ${PARENT_DIR}/scripts/util.sh
+source "${PARENT_DIR}"/scripts/logging.sh
+source "${PARENT_DIR}"/scripts/util.sh
 
 ocp_control_nodes_not_schedulable(){
   oc patch schedulers.config.openshift.io/cluster --type merge --patch '{"spec":{"mastersSchedulable": false}}'

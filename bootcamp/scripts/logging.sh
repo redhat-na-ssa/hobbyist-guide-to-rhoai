@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# shellcheck disable=SC1091
+
 RED='\033[1;31m'
 NC='\033[0m' # No Color
 BLUE='\033[1;36m'
@@ -8,29 +10,29 @@ ORANGE='\033[0;33m'
 
 logbanner() {
     echo -e "${PURPLE}====${NC} ${1} ${PURPLE}================================${NC}"
-    if [ -f "$LOG_FILE" ]; then
-        echo "$(date +"%H:%M:%S") - INFO - $1" >> $LOG_FILE
+    if [ -f "${LOG_FILE}" ]; then
+        echo "$(date +"%H:%M:%S") - INFO - $1" >> "${LOG_FILE}"
     fi
 }
 
 loginfo() {
     echo -e "${BLUE}INFO:${NC} ${1}"
-    if [ -f "$LOG_FILE" ]; then
-        echo "$(date +"%H:%M:%S") - INFO - $1" >> $LOG_FILE
+    if [ -f "${LOG_FILE}" ]; then
+        echo "$(date +"%H:%M:%S") - INFO - $1" >> "${LOG_FILE}"
     fi
 }
 
 logerror () {
     echo -e "${RED}ERROR:${NC} ${1}"
-    if [ -f "$LOG_FILE" ]; then
-        echo "$(date +"%H:%M:%S") - ERROR - $1" >> $LOG_FILE
+    if [ -f "${LOG_FILE}" ]; then
+        echo "$(date +"%H:%M:%S") - ERROR - $1" >> "${LOG_FILE}"
     fi
 }
 
 logwarning () {
     echo -e "${ORANGE}WARNING:${NC} ${1}"
-    if [ -f "$LOG_FILE" ]; then
-        echo "$(date +"%H:%M:%S") - WARNING - $1" >> $LOG_FILE
+    if [ -f "${LOG_FILE}" ]; then
+        echo "$(date +"%H:%M:%S") - WARNING - $1" >> "${LOG_FILE}"
     fi
 }
 
