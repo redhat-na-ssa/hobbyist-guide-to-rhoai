@@ -15,5 +15,5 @@ matrix:
             - code
             - pre
     sources:
-      - 'bootcamp/**/*.md'
+      - '/**/*.md'
     default_encoding: utf-8
