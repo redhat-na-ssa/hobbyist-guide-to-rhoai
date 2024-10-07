@@ -45,7 +45,7 @@ apply_cluster_admin(){
 }
 
 notify_user_creation(){
-    logwarning "User won't be created till you run 'oc login -u <HT_username>'" 
+    logwarning "User won't be created till you run 'oc login -u <username>'" 
 }
 
 validate_user(){
