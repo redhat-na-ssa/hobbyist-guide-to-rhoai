@@ -98,7 +98,7 @@ For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPass
 
 ## Validation
 
-![](/assets/user-auth-validation.gif)
+![](/assets/01-validation.gif)
 
 ## Automation key (catch up)
 

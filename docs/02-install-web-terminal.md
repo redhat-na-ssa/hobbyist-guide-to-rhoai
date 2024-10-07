@@ -33,6 +33,10 @@ cd hobbyist-guide-to-rhoai/
 mkdir scratch
 ```
 
+## Validation
+
+![](/assets/02-validation.gif)
+
 ## Automation key (Catch up)
 
 - From this repository's root directory, run below command

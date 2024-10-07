@@ -96,6 +96,10 @@ In order to front services with Auth{n,z}, Authorino provides an authorization p
 
 > For `Unmanaged` deployments additional steps need to be executed. See the Configure Authorino for Unmanaged deployments in the \_APPENDIX.md
 
+## Validation
+
+![](/assets/03-validation.gif)
+
 ## Automation key (Catch up)
 
 - From this repository's root directory, run below command
