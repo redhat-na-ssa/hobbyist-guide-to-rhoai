@@ -1202,7 +1202,7 @@ oc get packagemanifests/gpu-operator-certified -n openshift-marketplace -ojson |
 
 ```sh
 # expected output
-gpu-operator-certified.v24.6.1
+gpu-operator-certified.v24.6.2
 ```
 
 Create the following Subscription CR and save the YAML
@@ -1246,7 +1246,7 @@ oc get installplan -n nvidia-gpu-operator -w
 # expected output
 NAME            CSV                              APPROVAL    APPROVED
 ...
-install-295r6   gpu-operator-certified.v24.6.1   Automatic   true
+install-295r6   gpu-operator-certified.v24.6.2   Automatic   true
 ```
 
 (Optional) Approve the install plan if not `Automatic`
@@ -1258,7 +1258,7 @@ INSTALL_PLAN=$(oc get installplan -n nvidia-gpu-operator -oname)
 Create the cluster policy
 
 ```sh
-oc get csv -n nvidia-gpu-operator gpu-operator-certified.v24.6.1 -o jsonpath='{.metadata.annotations.alm-examples}' | jq '.[0]' > scratch/nvidia-gpu-clusterpolicy.json
+oc get csv -n nvidia-gpu-operator gpu-operator-certified.v24.6.2 -o jsonpath='{.metadata.annotations.alm-examples}' | jq '.[0]' > scratch/nvidia-gpu-clusterpolicy.json
 ```
 
 Apply the clusterpolicy
