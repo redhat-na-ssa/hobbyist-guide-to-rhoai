@@ -1,4 +1,4 @@
-## 1. Add administrative user
+# 1. Add administrative user
 
 Only users with cluster administrator privileges can install and configure RHOAI.
 
@@ -8,92 +8,100 @@ For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPass
 
 ![](/assets/user-auth.gif)
 
-### Steps
+## Steps
 
-- Create an htpasswd file to store the user and password information
+Create an htpasswd file to store the user and password information
 
-  - ```sh
-      htpasswd -c -B -b scratch/users.htpasswd <username> <password>
-    ```
+```sh
+htpasswd -c -B -b scratch/users.htpasswd <username> <password>
+```
 
-    ```
-    # Expected output
-    Adding password for user <username>
-    ```
+- ```sh
+  # expected output
 
-- Create a secret to represent the htpasswd file
+  Adding password for user <username>
+  ```
 
-  - ```sh
-      oc create secret generic htpasswd-secret --from-file=htpasswd=scratch/users.htpasswd -n openshift-config
-    ```
+Create a secret to represent the htpasswd file
 
-    ```sh
-    # expected output
-    secret/htpasswd-secret created
-    ```
+```sh
+oc create secret generic htpasswd-secret --from-file=htpasswd=scratch/users.htpasswd -n openshift-config
+```
 
-- Verify you created a secret/htpasswd-secret object in openshift-config project
+- ```sh
+  # expected output
 
-  - ```sh
-      oc get secret/htpasswd-secret -n openshift-config
-    ```
-    ```sh
-    # expected output
-    NAME              TYPE     DATA   AGE
-    htpasswd-secret   Opaque   1      4m46s
-    ```
+  secret/htpasswd-secret created
+  ```
 
-- Apply the resource to the default OAuth configuration to add the identity provider
+Verify you created a `secret/htpasswd-secret` object in `openshift-config` project
 
-  - ```sh
-      oc apply -f configs/01/htpasswd-cr.yaml
-    ```
-    ```sh
-    # expected output
-    oauth.config.openshift.io/cluster configured
-    ```
+```sh
+oc get secret/htpasswd-secret -n openshift-config
+```
 
-- Verify the identity provider
+- ```sh
+  # expected output
 
-  - ```sh
-      oc get oauth/cluster -o yaml
-    ```
+  NAME              TYPE     DATA   AGE
+  htpasswd-secret   Opaque   1      4m46s
+  ```
 
-- Watch for the cluster operator to cycle
+Apply the resource to the default OAuth configuration to add the identity provider
 
-  - ```sh
-      oc get co authentication -w
-    ```
+```sh
+  oc apply -f configs/01/htpasswd-cr.yaml
+```
 
-    ```sh
-    Wait until you see the co refresh to `0s`
+- ```sh
+  # expected output
 
-    # expected output
-    NAME             VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE   MESSAGE
-    authentication   4.16.6    True        False         False      0s
-    ```
+  oauth.config.openshift.io/cluster configured
+  ```
 
-- As kubeadmin, assign the cluster-admin role to perform administrator level tasks
+Verify the identity provider
 
-  - ```sh
-      oc adm policy add-cluster-role-to-user cluster-admin admin1
-    ```
+```sh
+oc get oauth/cluster -o yaml
+```
 
-    ```sh
-    # expected output
-    clusterrole.rbac.authorization.k8s.io/cluster-admin added: "<username>"
-    ```
+Watch for the cluster operator to cycle
 
-- Log in to the cluster as a user from your identity provider, entering the password when prompted.
+```sh
+oc get co authentication -w
+```
 
-  > NOTE: You may need to add the parameter `--insecure-skip-tls-verify=true` if your clusters api endpoint does not have a trusted cert.
+```sh
+# wait until you see the co refresh to `0s`
+# expected output
 
-  - ```sh
-    oc cluster-info
-    ```
-  - ```sh
-    oc login https://api.cluster-<id>.<id>.sandbox.opentlc.com:6443 --insecure-skip-tls-verify=true -u <username> -p <password>
-    ```
+NAME             VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE   MESSAGE
+authentication   4.16.6    True        False         False      0s
+```
+
+As kubeadmin, assign the cluster-admin role to perform administrator level tasks
+
+```sh
+oc adm policy add-cluster-role-to-user cluster-admin admin1
+```
+
+- ```sh
+  # expected output
+
+  clusterrole.rbac.authorization.k8s.io/cluster-admin added: "<username>"
+  ```
+
+Log in to the cluster as a user from your identity provider, entering the password when prompted.
+
+```sh
+oc cluster-info
+```
+
+> NOTE: You may need to add the parameter `--insecure-skip-tls-verify=true` if your clusters api endpoint does not have a trusted cert.
+
+```sh
+oc login https://api.cluster-<id>.<id>.sandbox.opentlc.com:6443 --insecure-skip-tls-verify=true -u <username> -p <password>
+```
 
 > NOTE: The remainder of the procedure should be completed with the new cluster-admin `<username>`.
 
@@ -103,7 +111,8 @@ For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPass
 
 ## Automation key (catch up)
 
-- From this repository's root directory, run below command
-  - ```sh
-      ./scripts/runstep.sh -s 1
-    ```
+From this repository's root directory, run below command
+
+```sh
+  ./scripts/runstep.sh -s 1
+```
