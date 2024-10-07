@@ -36,7 +36,7 @@ OpenShift AI provides an environment to develop, train, serve, test, and monitor
 
 ### Automation Key
 
-- To run all steps, from this repo's root directory, run below command
+To run all steps, from this repo's root directory, run below command
 
 ```sh
 ./scripts/runstep.sh -s 14
