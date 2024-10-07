@@ -22,13 +22,15 @@ help() {
     loginfo "                             3     - Install kserve dependencies"
     loginfo "                             4     - Install RHOAI operator"
     loginfo "                             5     - Add CA bundle"
-    loginfo "                             6     - Configure operator logger"
+    loginfo "                             6     - (Optional) Configure operator logger"
     loginfo "                             7     - Enable gpu support"
     loginfo "                             8     - Run sample gpu application"
     loginfo "                             9     - Configure gpu dashboards"
     loginfo "                             10    - Configure gpu sharing method"
     loginfo "                             11    - Configure distributed workloads"
-    loginfo "                             12    - Configure rhoai"
+    loginfo "                             12    - Configure codeflare operator"
+    loginfo "                             13    - Configure rhoai"
+    loginfo "                             14    - All setup"
     exit 0
 }
 
