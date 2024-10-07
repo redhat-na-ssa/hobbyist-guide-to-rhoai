@@ -16,11 +16,11 @@ Create an htpasswd file to store the user and password information
 htpasswd -c -B -b scratch/users.htpasswd <username> <password>
 ```
 
-    ```sh
-    # expected output
+  ```sh
+  # expected output
 
-    Adding password for user <username>
-    ```
+  Adding password for user <username>
+  ```
 
 Create a secret to represent the htpasswd file
 
