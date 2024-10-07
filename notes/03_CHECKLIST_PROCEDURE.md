@@ -314,7 +314,7 @@ Serverless computing is a method of providing backend services on an as-used bas
 
 OpenShift Serverless provides Kubernetes native building blocks that enable developers to create and deploy serverless, event-driven applications on RHOCP. It's is based on the open source Knative project, which provides portability and consistency for hybrid and multi-cloud environments by a providing a platform-agnostic solution for running serverless deployments. [source](https://docs.redhat.com/en/documentation/red_hat_openshift_serverless/1.33/html/about_openshift_serverless/about-serverless)
 
-[source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#creating-a-knative-serving-instance_serving-large-models)
+[source](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.13/html/serving_models/serving-large-models_serving-large-models#creating-a-knative-serving-instance_serving-large-models)
 
 Review the Serverless operator ns, operatorgroup, and subscription
 
@@ -365,7 +365,7 @@ For `Unmanaged` deployments additional steps need to be executed. See the Define
 
 #### Install Red Hat Authorino Operator
 
-In order to front services with Auth{n,z}, Authorino provides an authorization proxy (using Envoy) for publicly  exposed [KServe inference endpoint](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#manually-adding-an-authorization-provider_serving-large-models). You can enable token authorization for models that you expose outside the platform to ensure that only authorized parties can make inference requests.
+In order to front services with Auth{n,z}, Authorino provides an authorization proxy (using Envoy) for publicly  exposed [KServe inference endpoint](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.13/html/serving_models/serving-large-models_serving-large-models#manually-adding-an-authorization-provider_serving-large-models). You can enable token authorization for models that you expose outside the platform to ensure that only authorized parties can make inference requests.
 
 Review subscription for the Authorino Operator
 
@@ -397,7 +397,7 @@ For `Unmanaged` deployments additional steps need to be executed. See the Config
 
 ## Install the RHOAI Operator
 
-[source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/Install-and-deploying-openshift-ai_install#Install-the-openshift-data-science-operator_operator-install)
+[source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.13/html/Install_and_unInstall_openshift_ai_self-managed/Install-and-deploying-openshift-ai_install#Install-the-openshift-data-science-operator_operator-install)
 
 Check the pre-requisite operators in order to fully deploy RHOAI components.
 
@@ -468,7 +468,7 @@ metadata:
   namespace: redhat-ods-operator 
 spec:
   name: rhods-operator
-  channel: stable-2.10 
+  channel: stable-2.13 
   source: redhat-operators
   sourceNamespace: openshift-marketplace
 ```
@@ -633,7 +633,7 @@ featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-servin
 
 A CA bundle is a collection of root certificates that helps establish trust in SSL/TLS connections. When a client, like a web browser, connects to a server using SSL/TLS, the server provides its SSL certificate. The client then uses the CA bundle to verify that the certificate was issued by a trusted CA and that it hasn't been revoked. If the CA bundle can't verify the certificate, the client will usually display a warning or error message indicating that the connection is untrustworthy.
 
-[source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/working-with-certificates_certs#adding-a-ca-bundle_certs)
+[source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.13/html/Install_and_unInstall_openshift_ai_self-managed/working-with-certificates_certs#adding-a-ca-bundle_certs)
 
 Set environment variables to define base directories for generation of a wildcard certificate and key for the gateways.
 
@@ -787,7 +787,7 @@ rhods-notebooks                         odh-trusted-ca-bundle   2      6m14s
 
 ## (Optional) Configure the RHOAI Operator logger
 
-You can change the log level for RHOAI Operator (`development`, `""`, `production`) components by setting the .spec.devFlags.logmode flag for the DSC Initialization/DSCI CR during runtime. If you do not set a logmode value, the logger uses the INFO log level by default. [source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/Install-and-deploying-openshift-ai_install#Configure-the-operator-logger_operator-log).
+You can change the log level for RHOAI Operator (`development`, `""`, `production`) components by setting the .spec.devFlags.logmode flag for the DSC Initialization/DSCI CR during runtime. If you do not set a logmode value, the logger uses the INFO log level by default. [source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.13/html/Install_and_unInstall_openshift_ai_self-managed/Install-and-deploying-openshift-ai_install#Configure-the-operator-logger_operator-log).
 
 Configure the log level from the OpenShift CLI by using the following command with the logmode value set to the log level that you want
 ```sh
@@ -809,7 +809,7 @@ You can also view via the console
 
 ## Enabling GPU support for RHOAI
 
-In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs for RHOCP](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/enabling-gpu-support_install). Once completed, RHOAI requires an Accelerator Profile custom resource definition in the `redhat-ods-applications`. Currently, NVIDIA and Intel Gaudi are the supported [accelerator profiles](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/working_with_accelerators/overview-of-accelerators_accelerators#overview-of-accelerators_accelerators).
+In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs for RHOCP](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.13/html/Install_and_unInstall_openshift_ai_self-managed/enabling-gpu-support_install). Once completed, RHOAI requires an Accelerator Profile custom resource definition in the `redhat-ods-applications`. Currently, NVIDIA and Intel Gaudi are the supported [accelerator profiles](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.13/html/working_with_accelerators/overview-of-accelerators_accelerators#overview-of-accelerators_accelerators).
 
 ### Adding a GPU node to an existing RHOCP cluster
 
@@ -1938,7 +1938,7 @@ Distributed Workloads is made of up a series of components.
 
 You can run distributed workloads from data science pipelines, from Jupyter notebooks, or from Microsoft Visual Studio Code files.
 
-[source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/working_with_distributed_workloads/Configure-distributed-workloads_distributed-workloads)
+[source](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.13/html/working_with_distributed_workloads/Configure-distributed-workloads_distributed-workloads)
 
 Components required for Distributed Workloads
 
@@ -1983,7 +1983,7 @@ spec:
     key: nvidia.com/gpu
 ```
 
-In RHOAI 2.10, Red Hat supports only a single cluster queue per cluster (that is, homogenous clusters), and only empty resource flavors.
+In RHOAI 2.13, Red Hat supports only a single cluster queue per cluster (that is, homogenous clusters), and only empty resource flavors.
 
 Apply the configuration to create the `default-flavor`
 
@@ -2102,7 +2102,7 @@ Get the `codeflare-operator-config` configmap
 oc get cm codeflare-operator-config -n redhat-ods-applications -o yaml
 ```
 
-In the `codeflare-operator-config`, data:config.yaml:kuberay section, you can patch the [following](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/working_with_distributed_workloads/Configure-distributed-workloads_distributed-workloads#Configure-the-codeflare-operator_distributed-workloads)
+In the `codeflare-operator-config`, data:config.yaml:kuberay section, you can patch the [following](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.13/html/working_with_distributed_workloads/Configure-distributed-workloads_distributed-workloads#Configure-the-codeflare-operator_distributed-workloads)
 
 1. `ingressDomain` option is null (ingressDomain: "") by default.
 1. `mTLSEnabled` option is enabled (mTLSEnabled: true) by default.
@@ -2146,7 +2146,7 @@ Access the RHOAI Dashboard > Settings.
 
 #### Add a new Accelerator Profile (~3min)
 
-[Enabling GPU support in RHOAI](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/enabling-gpu-support_install)
+[Enabling GPU support in RHOAI](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.13/html/Install_and_unInstall_openshift_ai_self-managed/enabling-gpu-support_install)
 
 RHOAI dashboard and check the **Settings > Accelerator profiles** - There should be none listed.
 
