@@ -15,7 +15,7 @@ For this procedure, we are using HTpasswd as the Identity Provider (IdP). HTPass
   - ```sh
       htpasswd -c -B -b scratch/users.htpasswd <username> <password>
     ```
-    ```sh
+    ```
     # Expected output
     Adding password for user <username>
     ```
