@@ -1,4 +1,4 @@
-## Prerequisite
+# Prerequisite
 
 > Intended commands to be executed from the root directory of this repository. The majority of the configurations to be applied are already created, with the exception of the ones that prompts you for specifics that are either created in the command or dumped to a `scratch` dir that is ignored in the `.gitignore`.
 
@@ -30,7 +30,7 @@ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 
 > Refer [Here](/docs/info-create-openshift-cluster.md#get-cluster-url-and-admin-username-and-password) to see how to get user, password, and cluster url
 
-Run prerequisites (from this repository's root directory, run below command
+Run prerequisites (from this repository's root directory)
 
 ```sh
 ./scripts/runstep.sh -s 0
