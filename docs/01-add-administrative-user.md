@@ -1,4 +1,4 @@
-# 1. Add administrative user
+# 1. Add an administrative user
 
 Only users with cluster administrator privileges can install and configure RHOAI.
 
