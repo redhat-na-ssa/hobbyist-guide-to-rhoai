@@ -2,10 +2,10 @@
 
 > Intended commands to be executed from the root directory of this repository. The majority of the configurations to be applied are already created, with the exception of the ones that prompts you for specifics that are either created in the command or dumped to a `scratch` dir that is ignored in the `.gitignore`.
 
-- Git clone this repository
-- Have `cluster-admin` access to an OpenShift 4.14+ cluster
+- [ ] Git clone this repository
+- [ ] Have `cluster-admin` access to an OpenShift 4.14+ cluster
   - Or create an OpenShift 4.14+ cluster [(More Info)](/docs/info-create-openshift-cluster.md)
-- Install OpenShift CLI [(Link)](https://docs.openshift.com/container-platform/4.16/cli_reference/openshift_cli/getting-started-cli.html).
+- [ ] Install OpenShift CLI [(Link)](https://docs.openshift.com/container-platform/4.16/cli_reference/openshift_cli/getting-started-cli.html).
   - Have `oc` in your `$PATH`
 
 ```sh
