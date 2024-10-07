@@ -184,9 +184,13 @@ In order to use the RHOAI Operator, you must create a DataScienceCluster instanc
     featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-serving-gateways             97s
     ```
 
+## Validation
+
+![](/assets/04-validation.gif)
+
 ## Automation key (Catch up)
 
 - From this repository's root directory, run below command
   - ```sh
-      ./scripts/runstep.sh -s 3
+      ./scripts/runstep.sh -s 4
     ```
