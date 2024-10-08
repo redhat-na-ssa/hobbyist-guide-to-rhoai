@@ -96,7 +96,7 @@ authentication   4.16.6    True        False         False      0s
 - [ ] As kubeadmin, assign the cluster-admin role to perform administrator level tasks
 
 ```sh
-oc adm policy add-cluster-role-to-user cluster-admin admin1
+oc adm policy add-cluster-role-to-user cluster-admin <username>
 ```
 
 ```sh

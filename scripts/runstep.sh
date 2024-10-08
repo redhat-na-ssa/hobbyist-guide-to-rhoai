@@ -85,6 +85,8 @@ step_1() {
     logbanner "Adding administrative user"
     USER="admin1"
     PASSWORD="openshift1"
+    loginfo "User: ${USER}"
+    loginfo "Password: ${PASSWORD}"
     source "$SCRIPT_DIR/add-admin-user.sh" "${USER}" "${PASSWORD}"
 }
 
