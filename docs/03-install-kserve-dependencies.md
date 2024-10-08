@@ -1,98 +1,122 @@
-## 3. Install RHOAI Kserve Dependencies
+# 3. Install RHOAI Kserve Dependencies
 
-RHOAI provides 2x primary methods for serving models that you would choose depending on both resources constraints and inference use cases:
+### Objectives
 
-1. `Model Mesh`
-1. `KServe`
+- Understanding where we [deploy models](/docs/info-deploy-model.md) to and [ways to do it](/docs/info-model-serving.md)
 
-The `ModelMesh` framework is a general-purpose model serving management/routing layer designed for high-scale, high-density and frequently-changing model use cases. There are no extra dependencies needed to configure this solution.
+### Rationale
 
-`KServe` has specific dependencies and provides an interface for serving predictive and generative machine learning (ML) models.
+- RHOAI provides 2x primary methods for serving models that you would choose depending on both resources constraints and inference use cases
 
-- To support the RHOAI KServe component, you must also install Operators for `Red Hat OpenShift Service Mesh` (based on `Istio`) and `Red Hat OpenShift Serverless` (based on `Knative`). Furthermore, if you want to add an authorization provider, you must also install `Red Hat Authorino Operator` (based on `Kuadrant`).
+### Takeaways
 
-Because `Service Mesh`, `Serverless`, and `Authorino` will be `Managed` in this procedure, we only need to install the operators. We will not configure instances (i.e. control plane, members, etc.).
+- `ModelMesh` is a general-purpose model serving management/routing layer designed for high-scale, high-density and frequently-changing model use cases. It has no extra dependencies.
+- `KServe` provides an interface for serving predictive and generative machine learning (ML) models. It has has specific dependencies.
+- [Single](https://kserve.github.io/website/0.8/modelserving/v1beta1/serving_runtime/) vs. [Multi-Model](https://kserve.github.io/website/0.8/modelserving/mms/multi-model-serving/) Serving
+- [Runtimes](https://kserve.github.io/website/0.8/modelserving/servingruntimes/) vs. Model Servers
 
 ## 3.1 Install RHOS Service Mesh Operator
 
-A service mesh is an infrastructure layer that simplifies the communication between services in a loosely-coupled/ microservices architecture without requiring any changes to the application code. It includes a collection of lightweight network proxies, known as sidecars, which are placed next to each service in the system.
+### Objectives
 
-Red Hat OpenShift Service Mesh, is based on the open source Istio project.
+- Creating the Namespace and subscribing to the Service Mesh Operator
 
-Service Mesh is made up of a `data plane` (service discovery, health checks, routing, load balancing, Authn and Authz, and observability) and `control plane` (configuration and policy for all of the data planes).
+### Rationale
 
-How Istio relates to KServe:
+- RHOAI KServe needs Service Mesh (by default), just like KServe requires Istio for traffic routing and ingress.
 
-1. `KServe (Inference) Data Plane` - consists of a static graph of components (predictor, transformer, explainer) which coordinate requests for a single model. Advanced features such as Ensembling, A/B testing, and Multi-Arm-Bandits should compose InferenceServices together.
-1. `KServe Control Plane` - creates the Knative serverless deployment for predictor, transformer, explainer to enable autoscaling based on incoming request workload including scaling down to zero when no traffic is received. When raw deployment mode is enabled, control plane creates Kubernetes deployment, service, ingress, HPA.
+### Takeaways
 
-### Steps
+- Data plane (service discovery, health checks, routing, load balancing, Authn and Authz, and observability)
+  - [KServe (Inference) Data Plane](https://kserve.github.io/website/latest/modelserving/data_plane/data_plane/) - consists of a static graph of components (predictor, transformer, explainer) which coordinate requests for a single model.
+- Control plane (configuration and policy for all of the data planes).
+  - [KServe Control Plane](https://kserve.github.io/website/latest/modelserving/control_plane/) - creates the Knative serverless deployment for predictor, transformer, explainer to enable autoscaling based on incoming request workload including scaling down to zero when no traffic is received.
 
-- Create the required namespace for Red Hat OpenShift Service Mesh.
+## Steps
 
-  - ```sh
-      oc create ns istio-system
-    ```
+- [ ] Create the required namespace for Red Hat OpenShift Service Mesh.
 
-    ```sh
-    # expected output
-    namespace/istio-system created
-    ```
+```sh
+oc create ns istio-system
+```
 
-- Apply the Service Mesh subscription to install the operator
+```sh
+# expected output
+namespace/istio-system created
+```
 
-  - ```sh
-      oc create -f configs/03/servicemesh-subscription.yaml
-    ```
+Apply the Service Mesh subscription to install the operator
 
-    ```sh
-    # expected output
-    subscription.operators.coreos.com/servicemeshoperator created
-    ```
+```sh
+oc create -f configs/03/servicemesh-subscription.yaml
+```
+
+```sh
+# expected output
+subscription.operators.coreos.com/servicemeshoperator created
+```
 
 > NOTE: For `Unmanaged` configuration details, see the \_APPENDIX.md.
 
 ## 3.2 Install Red Hat OpenShift Serverless Operator
 
-Serverless computing is a method of providing backend services on an as-used basis. Servers are still used to execute code. However, developers of serverless applications are not concerned with capacity planning, configuration, management, maintenance, fault tolerance, or scaling of containers, virtual machines, or physical servers. Overall, serverless computing can simplify the process of deploying code into production.
+### Objectives
 
-OpenShift Serverless provides Kubernetes native building blocks that enable developers to create and deploy serverless, event-driven applications on RHOCP. It's is based on the open source Knative project, which provides portability and consistency for hybrid and multi-cloud environments by a providing a platform-agnostic solution for running serverless deployments.  
-[More Info Serverless](https://docs.redhat.com/en/documentation/red_hat_openshift_serverless/1.33/html/about_openshift_serverless/about-serverless)  
-[More info Knative](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#creating-a-knative-serving-instance_serving-large-models)
+- Creating the Namespace, OperatorGroup and subscribing to the Serverless Operator
 
-### Steps
+### Rationale
 
-- Create the Serverless Operator objects
+- RHOAI KServe needs Serverless (by default), just like KServe requires Knative Serving for auto-scaling, canary rollout.
 
-  - ```sh
-      oc create -f configs/03/serverless-operator.yaml
-    ```
+### Takeaways
 
-    ```sh
-    # expected output
-    namespace/openshift-serverless created
-    operatorgroup.operators.coreos.com/serverless-operator created
-    subscription.operators.coreos.com/serverless-operator created
-    ```
+- Knative serverless deployment for predictor, transformer, explainer to enable autoscaling based on incoming request workload including scaling down to zero when no traffic is received.
+
+## Steps
+
+- [ ] Create the Serverless Operator objects
+
+```sh
+oc create -f configs/03/serverless-operator.yaml
+```
+
+```sh
+# expected output
+namespace/openshift-serverless created
+operatorgroup.operators.coreos.com/serverless-operator created
+subscription.operators.coreos.com/serverless-operator created
+```
 
 > For `Unmanaged` deployments additional steps need to be executed. See the Define a ServiceMeshMember for Serverless in the \_APPENDIX.md
 
 ## 3.3 Install Red Hat Authorino Operator
 
-In order to front services with Auth{n,z}, Authorino provides an authorization proxy (using Envoy) for publicly exposed [KServe inference endpoint](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/serving_models/serving-large-models_serving-large-models#manually-adding-an-authorization-provider_serving-large-models). You can enable token authorization for models that you expose outside the platform to ensure that only authorized parties can make inference requests.
+### Objectives
 
-### Steps
+- Subscribing the RH Authorino Operator
 
-- Create the Authorino subscription
+### Rationale
 
-  - ```sh
-      oc create -f configs/03/authorino-subscription.yaml
-    ```
+- To front services with Auth{n,z}, Authorino provides an authorization proxy (using Envoy) for publicly exposed KServe inference endpoint.
 
-    ```sh
-    # expected output
-    subscription.operators.coreos.com/authorino-operator created
-    ```
+### Takeaways
+
+- Without Authorino, model endpoints are insecure and accessible to anyone
+- Authorino implements [Envoy Proxy](https://www.envoyproxy.io/)'s [external authorization](https://www.envoyproxy.io/docs/envoy/latest/start/sandboxes/ext_authz) gRPC protocol, and is a part of Red Hat [Kuadrant](https://github.com/kuadrant) architecture.
+- Good [FAQs](https://github.com/kuadrant/authorino?tab=readme-ov-file#faq) section
+
+## Steps
+
+- [ ] Create the Authorino subscription
+
+```sh
+oc create -f configs/03/authorino-subscription.yaml
+```
+
+```sh
+# expected output
+subscription.operators.coreos.com/authorino-operator created
+```
 
 > For `Unmanaged` deployments additional steps need to be executed. See the Configure Authorino for Unmanaged deployments in the \_APPENDIX.md
 
@@ -102,7 +126,8 @@ In order to front services with Auth{n,z}, Authorino provides an authorization p
 
 ## Automation key (Catch up)
 
-- From this repository's root directory, run below command
-  - ```sh
-      ./scripts/runstep.sh -s 3
-    ```
+- [ ] From this repository's root directory, run below command
+
+```sh
+./scripts/runstep.sh -s 3
+```

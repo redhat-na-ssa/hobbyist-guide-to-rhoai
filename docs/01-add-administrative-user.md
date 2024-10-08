@@ -1,10 +1,10 @@
 # 1. Add an administrative user
 
-### What are we doing?
+### Objectives
 
 - Creating an admin user, with cluster-admin RB using HTpasswd as the IdP.
 
-### Why are we doing this?
+### Rationale
 
 - Only users with cluster administrator privileges can install and configure RHOAI.
 
@@ -30,7 +30,7 @@ For this bootcamp, we are using HTpasswd as the Identity Provider (IdP). To lear
 htpasswd -c -B -b scratch/users.htpasswd <username> <password>
 ```
 
-```
+```sh
 # expected output
 
 Adding password for user <username>
@@ -42,7 +42,7 @@ Adding password for user <username>
 oc create secret generic htpasswd-secret --from-file=htpasswd=scratch/users.htpasswd -n openshift-config
 ```
 
-```
+```sh
   # expected output
 
   secret/htpasswd-secret created
@@ -54,7 +54,7 @@ oc create secret generic htpasswd-secret --from-file=htpasswd=scratch/users.htpa
 oc get secret/htpasswd-secret -n openshift-config
 ```
 
-```
+```sh
 # expected output
 
 NAME              TYPE     DATA   AGE
@@ -125,8 +125,8 @@ oc login https://api.cluster-<id>.<id>.sandbox.opentlc.com:6443 --insecure-skip-
 
 ## Automation key (catch up)
 
-From this repository's root directory, run below command
+- [ ] From this repository's root directory, run below command
 
 ```sh
-  ./scripts/runstep.sh -s 1
+./scripts/runstep.sh -s 1
 ```

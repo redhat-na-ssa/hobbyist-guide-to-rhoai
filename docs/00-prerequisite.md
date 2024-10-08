@@ -16,13 +16,13 @@ git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
 git checkout sa-bootcamp
 ```
 
-Create scratch directory
+- [ ] Create scratch directory
 
 ```sh
 mkdir scratch
 ```
 
-Login to the cluster via terminal
+- [ ] Login to the cluster via terminal
 
 ```sh
 oc login <openshift_cluster_url> -u <admin_username> -p <password>
@@ -30,7 +30,7 @@ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 
 > Refer [Here](/docs/info-create-openshift-cluster.md#get-cluster-url-and-admin-username-and-password) to see how to get user, password, and cluster url
 
-Run prerequisites (from this repository's root directory)
+- [ ] Run prerequisites (from this repository's root directory)
 
 ```sh
 ./scripts/runstep.sh -s 0
