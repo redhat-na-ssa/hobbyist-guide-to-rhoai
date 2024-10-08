@@ -128,5 +128,5 @@ oc login https://api.cluster-<id>.<id>.sandbox.opentlc.com:6443 --insecure-skip-
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/runstep.sh -s 1
+./scripts/setup.sh -s 1
 ```

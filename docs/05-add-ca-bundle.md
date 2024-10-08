@@ -154,5 +154,5 @@ rhods-notebooks                         odh-trusted-ca-bundle   2      6m14s
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/runstep.sh -s 5
+./scripts/setup.sh -s 5
 ```

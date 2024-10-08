@@ -454,5 +454,5 @@ At this time, the Nvidia operator creates an extended resource called `nvidia.co
 
 - From this repository's root directory, run below command
   - ```sh
-      ./scripts/runstep.sh -s 7
+      ./scripts/setup.sh -s 7
     ```

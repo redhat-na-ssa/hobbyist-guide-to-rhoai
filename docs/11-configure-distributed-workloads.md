@@ -139,5 +139,5 @@ How do users known what queues they can submit jobs to? Users submit jobs to a L
 
 - From this repository's root directory, run below command
   - ```sh
-      ./scripts/runstep.sh -s 11
+      ./scripts/setup.sh -s 11
     ```

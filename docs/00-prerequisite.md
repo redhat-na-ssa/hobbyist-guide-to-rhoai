@@ -33,5 +33,5 @@ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 - [ ] Run prerequisites (from this repository's root directory)
 
 ```sh
-./scripts/runstep.sh -s 0
+./scripts/setup.sh -s 0
 ```

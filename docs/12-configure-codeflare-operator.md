@@ -24,5 +24,5 @@ In the `codeflare-operator-config`, data:config.yaml:kuberay section, you can pa
 
 - From this repository's root directory, run below command
   - ```sh
-      ./scripts/runstep.sh -s 12
+      ./scripts/setup.sh -s 12
     ```

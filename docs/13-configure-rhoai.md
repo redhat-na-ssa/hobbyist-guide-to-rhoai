@@ -154,5 +154,5 @@ However, OADP does not serve as a disaster recovery solution for [etcd](https://
 
 - From this repository's root directory, run below command
   - ```sh
-      ./scripts/runstep.sh -s 13
+      ./scripts/setup.sh -s 13
     ```

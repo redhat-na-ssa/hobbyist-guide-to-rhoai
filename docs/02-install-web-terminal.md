@@ -51,5 +51,5 @@ mkdir scratch
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/runstep.sh -s 2
+./scripts/setup.sh -s 2
 ```

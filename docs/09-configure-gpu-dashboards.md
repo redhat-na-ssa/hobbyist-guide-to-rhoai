@@ -221,5 +221,5 @@ You should receive a message on the console "Web console update is available" > 
 
 - From this repository's root directory, run below command
   - ```sh
-      ./scripts/runstep.sh -s 9
+      ./scripts/setup.sh -s 9
     ```

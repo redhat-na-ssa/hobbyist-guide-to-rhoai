@@ -26,5 +26,5 @@ You can change the log level for RHOAI Operator (`development`, `""`, `productio
 
 - From this repository's root directory, run below command
   - ```sh
-      ./scripts/runstep.sh -s 6
+      ./scripts/setup.sh -s 6
     ```

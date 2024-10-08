@@ -228,5 +228,5 @@ Why? Prevent non-GPU workloads from being scheduled on the GPU nodes.
 
 - From this repository's root directory, run below command
   - ```sh
-      ./scripts/runstep.sh -s 10
+      ./scripts/setup.sh -s 10
     ```

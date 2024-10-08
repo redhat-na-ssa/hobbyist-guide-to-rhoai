@@ -104,5 +104,5 @@ Run a simple CUDA VectorAdd sample app [(More Info)](https://docs.nvidia.com/dat
 
 - From this repository's root directory, run below command
   - ```sh
-      ./scripts/runstep.sh -s 8
+      ./scripts/setup.sh -s 8
     ```

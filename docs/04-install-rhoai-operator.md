@@ -223,5 +223,5 @@ featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-servin
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/runstep.sh -s 4
+./scripts/setup.sh -s 4
 ```

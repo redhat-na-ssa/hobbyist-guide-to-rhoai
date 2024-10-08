@@ -129,5 +129,5 @@ subscription.operators.coreos.com/authorino-operator created
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/runstep.sh -s 3
+./scripts/setup.sh -s 3
 ```
