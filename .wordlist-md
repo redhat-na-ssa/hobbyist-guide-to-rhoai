@@ -8,7 +8,6 @@ Ansible
 api
 APIs
 apiVersion
-applicatiions
 applicationsNamespace
 auth
 Authn
@@ -18,11 +17,14 @@ authorizationpolicy
 AuthorizationPolicy
 authz
 Authz
+AutoML
+AutoPilot
 autoscaler
 autoscaling
 awk
 aws
 backend
+balancers
 bb
 bbc
 bbff
@@ -67,6 +69,7 @@ controlPlane
 coreos
 cpu
 CPUs
+CRB
 creationTimestamp
 credentialName
 Cron
@@ -78,6 +81,7 @@ cuda
 CUDA
 currentCSV
 customCABundle
+customizable
 cxm
 daemonset
 datasciencecluster
@@ -153,6 +157,7 @@ fractioned
 fst
 fvwnh
 Gaudi
+GCP
 GFD
 Gi
 GiB
@@ -160,6 +165,7 @@ github
 GitLab
 gitops
 gln
+gmail
 gpu
 GPUs
 grafana
@@ -181,7 +187,9 @@ HTTPS
 hugepages
 HuggingFace
 IdP
+IDPs
 InferenceServices
+inferencing
 Infiniband
 ingressControllerMode
 ingressDomain
@@ -190,12 +198,14 @@ installplan
 Instascale
 io
 ip
+isaacmuse
 ish
 istio
 Istio
 ISTIO
 istiod
 ISV
+ISVs
 Jaeger
 Jira
 jq
@@ -207,7 +217,9 @@ jtvs
 Jupyter
 JupyterLab
 keyout
+KF
 kfp
+KFServing
 kgpb
 Ki
 knative
@@ -223,6 +235,7 @@ KubeAdmin
 kubeconfig
 KubeConfigFileAuthentication
 kubectl
+kubeflow
 Kubeflow
 Kubelet
 kuberay
@@ -259,6 +272,7 @@ MCAD
 md
 mem
 MEM
+MERCHANTABILITY
 metricsCollection
 mgmt
 MGMT
@@ -269,6 +283,7 @@ microservices
 mig
 migratedCompleted
 mkdir
+MobileNet
 ModelMesh
 modelmeshserving
 mps
@@ -293,6 +308,7 @@ NICs
 nodefeaturediscovery
 NodeFeatureDiscovery
 nodocs
+NONINFRINGEMENT
 NoSchedule
 nr
 ns
@@ -326,6 +342,7 @@ OpenVINO
 operatorgroup
 OperatorGroup
 os
+OSs
 OSTREE
 oversubscription
 packagemanifest
@@ -338,6 +355,8 @@ Pipfile
 PKGS
 PoC
 pre
+prebuilt
+Prem
 proxyMetadata
 Pwr
 pytorch
@@ -347,7 +366,9 @@ RayCluster
 rayDashboardOauthEnabled
 rayDashboardOAuthEnabled
 rbac
+recommender
 redhat
+Redistributions
 replicaset
 repo
 repo's
@@ -366,6 +387,7 @@ rhods
 rnm
 rollout
 rootNamespace
+RPC
 rsa
 RStudio
 runtime
@@ -373,6 +395,7 @@ Runtime
 runtimes
 Runtimes
 sa
+SageMaker
 san
 scalable
 schedulable
@@ -380,6 +403,9 @@ sdk
 SDK
 sed
 Seldon
+servable
+Servable
+servables
 serverless
 Serverless
 servicemesh
@@ -408,15 +434,21 @@ sqx
 ssa
 SSL
 startingCSV
+Stienstra
 subclasses
+sublicense
 svc
 sx
+Takhteyev
 targetPort
 TCP
 tensorflow
 Tensorflow
+TensorRT
 terminationDrainDuration
 TF
+TFServe
+tfx
 TGI
 TGIS
 timeslicing
@@ -428,6 +460,8 @@ TokenAuthentication
 tolerations
 Tolerations
 torchserve
+TorchServe
+triton
 trustDomain
 trustedCABundle
 TrustyAI
@@ -459,6 +493,7 @@ wgh
 whc
 whoami
 whrns
+www
 xc
 XDS
 Xferd
@@ -473,4 +508,5 @@ YAML
 yq
 zg
 zkpz
+zsh
 zznlw

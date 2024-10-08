@@ -4,9 +4,9 @@
 
 1. On Prem - all hardware and software
    1. Infrastructure
-      1. complete control over infrasutructure
+      1. complete control over infrastructure
       2. train and deploy
-      3. manually procure harwdare (GPU, CPU, etc.)
+      3. manually procure hardware (GPU, CPU, etc.)
       4. works for larger Co. due to economies of scale
       5. profitable for large Co. over longer time
    2. Serving

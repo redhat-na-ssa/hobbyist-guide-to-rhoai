@@ -13,6 +13,6 @@
       2. Average 1x-GPU shared by other apps
       3. Use for accelerated process will drain battery quickly
       4. Average android app storage < 11MB
-      5. Exmaple:
+      5. Example:
          1. MobileNet - designed for mobile devices computer vision
             1. Now they may not have the highest number of predictive classes, and they may not be state of the art in recognition. But all of the work in performing trade-offs for the best mobile model had been done for you already and you can build on this.
