@@ -19,7 +19,7 @@ create_log_file() {
 }
 
 logbanner() {
-    echo -e "${PURPLE}====${NC} ${1} ${PURPLE}================================${NC}"
+    echo -e "${PURPLE}====${NC} ${1} ${PURPLE}====${NC}"
     if [ -f "${LOG_FILE}" ]; then
         echo "$(date +"%H:%M:%S") - INFO - $1" >> "${LOG_FILE}"
     fi
