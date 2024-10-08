@@ -2,64 +2,60 @@
 
 # shellcheck disable=SC1091
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-PARENT_DIR="${SCRIPT_DIR%/*}"
-source "${PARENT_DIR}"/scripts/logging.sh
-source "${PARENT_DIR}"/scripts/util.sh
+################# standard init #################
 
-HT_USERNAME=$1
-HT_PASSWORD=$2
-LOG_FILE="add-admin-user_$(date +"%Y%m%d:%H%M").log"
+# 8 seconds is usually enough time for the average user to realize they foobar
+export SLEEP_SECONDS=8
 
-RESOURCE_FILE="${PARENT_DIR}/configs/01/htpasswd-cr.yaml"
-PWD_FILENAME="users.htpasswd"
-SECRET_NAME="htpasswd-secret"
-
-
-logbanner "Begin adding administrative user"
-loginfo "Log file: ${LOG_FILE}"
-
-create_htpasswd_file() {
-    loginfo "Create htpasswd file for user ${HT_USERNAME}"
-    htpasswd -c -B -b scratch/"${PWD_FILENAME}" "${HT_USERNAME}" "${HT_PASSWORD}" 2>&1 | tee -a "${LOG_FILE}"
+check_shell(){
+  [ -n "$BASH_VERSION" ] && return
+  echo -e "${ORANGE}WARNING: These scripts are ONLY tested in a bash shell${NC}"
+  sleep "${SLEEP_SECONDS:-8}"
 }
 
-create_secret(){
-    if oc get secrets -A | grep ${SECRET_NAME}; then
-        logwarning "Secret ${SECRET_NAME} already exists, update secret"
-        oc create secret generic ${SECRET_NAME} --from-file=htpasswd=scratch/${PWD_FILENAME} --dry-run=client -o yaml -n openshift-config | oc replace -f - 2>&1 | tee -a "${LOG_FILE}"
-    else
-        loginfo "Create secret ${SECRET_NAME}"
-        oc create secret generic ${SECRET_NAME} --from-file=htpasswd=scratch/${PWD_FILENAME} -n openshift-config 2>&1 | tee -a "${LOG_FILE}"
-    fi
+check_git_root(){
+  if [ -d .git ] && [ -d scripts ]; then
+    GIT_ROOT=$(pwd)
+    export GIT_ROOT
+    echo "GIT_ROOT: ${GIT_ROOT}"
+  else
+    echo "Please run this script from the root of the git repo"
+    exit
+  fi
 }
 
-apply_htpasswd_provider(){
-    loginfo "Add htpasswd provider"
-    oc apply -f "${RESOURCE_FILE}" 2>&1 | tee -a "${LOG_FILE}"
+get_script_path(){
+  SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+  echo "SCRIPT_DIR: ${SCRIPT_DIR}"
 }
 
-apply_cluster_admin(){
-    loginfo "Add cluster-admin to user ${HT_USERNAME}"
-    oc adm policy add-cluster-role-to-user cluster-admin "${HT_USERNAME}" 2>&1 | tee -a "${LOG_FILE}"
+check_shell
+check_git_root
+get_script_path
+
+################# standard init #################
+
+# shellcheck source=/dev/null
+. "${SCRIPT_DIR}/functions.sh"
+
+genpass(){
+  < /dev/urandom LC_ALL=C tr -dc Aa-zZ0-9 | head -c "${1:-32}"
 }
 
-notify_user_creation(){
-    logwarning "User won't be created till you run 'oc login -u <username>'" 
+DEFAULT_USER=admin
+DEFAULT_PASS=$(genpass)
+
+logbanner "Creating ${DEFAULT_USER}"
+
+
+add_admin_user(){
+  HT_USERNAME=${1:-${DEFAULT_USER}}
+  HT_PASSWORD=${1:-${DEFAULT_PASS}}
+
+  htpasswd_ocp_get_file
+  htpasswd_add_user "${HT_USERNAME}" "${HT_PASSWORD}"
+  htpasswd_ocp_set_file
+  htpasswd_validate_user "${HT_USERNAME}" "${HT_PASSWORD}"
 }
 
-validate_user(){
-    loginfo "Validate user ${HT_USERNAME}"
-    if oc get user | grep "${HT_USERNAME}"; then
-        loginfo "${HT_USERNAME} created successfully"
-    else
-        logerror "User ${HT_USERNAME} not created"
-    fi
-}
-
-create_htpasswd_file
-create_secret
-apply_htpasswd_provider
-apply_cluster_admin
-notify_user_creation
-
+add_admin_user
