@@ -1,6 +1,6 @@
 #!/bin/bash
 
-which htpasswd > /dev/null 2>&1 || return 0
+which htpasswd 2>/dev/null || return 0
 
 DEFAULT_HTPASSWD=scratch/htpasswd-local
 
@@ -76,7 +76,7 @@ htpasswd_validate_user(){
   echo "Login validated: ${USER}"
 }
 
-which age > /dev/null 2>&1 || return 0
+which age 2>/dev/null || return 0
 
 htpasswd_encrypt_file(){
   HTPASSWD_FILE=${1:-${DEFAULT_HTPASSWD}}

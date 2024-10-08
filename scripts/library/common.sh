@@ -47,7 +47,7 @@ until_true(){
 
 retry(){
   local n=1
-  local max=6
+  local max=9
   local delay=20
 
   echo "Running:" "${@}"
