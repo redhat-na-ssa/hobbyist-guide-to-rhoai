@@ -33,10 +33,10 @@ check_shell
 check_git_root
 get_script_path
 
-################# standard init #################
-
 # shellcheck source=/dev/null
 . "${SCRIPT_DIR}/functions.sh"
+
+################# standard init #################
 
 check_cluster_version(){
   OCP_VERSION=$(oc version | sed -n '/Server Version: / s/Server Version: //p')
@@ -73,6 +73,20 @@ validate_setup(){
   validate_cli
   validate_cluster
 }
+
+add_admin_user(){
+  DEFAULT_USER=admin
+  DEFAULT_PASS=$(genpass)
+
+  HT_USERNAME=${1:-${DEFAULT_USER}}
+  HT_PASSWORD=${2:-${DEFAULT_PASS}}
+
+  htpasswd_ocp_get_file
+  htpasswd_add_user "${HT_USERNAME}" "${HT_PASSWORD}"
+  htpasswd_ocp_set_file
+  htpasswd_validate_user "${HT_USERNAME}" "${HT_PASSWORD}"
+}
+
 
 help() {
   loginfo "This script installs RHOAI and other dependencies"
@@ -120,12 +134,8 @@ step_0() {
 }
 
 step_1() {
-  logbanner "Adding administrative user"
-  USER="admin1"
-  PASSWORD="openshift1"
-  loginfo "User: ${USER}"
-  loginfo "Password: ${PASSWORD}"
-  source "$SCRIPT_DIR/add-admin-user.sh" "${USER}" "${PASSWORD}"
+  logbanner "Creating user 'admin'"
+  add_admin_user admin
 }
 
 step_2() {
@@ -209,7 +219,9 @@ setup(){
 
   for (( i=1; i <= s; i++ ))
   do
-      echo "Running step $i"
+      echo ""
+      loginfo "Running step $i"
+      echo ""
       eval "step_$i"
   done
 }

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-which htpasswd 2>/dev/null || return 0
-
 DEFAULT_HTPASSWD=scratch/htpasswd-local
 
 htpasswd_add_user(){
@@ -33,12 +31,12 @@ htpasswd_ocp_get_file(){
   HTPASSWD_NAME=$(basename "${HTPASSWD_FILE}")
 
   oc -n openshift-config \
-    get "${HTPASSWD_FILE}" || return 1
+    get secret/"${HTPASSWD_NAME}" > /dev/null 2>&1 || return 1
 
   oc -n openshift-config \
     extract secret/"${HTPASSWD_NAME}" \
     --keys=htpasswd \
-    --to=- > "${HTPASSWD_FILE}"
+    --to=- > "${HTPASSWD_FILE}" 2>/dev/null
 }
 
 htpasswd_ocp_set_file(){
@@ -76,7 +74,7 @@ htpasswd_validate_user(){
   echo "Login validated: ${USER}"
 }
 
-which age 2>/dev/null || return 0
+which age >/dev/null 2>&1 || return 0
 
 htpasswd_encrypt_file(){
   HTPASSWD_FILE=${1:-${DEFAULT_HTPASSWD}}
