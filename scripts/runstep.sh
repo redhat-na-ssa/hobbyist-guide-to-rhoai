@@ -2,13 +2,41 @@
 
 # shellcheck disable=SC1091
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-PARENT_DIR="${SCRIPT_DIR%/*}"
-PROJECT_DIR="${PARENT_DIR%/*}"
+################# standard init #################
 
-source "${PARENT_DIR}"/scripts/logging.sh
-source "${PARENT_DIR}"/scripts/util.sh
-source "${PARENT_DIR}"/scripts/functions.sh
+# 8 seconds is usually enough time for the average user to realize they foobar
+export SLEEP_SECONDS=8
+
+check_shell(){
+  [ -n "$BASH_VERSION" ] && return
+  echo -e "${ORANGE}WARNING: These scripts are ONLY tested in a bash shell${NC}"
+  sleep "${SLEEP_SECONDS:-8}"
+}
+
+check_git_root(){
+  if [ -d .git ] && [ -d scripts ]; then
+    GIT_ROOT=$(pwd)
+    export GIT_ROOT
+    echo "GIT_ROOT: ${GIT_ROOT}"
+  else
+    echo "Please run this script from the root of the git repo"
+    exit
+  fi
+}
+
+get_script_path(){
+  SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+  echo "SCRIPT_DIR: ${SCRIPT_DIR}"
+}
+
+check_shell
+check_git_root
+get_script_path
+
+################# standard init #################
+
+# shellcheck source=/dev/null
+. "${SCRIPT_DIR}/functions.sh"
 
 help() {
     loginfo "This script installs RHOAI and other dependencies"
@@ -48,19 +76,9 @@ while getopts ":h:s:" flag; do
     esac
 done
 
-create_log_file() {
-    LOG_FILE="runstep_$(date +"%Y%m%d:%H%M").log"
-    echo "Log file: ${LOG_FILE}"
-    if [ ! -d "logs" ]; then
-        loginfo "Creating logs directory"
-        mkdir logs
-    fi
-    touch logs/"${LOG_FILE}"
-}
-
 step_0() {
     logbanner "Install prerequisites"
-    until oc apply -f "${PARENT_DIR}"/configs/00; do : ; done
+    until oc apply -f "${GIT_ROOT}"/configs/00; do : ; done
 }
 
 step_1() {
@@ -73,17 +91,17 @@ step_1() {
 step_2() {
     logbanner "(Optional) Install web terminal"
     loginfo "Web Terminal"
-    until oc apply -f "${PARENT_DIR}"/configs/02; do : ; done
+    until oc apply -f "${GIT_ROOT}"/configs/02; do : ; done
 }
 
 step_3() {
     logbanner "Install kserve dependencies"
-    until oc apply -f "${PARENT_DIR}"/configs/03; do : ; done
+    until oc apply -f "${GIT_ROOT}"/configs/03; do : ; done
 }
 
 step_4() {
     logbanner "Install RHOAI operator"
-    until oc apply -f "${PARENT_DIR}"/configs/04; do : ; done
+    until oc apply -f "${GIT_ROOT}"/configs/04; do : ; done
 }
 
 step_5() {
@@ -101,37 +119,37 @@ step_7() {
     loginfo "Create a GPU node with autoscaling"
     ocp_aws_cluster_autoscaling
     ocp_scale_machineset
-    until oc apply -f "${PARENT_DIR}"/configs/07; do : ; done
+    until oc apply -f "${GIT_ROOT}"/configs/07; do : ; done
 }
 
 step_8() {
     logbanner "Run sample gpu application"
-    until oc apply -f "${PARENT_DIR}"/configs/08; do : ; done
+    until oc apply -f "${GIT_ROOT}"/configs/08; do : ; done
 }
 
 step_9() {
     logbanner "Configure gpu dashboards"
-    until oc apply -f "${PARENT_DIR}"/configs/09; do : ; done
+    until oc apply -f "${GIT_ROOT}"/configs/09; do : ; done
 }
 
 step_10() {
     logbanner "Configure gpu sharing method"
-    until oc apply -f "${PARENT_DIR}"/configs/10; do : ; done
+    until oc apply -f "${GIT_ROOT}"/configs/10; do : ; done
 }
 
 step_11() {
     logbanner "Configure distributed workloads"
-    until oc apply -f "${PARENT_DIR}"/configs/11; do : ; done
+    until oc apply -f "${GIT_ROOT}"/configs/11; do : ; done
 }
 
 step_12() {
     logbanner "Configure codeflare operator"
-    until oc apply -f "${PARENT_DIR}"/configs/12; do : ; done
+    until oc apply -f "${GIT_ROOT}"/configs/12; do : ; done
 }
 
 step_13() {
     logbanner "Configure rhoai"
-    until oc apply -f "${PARENT_DIR}"/configs/13; do : ; done
+    until oc apply -f "${GIT_ROOT}"/configs/13; do : ; done
 }
 
 setup(){

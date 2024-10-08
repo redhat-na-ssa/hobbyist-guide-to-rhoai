@@ -1,164 +1,81 @@
 #!/bin/bash
+# shellcheck disable=SC1091,SC2034
 
-# shellcheck disable=SC1091
+RED='\033[1;31m'
+BLUE='\033[1;36m'
+PURPLE='\033[1;35m'
+ORANGE='\033[0;33m'
+NC='\033[0m' # No Color
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-PARENT_DIR="${SCRIPT_DIR%/*}"
-# PROJECT_DIR="${PARENT_DIR%/*}"
-
-source "${PARENT_DIR}"/scripts/logging.sh
-source "${PARENT_DIR}"/scripts/util.sh
-
-ocp_control_nodes_not_schedulable(){
-  oc patch schedulers.config.openshift.io/cluster --type merge --patch '{"spec":{"mastersSchedulable": false}}'
+check_shell(){
+  [ -n "$BASH_VERSION" ] && return
+  echo -e "${ORANGE}WARNING: These scripts are ONLY tested in a bash shell${NC}"
+  sleep "${SLEEP_SECONDS:-8}"
 }
 
-ocp_control_nodes_schedulable(){
-  oc patch schedulers.config.openshift.io/cluster --type merge --patch '{"spec":{"mastersSchedulable": true}}'
-}
+check_git_root(){
+  [ -n "${GIT_ROOT}" ] && return
 
-ocp_gpu_taint_nodes(){
-  oc adm taint node -l node-role.kubernetes.io/gpu nvidia.com/gpu=:NoSchedule --overwrite
-  oc adm drain -l node-role.kubernetes.io/gpu --ignore-daemonsets --delete-emptydir-data
-  oc adm uncordon -l node-role.kubernetes.io/gpu
-}
-
-ocp_gpu_untaint_nodes(){
-  oc adm taint node -l node-role.kubernetes.io/gpu nvidia.com/gpu=:NoSchedule-
-}
-
-ocp_gpu_label_nodes_from_nfd(){
-  oc label node -l nvidia.com/gpu.machine node-role.kubernetes.io/gpu=''
-}
-
-ocp_aws_clone_worker_machineset(){
-  [ -z "${1}" ] && \
-  echo "
-    usage: ocp_aws_clone_worker_machineset < instance type, default g4dn.4xlarge > < machine set name >
-  "
-
-  INSTANCE_TYPE=${1:-g4dn.4xlarge}
-  SHORT_NAME=${2:-${INSTANCE_TYPE%.*}}
-
-  MACHINE_SET_NAME=$(oc -n openshift-machine-api get machinesets.machine.openshift.io -o name | grep "${SHORT_NAME}" | head -n1)
-  MACHINE_SET_WORKER=$(oc -n openshift-machine-api get machinesets.machine.openshift.io -o name | grep worker | head -n1)
-
-  # check for an existing instance machine set
-  if [ -n "${MACHINE_SET_NAME}" ]; then
-    echo "Exists: machineset - ${MACHINE_SET_NAME}"
+  if [ -d .git ] && [ -d scripts ]; then
+    GIT_ROOT=$(pwd)
+    export GIT_ROOT
+    echo "GIT_ROOT: ${GIT_ROOT}"
+    return
   else
-    echo "Creating: machineset - ${SHORT_NAME}"
-    oc -n openshift-machine-api \
-      get "${MACHINE_SET_WORKER}" -o yaml | \
-        sed '/machine/ s/-worker/-'"${INSTANCE_TYPE}"'/g
-          /^  name:/ s/cluster-.*/'"${SHORT_NAME}"'/g
-          /name/ s/-worker/-'"${SHORT_NAME}"'/g
-          s/instanceType.*/instanceType: '"${INSTANCE_TYPE}"'/
-          /cluster-api-autoscaler/d
-          s/replicas.*/replicas: 0/' | \
-      oc apply -f -
+    echo "Please run this script from the root of the git repo"
+    exit
   fi
-
-  # cosmetic pretty
-  oc -n openshift-machine-api \
-    patch "${MACHINE_SET_NAME}" \
-    --type=merge --patch '{"spec":{"template":{"spec":{"metadata":{"labels":{"node-role.kubernetes.io/'"${SHORT_NAME}"'":""}}}}}}'
 }
 
-ocp_aws_cluster_autoscaling(){
-  oc apply -k https://github.com/redhat-na-ssa/demo-ai-gitops-catalog/components/configs/cluster/autoscale/overlays/gpus-accelerator-label?ref=v0.04
+get_script_path(){
+  [ -n "${SCRIPT_DIR}" ] && return
 
-  loginfo "Creating GPU machineset of type g4dn.4xlarge"
-  ocp_aws_create_gpu_machineset g4dn.4xlarge
-  ocp_create_machineset_autoscale 0 3
-
-  # scale workers to 1
-  WORKER_MS="$(oc -n openshift-machine-api get machineset -o name | grep worker)"
-  ocp_scale_machineset 1 "${WORKER_MS}"
-
-  ocp_control_nodes_not_schedulable
+  SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+  echo "SCRIPT_DIR: ${SCRIPT_DIR}"
 }
 
-ocp_aws_create_gpu_machineset(){
-  # https://aws.amazon.com/ec2/instance-types/g4
-  # single gpu: g4dn.{2,4,8,16}xlarge
-  # multi gpu:  g4dn.12xlarge
-  # practical:  g4ad.4xlarge
-  # a100 (MIG): p4d.24xlarge
-  # h100 (MIG): p5.48xlarge
-
-  # https://aws.amazon.com/ec2/instance-types/dl1
-  # 8 x gaudi:  dl1.24xlarge
-
-  INSTANCE_TYPE=${1:-g4dn.4xlarge}
-
-  ocp_aws_clone_worker_machineset "${INSTANCE_TYPE}"
-
-  MACHINE_SET_TYPE=$(oc -n openshift-machine-api get machinesets.machine.openshift.io -o name | grep "${INSTANCE_TYPE%.*}" | head -n1)
-
-  echo "Patching: ${MACHINE_SET_TYPE}"
-
-  # cosmetic
-  oc -n openshift-machine-api \
-    patch "${MACHINE_SET_TYPE}" \
-    --type=merge --patch '{"spec":{"template":{"spec":{"metadata":{"labels":{"node-role.kubernetes.io/gpu":""}}}}}}'
-
-  # taint nodes for gpu-only workloads
-  oc -n openshift-machine-api \
-    patch "${MACHINE_SET_TYPE}" \
-    --type=merge --patch '{"spec":{"template":{"spec":{"taints":[{"key":"nvidia.com/gpu","value":"","effect":"NoSchedule"}]}}}}'
-  
-  # should use the default profile
-  # oc -n openshift-machine-api \
-  #   patch "${MACHINE_SET_TYPE}" \
-  #   --type=merge --patch '{"spec":{"template":{"spec":{"metadata":{"labels":{"nvidia.com/device-plugin.config":"no-time-sliced"}}}}}}'
-
-  # should help auto provisioner
-  oc -n openshift-machine-api \
-    patch "${MACHINE_SET_TYPE}" \
-    --type=merge --patch '{"spec":{"template":{"spec":{"metadata":{"labels":{"cluster-api/accelerator":"nvidia-gpu"}}}}}}'
-  
-  oc -n openshift-machine-api \
-    patch "${MACHINE_SET_TYPE}" \
-    --type=merge --patch '{"metadata":{"labels":{"cluster-api/accelerator":"nvidia-gpu"}}}'
-  
-  oc -n openshift-machine-api \
-    patch "${MACHINE_SET_TYPE}" \
-    --type=merge --patch '{"spec":{"template":{"spec":{"providerSpec":{"value":{"instanceType":"'"${INSTANCE_TYPE}"'"}}}}}}'
-}
-
-ocp_create_machineset_autoscale(){
-  MACHINE_MIN=${1:-0}
-  MACHINE_MAX=${2:-4}
-  MACHINE_SETS=${3:-$(oc -n openshift-machine-api get machinesets.machine.openshift.io -o name | sed 's@.*/@@' )}
-
-  for set in ${MACHINE_SETS}
+source_library(){
+  for file in "${SCRIPT_DIR}/library/"*.sh
   do
-cat << YAML | oc apply -f -
-apiVersion: "autoscaling.openshift.io/v1beta1"
-kind: "MachineAutoscaler"
-metadata:
-  name: "${set}"
-  namespace: "openshift-machine-api"
-spec:
-  minReplicas: ${MACHINE_MIN}
-  maxReplicas: ${MACHINE_MAX}
-  scaleTargetRef:
-    apiVersion: machine.openshift.io/v1beta1
-    kind: MachineSet
-    name: "${set}"
-YAML
+    if [ -f "$file" ] ; then
+      # shellcheck source=/dev/null
+      . "$file"
+    fi
   done
 }
 
-ocp_scale_machineset(){
-  loginfo "Scaling worker machineset to ${1:-1}"
-  REPLICAS=${1:-1}
-  MACHINE_SETS=${2:-$(oc -n openshift-machine-api get machineset -o name)}
+setup_bin_path(){
+  [ -z ${GIT_ROOT+x} ] && return 1
+  BIN_PATH="${GIT_ROOT}/scratch/bin"
 
-  # scale workers
-  echo "${MACHINE_SETS}" | \
-    xargs \
-      oc -n openshift-machine-api \
-      scale --replicas="${REPLICAS}"
+  mkdir -p "${BIN_PATH}"
+  echo "${PATH}" | grep -q "${BIN_PATH}" || \
+    PATH="${BIN_PATH}:${PATH}"
+    export PATH
 }
+
+get_functions(){
+  # echo -e "loaded functions:\n"
+  sed -n '/(){/ {/^_/d; s/(){$//p}' "${SCRIPT_DIR}/"{library/*,functions}.sh | sort -u
+}
+
+is_sourced(){
+  if [ -n "$ZSH_VERSION" ]; then
+      case $ZSH_EVAL_CONTEXT in *:file:*) return 0;; esac
+  else  # Add additional POSIX-compatible shell names here, if needed.
+      case ${0##*/} in dash|-dash|bash|-bash|ksh|-ksh|sh|-sh) return 0;; esac
+  fi
+  return 1  # NOT sourced.
+}
+
+check_shell
+check_git_root
+get_script_path
+source_library
+setup_bin_path
+
+usage(){
+  echo "USAGE: get_functions"
+}
+
+usage
