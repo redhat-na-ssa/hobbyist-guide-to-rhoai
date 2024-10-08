@@ -194,10 +194,21 @@ setup(){
     done
 }
 
-
-validate_setup(){
+validate_cli(){
   bin_check oc
+  echo ""
+}
+
+validate_cluster(){
+  ocp_check_login
   check_cluster_version
+}
+validate_setup(){
+  echo ""
+  echo "Validating requirements..."
+
+  validate_cli
+  validate_cluster
 }
 
 validate_setup || return 1
