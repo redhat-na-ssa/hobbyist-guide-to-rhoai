@@ -24,7 +24,7 @@ For this bootcamp, we are using HTpasswd as the Identity Provider (IdP). To lear
 
 ## Steps
 
-[ ] Create an htpasswd file to store the user and password information
+- [ ] Create an htpasswd file to store the user and password information
 
 ```sh
 htpasswd -c -B -b scratch/users.htpasswd <username> <password>
@@ -36,7 +36,7 @@ htpasswd -c -B -b scratch/users.htpasswd <username> <password>
 Adding password for user <username>
 ```
 
-[ ] Create a secret to represent the htpasswd file
+- [ ] Create a secret to represent the htpasswd file
 
 ```sh
 oc create secret generic htpasswd-secret --from-file=htpasswd=scratch/users.htpasswd -n openshift-config
@@ -48,7 +48,7 @@ oc create secret generic htpasswd-secret --from-file=htpasswd=scratch/users.htpa
   secret/htpasswd-secret created
 ```
 
-[ ] Verify you created a `secret/htpasswd-secret` object in `openshift-config` project
+- [ ] Verify you created a `secret/htpasswd-secret` object in `openshift-config` project
 
 ```sh
 oc get secret/htpasswd-secret -n openshift-config
@@ -61,7 +61,7 @@ NAME              TYPE     DATA   AGE
 htpasswd-secret   Opaque   1      4m46s
 ```
 
-[ ] Apply the resource to the default OAuth configuration to add the identity provider
+- [ ] Apply the resource to the default OAuth configuration to add the identity provider
 
 ```sh
   oc apply -f configs/01/htpasswd-cr.yaml
@@ -73,13 +73,13 @@ htpasswd-secret   Opaque   1      4m46s
 oauth.config.openshift.io/cluster configured
 ```
 
-[ ] Verify the identity provider
+- [ ] Verify the identity provider
 
 ```sh
 oc get oauth/cluster -o yaml
 ```
 
-[ ] Watch for the cluster operator to cycle
+- [ ] Watch for the cluster operator to cycle
 
 ```sh
 oc get co authentication -w
@@ -93,7 +93,7 @@ NAME             VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE   MESSAGE
 authentication   4.16.6    True        False         False      0s
 ```
 
-[ ] As kubeadmin, assign the cluster-admin role to perform administrator level tasks
+- [ ] As kubeadmin, assign the cluster-admin role to perform administrator level tasks
 
 ```sh
 oc adm policy add-cluster-role-to-user cluster-admin admin1
@@ -105,7 +105,7 @@ oc adm policy add-cluster-role-to-user cluster-admin admin1
 clusterrole.rbac.authorization.k8s.io/cluster-admin added: "<username>"
 ```
 
-[ ] Log in to the cluster as a user from your identity provider, entering the password when prompted.
+- [ ] Log in to the cluster as a user from your identity provider, entering the password when prompted.
 
 ```sh
 oc cluster-info
