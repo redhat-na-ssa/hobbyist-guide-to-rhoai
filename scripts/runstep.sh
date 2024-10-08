@@ -38,6 +38,24 @@ get_script_path
 # shellcheck source=/dev/null
 . "${SCRIPT_DIR}/functions.sh"
 
+check_cluster_version(){
+  OCP_VERSION=$(oc version | sed -n '/Server Version: / s/Server Version: //p')
+  AVOID_VERSIONS=()
+  TESTED_VERSIONS=("4.14.37" "4.16.14")
+
+  echo "Current OCP version: ${OCP_VERSION}"
+  echo "Tested OCP version(s): ${TESTED_VERSIONS[*]}"
+  echo ""
+
+  # shellcheck disable=SC2076
+  if [[ " ${AVOID_VERSIONS[*]} " =~ " ${OCP_VERSION} " ]]; then
+    echo "OCP version ${OCP_VERSION} is known to have issues with this demo"
+    echo ""
+    echo 'Recommend: "oc adm upgrade --to-latest=true"'
+    echo ""
+  fi
+}
+
 help() {
     loginfo "This script installs RHOAI and other dependencies"
     loginfo "Usage: $(basename "$0") -s <step-number>"
@@ -176,4 +194,11 @@ setup(){
     done
 }
 
+
+validate_setup(){
+  bin_check oc
+  check_cluster_version
+}
+
+validate_setup || return 1
 setup
