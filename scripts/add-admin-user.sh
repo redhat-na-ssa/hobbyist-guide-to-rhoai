@@ -45,8 +45,9 @@ genpass(){
 DEFAULT_USER=admin
 DEFAULT_PASS=$(genpass)
 
-logbanner "Creating ${DEFAULT_USER}"
+ocp_check_login
 
+logbanner "Creating ${DEFAULT_USER}"
 
 add_admin_user(){
   HT_USERNAME=${1:-${DEFAULT_USER}}
