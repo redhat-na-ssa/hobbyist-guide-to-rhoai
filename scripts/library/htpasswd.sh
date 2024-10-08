@@ -56,22 +56,22 @@ htpasswd_validate_user(){
   USER=${1:-admin}
   PASS=${2:-admin}
   KUBECONFIG=${KUBECONFIG:-~/.kube/config}
-  TMP_CFG=scratch/kubeconfig.XXX
+  TMP_CONFIG=scratch/kubeconfig.XXX
 
   echo "This may take a few minutes..."
   echo "Press <ctrl> + c to cancel"
 
   # login to ocp
-  cp "${KUBECONFIG}" "${TMP_CFG}"
+  cp "${KUBECONFIG}" "${TMP_CONFIG}"
 
-  retry oc --kubeconfig "${TMP_CFG}" login \
+  retry oc --kubeconfig "${TMP_CONFIG}" login \
     -u "${USER}" -p "${PASS}" > /dev/null 2>&1 || return 1
   
   # verify user is present
   oc get user "${USER}" || return 1
 
   # cleanup tmp config
-  rm "${TMP_CFG}"
+  rm "${TMP_CONFIG}"
 
   echo "Login validated: ${USER}"
 }
