@@ -18,10 +18,13 @@ htpasswd_add_user(){
     USERNAME: ${USER}
     PASSWORD: ${PASS}
 
-    FILENAME: ${HTPASSWD_FILE}
+    FILENAME:  ${HTPASSWD_FILE}
+    PASSWORDS: ${HTPASSWD_FILE}.txt
   "
 
-  [ -e "${HTPASSWD_FILE}" ] || touch "${HTPASSWD_FILE}"
+  [ -e "${HTPASSWD_FILE}" ] || touch "${HTPASSWD_FILE}" "${HTPASSWD_FILE}".txt
+  sed -i '/# '"${USER}"'/d' "${HTPASSWD_FILE}.txt"
+  echo "# ${USER} - ${PASS}" >> "${HTPASSWD_FILE}.txt"
   htpasswd -bB -C 10 "${HTPASSWD_FILE}" "${USER}" "${PASS}"
 }
 
@@ -47,6 +50,30 @@ htpasswd_ocp_set_file(){
   oc -n openshift-config \
     set data secret/"${HTPASSWD_NAME}" \
     --from-file=htpasswd="${HTPASSWD_FILE}"
+}
+
+htpasswd_validate_user(){
+  USER=${1:-admin}
+  PASS=${2:-admin}
+  KUBECONFIG=${KUBECONFIG:-~/.kube/config}
+  TMP_CFG=scratch/kubeconfig.XXX
+
+  echo "This may take a few minutes..."
+  echo "Press <ctrl> + c to cancel"
+
+  # login to ocp
+  cp "${KUBECONFIG}" "${TMP_CFG}"
+
+  retry oc --kubeconfig "${TMP_CFG}" login \
+    -u "${USER}" -p "${PASS}" > /dev/null 2>&1 || return 1
+  
+  # verify user is present
+  oc get user "${USER}" || return 1
+
+  # cleanup tmp config
+  rm "${TMP_CFG}"
+
+  echo "Login validated: ${USER}"
 }
 
 which age 2>/dev/null || return 0
