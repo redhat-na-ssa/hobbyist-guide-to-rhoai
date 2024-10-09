@@ -101,10 +101,10 @@ help(){
   loginfo "                             3     - Enable gpu support"
   loginfo "                             4     - Run sample gpu application"
   loginfo "                             5     - Configure gpu dashboards"
-  loginfo "                             6    - Configure gpu sharing method"
+  loginfo "                             6     - Configure gpu sharing method"
   loginfo "                             7     - Install kserve dependencies"
   loginfo "                             8     - Install RHOAI operator"
-  loginfo "                             9    - Configure distributed workloads"
+  loginfo "                             9     - Configure distributed workloads"
   loginfo "                             10    - Configure rhoai / All"
   return 0
 }
