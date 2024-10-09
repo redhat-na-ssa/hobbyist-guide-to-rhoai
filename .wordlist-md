@@ -100,6 +100,7 @@ defaultChannel
 defaultConfig
 dev
 devFlags
+deviceClassWhitelist
 deviceLabelFields
 devworkspace
 DevWorkspace
@@ -109,11 +110,13 @@ dir
 discoveryAddress
 Disp
 dk
+DL
 Dload
 dn
 DNS
 dnsRefreshRate
 dropdown
+DS
 dsc
 DSC
 dsci
@@ -154,6 +157,7 @@ finalizers
 fjswg
 fpz
 fractioned
+Framebuffer
 fst
 fvwnh
 Gaudi
@@ -175,6 +179,7 @@ Habana
 HabanaAI
 Helming
 hgrz
+HMMA
 homogenous
 hpa
 HPUs
@@ -196,6 +201,7 @@ ingressDomain
 ingressgateway
 installplan
 Instascale
+InstaScale
 io
 ip
 isaacmuse
@@ -360,6 +366,7 @@ Prem
 proxyMetadata
 Pwr
 pytorch
+QoS
 qtgln
 queueing
 RayCluster
@@ -367,6 +374,7 @@ rayDashboardOauthEnabled
 rayDashboardOAuthEnabled
 rbac
 recommender
+reconfigurability
 redhat
 Redistributions
 replicaset
@@ -376,6 +384,7 @@ req
 reqs
 resourceflavor
 ResourceFlavor
+ResourcesFlavor
 resourceVersion
 rh
 RHAOI
@@ -442,6 +451,7 @@ sx
 Takhteyev
 targetPort
 TCP
+Telsa
 tensorflow
 Tensorflow
 TensorRT
