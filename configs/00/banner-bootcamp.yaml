@@ -3,7 +3,7 @@ kind: ConsoleNotification
 metadata:
   name: banner-bootcamp
 spec:
-  text: "Red hat OpenShift AI Bootcamp"
+  text: "Red Hat OpenShift AI Bootcamp"
   # valid locations: BannerTop, BannerBottom, BannerTopBottom
   location: BannerTop
   # https://htmlcolorcodes.com/color-picker
