@@ -75,7 +75,7 @@ validate_setup(){
 }
 
 add_admin_user(){
-  DEFAULT_USER=admin
+  DEFAULT_USER="admin"
   DEFAULT_PASS=$(genpass)
   DEFAULT_HTPASSWD=scratch/htpasswd-local
 
@@ -88,7 +88,7 @@ add_admin_user(){
   htpasswd_validate_user "${HT_USERNAME}" "${HT_PASSWORD}"
 }
 
-help() {
+help(){
   loginfo "This script installs RHOAI and other dependencies"
   loginfo "Usage: $(basename "$0") -s <step-number>"
   loginfo "Options:"
@@ -109,7 +109,7 @@ help() {
   loginfo "                             12    - Configure codeflare operator"
   loginfo "                             13    - Configure rhoai"
   loginfo "                             14    - All setup"
-  exit 0
+  return 0
 }
 
 # Default values
@@ -126,14 +126,14 @@ while getopts ":h:s:" flag; do
   esac
 done
 
-step_0() {
+step_0(){
   validate_setup || return 1
   
   logbanner "Install prerequisites"
   retry oc apply -f "${GIT_ROOT}"/configs/00
 }
 
-step_1() {
+step_1(){
   logbanner "Creating user 'admin'"
 
   if [ -f "${DEFAULT_HTPASSWD}.txt" ]; then
@@ -151,68 +151,101 @@ step_1() {
   fi
 }
 
-step_2() {
+step_2(){
   logbanner "(Optional) Install web terminal"
   loginfo "Web Terminal"
   retry oc apply -f "${GIT_ROOT}"/configs/02
 }
 
-step_3() {
+step_3(){
   logbanner "Install kserve dependencies"
   retry oc apply -f "${GIT_ROOT}"/configs/03
 }
 
-step_4() {
+step_4(){
   logbanner "Install RHOAI operator"
   retry oc apply -f "${GIT_ROOT}"/configs/04
 }
 
-step_5() {
+step_5(){
   logbanner "Add CA bundle"
   logwarning "Automation not implemented"
 }
 
-step_6() {
+step_6(){
   logbanner "(Optional) Configure operator logger"
   oc patch dsci default-dsci -p '{"spec":{"devFlags":{"logmode":"development"}}}' --type=merge
 }
 
-step_7() {
+step_7(){
   logbanner "Enable gpu support"
   loginfo "Create a GPU node with autoscaling"
   ocp_aws_cluster_autoscaling
   ocp_scale_machineset
+  ocp_control_nodes_not_schedulable
   retry oc apply -f "${GIT_ROOT}"/configs/07
 }
 
-step_8() {
+step_8(){
   logbanner "Run sample gpu application"
   retry oc apply -f "${GIT_ROOT}"/configs/08
 }
 
-step_9() {
+step_9(){
   logbanner "Configure gpu dashboards"
   retry oc apply -f "${GIT_ROOT}"/configs/09
 }
 
-step_10() {
+step_10(){
   logbanner "Configure gpu sharing method"
   retry oc apply -f "${GIT_ROOT}"/configs/10
 }
 
-step_11() {
+step_11(){
   logbanner "Configure distributed workloads"
   retry oc apply -f "${GIT_ROOT}"/configs/11
 }
 
-step_12() {
+step_12(){
   logbanner "Configure codeflare operator"
   retry oc apply -f "${GIT_ROOT}"/configs/12
 }
 
-step_13() {
+step_13(){
   logbanner "Configure rhoai"
   retry oc apply -f "${GIT_ROOT}"/configs/13
+}
+
+workshop_uninstall(){
+  logbanner "Uninstall Workshop"
+
+  oc delete datasciencecluster default-dsc
+  oc delete dscinitialization default-dsci
+  oc delete -n knative-serving knativeservings.operator.knative.dev knative-serving
+
+  oc delete csv -A -l operators.coreos.com/authorino-operator.openshift-operators
+  oc delete csv -A -l operators.coreos.com/devworkspace-operator.openshift-operators
+  oc delete csv -A -l operators.coreos.com/servicemeshoperator.openshift-operators
+  oc delete csv -A -l operators.coreos.com/web-terminal.openshift-operators
+
+  oc delete \
+    -f "${GIT_ROOT}"/configs/00 \
+    -f "${GIT_ROOT}"/configs/01 \
+    -f "${GIT_ROOT}"/configs/02 \
+    -f "${GIT_ROOT}"/configs/03 \
+    -f "${GIT_ROOT}"/configs/04 \
+    -f "${GIT_ROOT}"/configs/07 \
+    -f "${GIT_ROOT}"/configs/08 \
+    -f "${GIT_ROOT}"/configs/09 \
+    -f "${GIT_ROOT}"/configs/10 \
+    -f "${GIT_ROOT}"/configs/11 \
+    -f "${GIT_ROOT}"/configs/12 \
+    -f "${GIT_ROOT}"/configs/13 \
+    -f "${GIT_ROOT}"/configs/uninstall
+  
+  oc apply \
+    -f "${GIT_ROOT}"/configs/restore
+
 }
 
 setup(){
@@ -222,7 +255,7 @@ setup(){
       help
   fi
 
-  if [ "$s" -eq 0 ] ; then
+  if [ "$s" = "0" ] ; then
       loginfo "Running step 0"
       step_0
       exit 0
