@@ -15,6 +15,7 @@ metadata:
     name: triton
     opendatahub.io/dashboard: "true"
   name: triton
+  namespace: sandbox
 spec:
   builtInAdapter:
     memBufferBytes: 134217728

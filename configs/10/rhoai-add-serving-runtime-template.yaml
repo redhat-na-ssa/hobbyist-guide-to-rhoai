@@ -11,6 +11,7 @@ metadata:
     opendatahub.io/dashboard: "true"
     # opendatahub.io/ootb: "true"
   name: triton
+  namespace: redhat-ods-applications
 objects:
   - apiVersion: serving.kserve.io/v1alpha1
     kind: ServingRuntime
