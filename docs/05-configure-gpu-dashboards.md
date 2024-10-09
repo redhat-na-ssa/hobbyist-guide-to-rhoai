@@ -1,6 +1,6 @@
-# 9. Configure GPU dashboards
+# 5. Configure GPU dashboards
 
-## 9.1 Enabling the GPU Monitoring Dashboard
+## 5.1 Enabling the GPU Monitoring Dashboard
 
 ### Objectives
 
@@ -44,7 +44,7 @@
 - [ ] Check for modifications
 
 ```sh
-  diff -u configs/09/nvidia-dcgm-dashboard.json scratch/dcgm-exporter-dashboard.json
+  diff -u configs/05/nvidia-dcgm-dashboard.json scratch/dcgm-exporter-dashboard.json
 ```
 
 ```sh
@@ -55,7 +55,7 @@
 - [ ] Create a config map from the downloaded file in the openshift-config-managed namespace
 
 ```sh
-oc create -f configs/09/nvidia-dcgm-dashboard-cm.yaml
+oc create -f configs/05/nvidia-dcgm-dashboard-cm.yaml
 ```
 
 ```sh
@@ -99,7 +99,7 @@ nvidia-dcgm-exporter-dashboard   1      3m28s   console.openshift.io/dashboard=t
 
 > View the NVIDIA DCGM Exporter Dashboard from the OCP UI from Administrator and Developer
 
-## 9.2 Install the NVIDIA GPU administration dashboard
+## 5.2 Install the NVIDIA GPU administration dashboard
 
 ### Objectives
 
@@ -260,5 +260,5 @@ oc -n nvidia-gpu-operator get all -l app.kubernetes.io/name=console-plugin-nvidi
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 9
+./scripts/setup.sh -s 5
 ```

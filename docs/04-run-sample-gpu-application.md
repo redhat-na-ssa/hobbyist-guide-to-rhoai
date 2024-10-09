@@ -1,4 +1,4 @@
-### 8. (Optional) Running a sample GPU Application
+### 4. (Optional) Running a sample GPU Application
 
 ### Objectives
 
@@ -30,7 +30,7 @@ Now using project "sandbox" on server "https://api.cluster-582gr.582gr.sandbox26
 - [ ] Create the sample app
 
 ```sh
-  oc create -f configs/08/nvidia-gpu-sample-app.yaml
+  oc create -f configs/04/nvidia-gpu-sample-app.yaml
 ```
 
 ```sh
@@ -118,5 +118,5 @@ Fri Jul 26 20:06:33 2024
 - [ ] From this repository's root directory, run below command
 
 ```sh
-  ./scripts/setup.sh -s 8
+  ./scripts/setup.sh -s 4
 ```

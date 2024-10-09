@@ -98,25 +98,16 @@ help(){
   loginfo "                             0     - Install prerequisites"
   loginfo "                             1     - Add administrative user"
   loginfo "                             2     - (Optional) Install web terminal"
-  loginfo "                             3     - Install kserve dependencies"
-  loginfo "                             4     - Install RHOAI operator"
-  loginfo "                             5     - Add CA bundle"
-  loginfo "                             6     - (Optional) Configure operator logger"
-  loginfo "                             7     - Enable gpu support"
-  loginfo "                             8     - Run sample gpu application"
-  loginfo "                             9     - Configure gpu dashboards"
-  loginfo "                             10    - Configure gpu sharing method"
-  loginfo "                             11    - Configure distributed workloads"
-  loginfo "                             12    - Configure codeflare operator"
-  loginfo "                             13    - Configure rhoai / All"
+  loginfo "                             3     - Enable gpu support"
+  loginfo "                             4     - Run sample gpu application"
+  loginfo "                             5     - Configure gpu dashboards"
+  loginfo "                             6    - Configure gpu sharing method"
+  loginfo "                             7     - Install kserve dependencies"
+  loginfo "                             8     - Install RHOAI operator"
+  loginfo "                             9    - Configure distributed workloads"
+  loginfo "                             10    - Configure rhoai / All"
   return 0
 }
-
-# Default values
-# add_admin_user=false
-# install_operators=false
-# create_gpu_node=false
-# all_setup=false
 
 while getopts ":h:s:" flag; do
   case $flag in
@@ -134,7 +125,8 @@ step_0(){
 }
 
 step_1(){
-  logbanner "Creating user 'admin'"
+  logbanner "Add administrative user"
+  loinfo "Creating user 'admin'"
 
   if [ -f "${DEFAULT_HTPASSWD}.txt" ]; then
     HT_PASSWORD=$(sed '/admin/ s/# .* - //' "${DEFAULT_HTPASSWD}.txt")
@@ -158,62 +150,47 @@ step_2(){
 }
 
 step_3(){
-  logbanner "Install kserve dependencies"
-  retry oc apply -f "${GIT_ROOT}"/configs/03
-}
-
-step_4(){
-  logbanner "Install RHOAI operator"
-  retry oc apply -f "${GIT_ROOT}"/configs/04
-}
-
-step_5(){
-  logbanner "Add CA bundle"
-  logwarning "Automation not implemented"
-}
-
-step_6(){
-  logbanner "(Optional) Configure operator logger"
-  oc patch dsci default-dsci -p '{"spec":{"devFlags":{"logmode":"development"}}}' --type=merge
-}
-
-step_7(){
   logbanner "Enable gpu support"
   loginfo "Create a GPU node with autoscaling"
   ocp_aws_cluster_autoscaling
   ocp_scale_machineset
   ocp_control_nodes_not_schedulable
+  retry oc apply -f "${GIT_ROOT}"/configs/03
+}
+
+step_4(){
+  logbanner "Run sample gpu application"
+  retry oc apply -f "${GIT_ROOT}"/configs/04
+}
+
+step_5(){
+  logbanner "Configure gpu dashboards"
+  retry oc apply -f "${GIT_ROOT}"/configs/05
+}
+
+step_6(){
+  logbanner "Configure gpu sharing method"
+  retry oc apply -f "${GIT_ROOT}"/configs/06
+}
+
+step_7(){
+  logbanner "Install kserve dependencies"
   retry oc apply -f "${GIT_ROOT}"/configs/07
 }
 
 step_8(){
-  logbanner "Run sample gpu application"
+  logbanner "Install RHOAI operator"
   retry oc apply -f "${GIT_ROOT}"/configs/08
 }
 
 step_9(){
-  logbanner "Configure gpu dashboards"
+  logbanner "Configure distributed workloads"
   retry oc apply -f "${GIT_ROOT}"/configs/09
 }
 
 step_10(){
-  logbanner "Configure gpu sharing method"
-  retry oc apply -f "${GIT_ROOT}"/configs/10
-}
-
-step_11(){
-  logbanner "Configure distributed workloads"
-  retry oc apply -f "${GIT_ROOT}"/configs/11
-}
-
-step_12(){
-  logbanner "Configure codeflare operator"
-  retry oc apply -f "${GIT_ROOT}"/configs/12
-}
-
-step_13(){
   logbanner "Configure rhoai"
-  retry oc apply -f "${GIT_ROOT}"/configs/13
+  retry oc apply -f "${GIT_ROOT}"/configs/10
 }
 
 workshop_uninstall(){
@@ -245,9 +222,6 @@ workshop_uninstall(){
     -f "${GIT_ROOT}"/configs/08 \
     -f "${GIT_ROOT}"/configs/09 \
     -f "${GIT_ROOT}"/configs/10 \
-    -f "${GIT_ROOT}"/configs/11 \
-    -f "${GIT_ROOT}"/configs/12 \
-    -f "${GIT_ROOT}"/configs/13 \
     -f "${GIT_ROOT}"/configs/uninstall
   
   oc apply \

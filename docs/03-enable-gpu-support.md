@@ -1,8 +1,8 @@
-# 7. Enabling GPU support for RHOAI
+# 3. Enabling GPU support for RHOAI
 
 In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs for RHOCP](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/enabling-gpu-support_install). Once completed, RHOAI requires an Accelerator Profile custom resource definition in the `redhat-ods-applications`. Currently, NVIDIA and Intel Gaudi are the supported [accelerator profiles](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/working_with_accelerators/overview-of-accelerators_accelerators#overview-of-accelerators_accelerators).
 
-## 7.1 Adding a GPU node to an existing RHOCP cluster
+## 3.1 Adding a GPU node to an existing RHOCP cluster
 
 ### Objectives
 
@@ -112,7 +112,7 @@ cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu-29whc   Running   g4dn.4xlarge   us-xx
 cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu-nr59d   Running   g4dn.4xlarge   us-xxxx-x   us-xxxx-xc   7m59s
 ```
 
-## 7.2 Deploying the Node Feature Discovery Operator (takes time)
+## 3.2 Deploying the Node Feature Discovery Operator (takes time)
 
 ### Objectives
 
@@ -148,7 +148,7 @@ nfd                                                Red Hat Operators     8h
 - [ ] Apply the Namespace object
 
 ```sh
-oc apply -f configs/07/nfd-operator-ns.yaml
+oc apply -f configs/03/nfd-operator-ns.yaml
 ```
 
 ```sh
@@ -159,7 +159,7 @@ namespace/openshift-nfd created
 - [ ] Apply the OperatorGroup object
 
 ```sh
-oc apply -f configs/07/nfd-operator-group.yaml
+oc apply -f configs/03/nfd-operator-group.yaml
 ```
 
 ```sh
@@ -170,7 +170,7 @@ operatorgroup.operators.coreos.com/nfd created
 - [ ] Apply the Subscription object
 
 ```sh
-oc apply -f configs/07/nfd-operator-sub.yaml
+oc apply -f configs/03/nfd-operator-sub.yaml
 ```
 
 ```sh
@@ -198,7 +198,7 @@ nfd-controller-manager-78758c57f7-7xfh4   2/2     Running   0          48s
 - [ ] Create the nfd instance object
 
 ```sh
-oc apply -f configs/07/nfd-instance.yaml
+oc apply -f configs/03/nfd-instance.yaml
 ```
 
 ```sh
@@ -270,7 +270,7 @@ Roles:              worker
                 feature.node.kubernetes.io/pci-1d0f.present=true
 ```
 
-## 7.3 Install the NVIDIA GPU Operator
+## 3.3 Install the NVIDIA GPU Operator
 
 ### Objectives
 
@@ -311,7 +311,7 @@ gpu-operator-certified                             Certified Operators   8h
 - [ ] Apply the Namespace object YAML file
 
 ```sh
-oc apply -f configs/07/nvidia-gpu-operator-ns.yaml
+oc apply -f configs/03/nvidia-gpu-operator-ns.yaml
 ```
 
 ```sh
@@ -322,7 +322,7 @@ namespace/nvidia-gpu-operator created
 - [ ] Apply the OperatorGroup YAML file
 
 ```sh
-oc apply -f configs/07/nvidia-gpu-operator-group.yaml
+oc apply -f configs/03/nvidia-gpu-operator-group.yaml
 ```
 
 ```sh
@@ -364,7 +364,7 @@ gpu-operator-certified.v24.6.1
 - [ ] Apply the Subscription CR
 
 ```sh
-oc apply -f configs/07/nvidia-gpu-operator-subscription.yaml
+oc apply -f configs/03/nvidia-gpu-operator-subscription.yaml
 ```
 
 ```sh
@@ -434,7 +434,7 @@ daemonset.apps/nvidia-operator-validator                       0         0      
 
 > With the daemonset deployed, NVIDIA GPUs have the `nvidia-device-plugin` and can be requested by a container using the `nvidia.com/gpu` resource type. The [NVIDIA device plugin](https://github.com/NVIDIA/k8s-device-plugin?tab=readme-ov-file#shared-access-to-gpus) has a number of options, like MIG Strategy, that can be configured for it.
 
-## 7.4 Label GPU Nodes
+## 3.4 Label GPU Nodes
 
 ### Objectives
 
@@ -501,12 +501,12 @@ machineset.machine.openshift.io/cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu patche
 
 ## Validation
 
-![](/assets/07-validation.gif)
+![](/assets/03-validation.gif)
 
 ## Automation key (Catch up)
 
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 7
+./scripts/setup.sh -s 3
 ```

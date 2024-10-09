@@ -22,24 +22,21 @@ OpenShift AI provides an environment to develop, train, serve, test, and monitor
 0. [Prerequisite](/docs/00-prerequisite.md)
 1. [Add administrative user](/docs/01-add-administrative-user.md)
 1. [(Optional) Install the web terminal](/docs/02-install-web-terminal.md)
-1. [Install RHOAI Kserve dependencies](/docs/03-install-kserve-dependencies.md)
-1. [Install RHOAI Operator and Components](/docs/04-install-rhoai-operator.md)
-1. [Add a CA bundle](/docs/05-add-ca-bundle.md)
-1. [(Optional) Configure RHOAI Operator logger](/docs/06-configure-operator-logger.md)
-1. [Enable GPU support for RHOAI](/docs/07-enable-gpu-support.md)
-1. [(Optional) Run sample GPU application](/docs/08-run-sample-gpu-application.md)
-1. [Configure GPU dashboards](/docs/09-configure-gpu-dashboards.md)
-1. [Configure GPU sharing method](/docs/10-configure-gpu-sharing-method.md)
-1. [Configure distributed workloads](/docs/11-configure-distributed-workloads.md)
-1. [(Optional) Configure Codeflare operator](/docs/12-configure-codeflare-operator.md)
-1. [Configure RHOAI](/docs/13-configure-rhoai.md)
+1. [Enable GPU support for RHOAI](/docs/03-enable-gpu-support.md)
+1. [(Optional) Run sample GPU application](/docs/04-run-sample-gpu-application.md)
+1. [Configure GPU dashboards](/docs/05-configure-gpu-dashboards.md)
+1. [Configure GPU sharing method](/docs/06-configure-gpu-sharing-method.md)
+1. [Install RHOAI Kserve dependencies](/docs/07-install-kserve-dependencies.md)
+1. [Install RHOAI Operator and Components](/docs/08-install-rhoai-operator.md)
+1. [Configure distributed workloads](/docs/09-configure-distributed-workloads.md)
+1. [Configure RHOAI](/docs/10-configure-rhoai.md)
 
 ### Automation Key
 
 To run all steps, from this repo's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 13
+./scripts/setup.sh -s 10
 ```
 
 > NOTE: `Steps 10 - 13 are NOT fully automated, and will need manual configurations`

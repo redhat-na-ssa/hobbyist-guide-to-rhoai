@@ -1,4 +1,4 @@
-# Prerequisite
+# 0. Prerequisite
 
 > Intended commands to be executed from the root directory of this repository. The majority of the configurations to be applied are already created, with the exception of the ones that prompts you for specifics that are either created in the command or dumped to a `scratch` dir that is ignored in the `.gitignore`.
 

@@ -1,6 +1,6 @@
-## 13. Administrative Configurations for RHOAI
+## 10. Administrative Configurations for RHOAI
 
-### 13.1 Add a new Accelerator Profile
+### 10.1 Add a new Accelerator Profile
 
 [Enabling GPU support in RHOAI](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/enabling-gpu-support_install)
 
@@ -111,7 +111,7 @@
 
 - Verify the `taints` key set in your Node / MachineSets match your `Accelerator Profile`.
 
-### 13.2 Add serving runtime
+### 10.2 Add serving runtime
 
 ### Steps
 
@@ -121,13 +121,13 @@
 
   - Select `Multi-model serving`
   - Select `Start from scratch`
-  - Review, Copy and Paste in the content from `configs/13/rhoai-add-serving-runtime.yaml`
+  - Review, Copy and Paste in the content from `configs/10/rhoai-add-serving-runtime.yaml`
   - Add and confirm the runtime can be selected in a Data Science Project
 
   **Option 2**:
 
   - ```sh
-      oc apply -f configs/13/rhoai-add-serving-runtime-template.yaml -n redhat-ods-applications
+      oc apply -f configs/10/rhoai-add-serving-runtime-template.yaml -n redhat-ods-applications
     ```
   - Add and confirm the runtime can be selected in a Data Science Project
 
@@ -154,5 +154,5 @@ However, OADP does not serve as a disaster recovery solution for [etcd](https://
 
 - From this repository's root directory, run below command
   - ```sh
-      ./scripts/setup.sh -s 13
+      ./scripts/setup.sh -s 10
     ```

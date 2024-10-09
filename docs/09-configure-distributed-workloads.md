@@ -1,4 +1,4 @@
-## 11. Configure distributed workloads
+## 9. Configure distributed workloads
 
 ### Objectives
 
@@ -49,7 +49,7 @@ kueue-controller-manager-77c758b595-hgrz7                         1/1     Runnin
 
 > Configure quota management for distributed workloads
 
-## 11.1 Create an empty Kueue resource flavor
+## 9.1 Create an empty Kueue resource flavor
 
 > Resources in a cluster are typically not homogeneous. A ResourceFlavor is an object that describes these resource variations (i.e. Nvidia A100 versus T4 GPUs) and allows you to associate them with cluster nodes through labels, taints and tolerations.
 
@@ -62,7 +62,7 @@ kueue-controller-manager-77c758b595-hgrz7                         1/1     Runnin
 - [ ] Apply the configuration to create the `default-flavor`
 
 ```sh
-oc apply -f configs/11/rhoai-kueue-default-flavor.yaml
+oc apply -f configs/09/rhoai-kueue-default-flavor.yaml
 ```
 
 ```sh
@@ -70,7 +70,7 @@ oc apply -f configs/11/rhoai-kueue-default-flavor.yaml
 resourceflavor.kueue.x-k8s.io/default-flavor created
 ```
 
-## 11.2 Create a cluster queue to manage the empty Kueue resource flavor
+## 9.2 Create a cluster queue to manage the empty Kueue resource flavor
 
 > The Kueue ClusterQueue object manages a pool of cluster resources such as pods, CPUs, memory, and accelerators. A cluster can have multiple cluster queues, and each cluster queue can reference multiple resource flavors.
 
@@ -88,7 +88,7 @@ resourceflavor.kueue.x-k8s.io/default-flavor created
 - [ ] Apply the configuration to create the `cluster-queue`
 
 ```sh
-oc apply -f configs/11/rhoai-kueue-cluster-queue.yaml
+oc apply -f configs/09/rhoai-kueue-cluster-queue.yaml
 ```
 
 ```sh
@@ -96,7 +96,7 @@ oc apply -f configs/11/rhoai-kueue-cluster-queue.yaml
 clusterqueue.kueue.x-k8s.io/cluster-queue created
 ```
 
-## 11.3 Create a local queue that points to your cluster queue
+## 9.3 Create a local queue that points to your cluster queue
 
 > A LocalQueue is a namespaced object that groups closely related Workloads that belong to a single namespace. Users submit jobs to a LocalQueue, instead of to a ClusterQueue directly. A cluster administrator can optionally define one local queue in a project as the default local queue for that project.
 
@@ -114,7 +114,7 @@ clusterqueue.kueue.x-k8s.io/cluster-queue created
 oc project sandbox
 
 ## create local queue
-oc apply -f configs/11/rhoai-kueue-local-queue.yaml
+oc apply -f configs/09/rhoai-kueue-local-queue.yaml
 ```
 
 ```sh
@@ -141,5 +141,5 @@ local-queue-test   cluster-queue   0
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 11
+./scripts/setup.sh -s 9
 ```

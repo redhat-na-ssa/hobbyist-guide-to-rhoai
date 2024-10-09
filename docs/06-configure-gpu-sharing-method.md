@@ -1,4 +1,4 @@
-### 10. GPU sharing methods
+### 6. GPU sharing methods
 
 ### Objectives
 
@@ -36,7 +36,7 @@ For NVIDIA GPU there are a few methods to optimize GPU utilization:
 
 > Note: The use of time-slicing and MPS are mutually exclusive.
 
-## 10.1 Configure GPUs with time slicing
+## 6.1 Configure GPUs with time slicing
 
 ### Objectives
 
@@ -62,7 +62,7 @@ For NVIDIA GPU there are a few methods to optimize GPU utilization:
 - [ ] Apply the device plugin configuration
 
 ```sh
-oc apply -f configs/10/nvidia-gpu-deviceplugin-cm.yaml
+oc apply -f configs/06/nvidia-gpu-deviceplugin-cm.yaml
 ```
 
 ```sh
@@ -154,7 +154,7 @@ oc get node --selector=nvidia.com/gpu.product=Tesla-T4-SHARED -o json \
 ...
 ```
 
-## 10.2 Configure Taints and Tolerations
+## 6.2 Configure Taints and Tolerations
 
 ### Objectives
 
@@ -266,5 +266,5 @@ patch "${MACHINE_SET_TYPE}" \
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 10
+./scripts/setup.sh -s 6
 ```

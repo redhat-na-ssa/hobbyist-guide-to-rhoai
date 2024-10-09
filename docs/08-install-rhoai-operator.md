@@ -1,4 +1,4 @@
-# 4. Install RHOAI operator
+# 8. Install RHOAI operator
 
 ### Objectives
 
@@ -53,7 +53,7 @@ openshift-serverless   serverless-operator                                      
 - [ ] Create the namespace in your RHOCP cluster
 
 ```sh
-oc create -f configs/04/rhoai-operator-ns.yaml
+oc create -f configs/08/rhoai-operator-ns.yaml
 ```
 
 ```sh
@@ -64,7 +64,7 @@ namespace/redhat-ods-operator created
 - [ ] Create the OperatorGroup object
 
 ```sh
-oc create -f configs/04/rhoai-operator-group.yaml
+oc create -f configs/08/rhoai-operator-group.yaml
 ```
 
 ```sh
@@ -77,7 +77,7 @@ operatorgroup.operators.coreos.com/rhods-operator created
 - [ ] Create the Subscription object
 
 ```sh
-oc create -f configs/04/rhoai-operator-subscription.yaml
+oc create -f configs/08/rhoai-operator-subscription.yaml
 ```
 
 ```sh
@@ -149,7 +149,7 @@ customCABundle: ""
 managementState: Managed
 ```
 
-## 4.1 Install RHOAI components
+## 8.1 Install RHOAI components
 
 ### Objectives
 
@@ -183,7 +183,7 @@ There are 3x RHOAI Operator dependency states to be set: `Managed`, `Removed`, a
 - [ ] Create the DSC object
 
 ```sh
-oc create -f configs/04/rhoai-operator-dsc.yaml
+oc create -f configs/08/rhoai-operator-dsc.yaml
 ```
 
 ```sh
@@ -216,12 +216,12 @@ featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-servin
 
 ## Validation
 
-![](/assets/04-validation.gif)
+![](/assets/08-validation.gif)
 
 ## Automation key (Catch up)
 
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 4
+./scripts/setup.sh -s 8
 ```
