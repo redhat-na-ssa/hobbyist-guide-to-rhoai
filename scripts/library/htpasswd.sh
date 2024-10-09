@@ -21,7 +21,7 @@ htpasswd_add_user(){
   "
 
   [ -e "${HTPASSWD_FILE}" ] || touch "${HTPASSWD_FILE}" "${HTPASSWD_FILE}".txt
-  sed -i '/# '"${USER}"'/d' "${HTPASSWD_FILE}.txt"
+  sed -i '/# '"${USER}"'/d' "${HTPASSWD_FILE}".txt
   echo "# ${USER} - ${PASS}" >> "${HTPASSWD_FILE}.txt"
   htpasswd -bB -C 10 "${HTPASSWD_FILE}" "${USER}" "${PASS}"
 }
