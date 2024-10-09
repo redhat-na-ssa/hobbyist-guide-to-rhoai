@@ -2,109 +2,138 @@
 
 In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs for RHOCP](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/enabling-gpu-support_install). Once completed, RHOAI requires an Accelerator Profile custom resource definition in the `redhat-ods-applications`. Currently, NVIDIA and Intel Gaudi are the supported [accelerator profiles](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/working_with_accelerators/overview-of-accelerators_accelerators#overview-of-accelerators_accelerators).
 
-## Adding a GPU node to an existing RHOCP cluster
+## 7.1 Adding a GPU node to an existing RHOCP cluster
 
-You can copy and modify a default compute machine set configuration to create a GPU-enabled machine set and machines for the AWS EC2 cloud provider. [More Info](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/machine_management/managing-compute-machines-with-the-machine-api#nvidia-gpu-aws-adding-a-gpu-node_creating-machineset-aws)
+### Objectives
 
-### Steps
+- Copying/modifying an existing machineset to create a GPU-enabled MachineSet and machines on AWS
 
-- View the existing nodes
+### Rationale
 
-  - ```sh
-        oc get nodes
-    ```
+- RHOAI Operator does not perform any function for configuring and managing GPUs
 
-    ```sh
-    # expected output
-    NAME                                        STATUS   ROLES                         AGE     VERSION
-    ip-10-x-xx-xxx.us-xxxx-x.compute.internal   Ready    control-plane,master,worker   5h11m   v1.28.10+a2c84a5
-    ```
+### Takeaways
 
-- View the machines and machine sets that exist in the openshift-machine-api namespace
+- Nodes vs. Machines vs. Machinesets
+- GPUs in other cloud providers and bare metal
+- Once completed, RHOAI requires an Accelerator Profile custom resource definition in the redhat-ods-applications.
+- Currently, NVIDIA and Intel Gaudi are the supported accelerator profiles.
 
-  - ```sh
-    oc get machinesets -n openshift-machine-api
-    ```
+> You can copy and modify a default compute machine set configuration to create a GPU-enabled machine set and machines for the AWS EC2 cloud provider. [More Info](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/machine_management/managing-compute-machines-with-the-machine-api#nvidia-gpu-aws-adding-a-gpu-node_creating-machineset-aws)
 
-    ```sh
-    # expected output
-    NAME                                    DESIRED   CURRENT   READY   AVAILABLE   AGE
-    cluster-xxxxx-xxxxx-worker-us-xxxx-xc   0         0                             5h13m
-    ```
+## Steps
 
-- Make a copy of one of the existing compute MachineSet definitions and output the result to a YAML file
+- [ ] View the existing nodes
 
-  - ```sh
-        # get your machineset name --no-headers removes the headers from the output. awk '{print $1}'. extracts the first column.
-        head -n 1 limits the output to the first entry.
-        MACHINESET_COPY=$(oc get machinesets -n openshift-machine-api --no-headers | awk '{print $1}' | head -n 1)
+```sh
+oc get nodes
+```
 
-        # make a copy of an existing machineset definition
-        oc get machineset $MACHINESET_COPY -n openshift-machine-api -o yaml > scratch/machineset.yaml
-    ```
+```sh
+# expected output
+NAME                                        STATUS   ROLES                         AGE     VERSION
+ip-10-x-xx-xxx.us-xxxx-x.compute.internal   Ready    control-plane,master,worker   5h11m   v1.28.10+a2c84a5
+```
 
-- Edit the downloaded machineset.yaml and update the following fields:
+- [ ] View the machines and machine sets that exist in the openshift-machine-api namespace
 
-  - ```sh
-        - [ ] ~Line 13`.metadata.name` to a name containing `-gpu`.
-        - [ ] ~Line 18 `.spec.replicas` from `0` to `2`
-        - [ ] ~Line 22`.spec.selector.matchLabels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
-        - [ ] ~Line 29 `.spec.template.metadata.labels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
-        - [ ] ~Line 51 `.spec.template.spec.providerSpec.value.instanceType` to `g4dn.4xlarge`.
-    ```
+```sh
+oc get machinesets -n openshift-machine-api
+```
+
+```sh
+# expected output
+NAME                                    DESIRED   CURRENT   READY   AVAILABLE   AGE
+cluster-xxxxx-xxxxx-worker-us-xxxx-xc   0         0                             5h13m
+```
+
+- [ ] Make a copy of one of the existing compute MachineSet definitions and output the result to a YAML file
+
+```sh
+# get your machineset name --no-headers removes the headers from the output. awk '{print $1}'. extracts the first column.
+head -n 1 limits the output to the first entry.
+MACHINESET_COPY=$(oc get machinesets -n openshift-machine-api --no-headers | awk '{print $1}' | head -n 1)
+
+# make a copy of an existing machineset definition
+oc get machineset $MACHINESET_COPY -n openshift-machine-api -o yaml > scratch/machineset.yaml
+```
+
+- [ ] Edit the downloaded machineset.yaml and update the following fields:
+
+```sh
+- [ ] ~Line 13`.metadata.name` to a name containing `-gpu`.
+- [ ] ~Line 18 `.spec.replicas` from `0` to `2`
+- [ ] ~Line 22`.spec.selector.matchLabels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
+- [ ] ~Line 29 `.spec.template.metadata.labels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
+- [ ] ~Line 51 `.spec.template.spec.providerSpec.value.instanceType` to `g4dn.4xlarge`.
+```
 
 > You can use `sed` or `yq` commands. However, sed is more limited and error-prone for complex YAML manipulations. If you have yq installed (a powerful YAML processor), it's much easier to handle such updates.
 
-- Remove the following fields:
+- [ ] Remove the following fields:
 
-  - ```sh
-        - [ ] ~Line 10 `generation`
-        - [ ] ~Line 16 `uid` (becomes line 15 if you delete line 10 first)
-        - [ ] other fields as desired
-    ```
+```sh
+- [ ] ~Line 10 `generation`
+- [ ] ~Line 16 `uid` (becomes line 15 if you delete line 10 first)
+- [ ] other fields as desired
+```
 
-- Apply the configuration to create the gpu machine
+- [ ] Apply the configuration to create the gpu machine
 
-  - ```sh
-        oc apply -f scratch/machineset.yaml
-    ```
+```sh
+oc apply -f scratch/machineset.yaml
+```
 
-    ```sh
-        # expected output
-        machineset.machine.openshift.io/cluster-xxxx-xxxx-worker-us-xxxx-gpu created
-    ```
+```sh
+# expected output
+machineset.machine.openshift.io/cluster-xxxx-xxxx-worker-us-xxxx-gpu created
+```
 
-- Verify the gpu machineset you created is running
+- [ ] Verify the gpu machineset you created is running
 
-  - ```sh
-        oc -n openshift-machine-api get machinesets | grep gpu
-    ```
+```sh
+oc -n openshift-machine-api get machinesets | grep gpu
+```
 
-    ```sh
-        # expected output
-        cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu   2         2         2       2           6m37s
-    ```
+```sh
+# expected output
+cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu   2         2         2       2           6m37s
+```
 
-- View the Machine object that the machine set created
+- [ ] View the Machine object that the machine set created
 
-  - ```sh
-        oc -n openshift-machine-api get machines -w | grep gpu
-    ```
+```sh
+oc -n openshift-machine-api get machines -w | grep gpu
+```
 
-    ```sh
-        # expected output
-        cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu-29whc   Running   g4dn.4xlarge   us-xxxx-x   us-xxxx-xc   7m59s
-        cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu-nr59d   Running   g4dn.4xlarge   us-xxxx-x   us-xxxx-xc   7m59s
-    ```
+```sh
+# expected output
+cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu-29whc   Running   g4dn.4xlarge   us-xxxx-x   us-xxxx-xc   7m59s
+cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu-nr59d   Running   g4dn.4xlarge   us-xxxx-x   us-xxxx-xc   7m59s
+```
 
-### Deploying the Node Feature Discovery Operator (takes time)
+## 7.2 Deploying the Node Feature Discovery Operator (takes time)
 
-After the GPU-enabled node is created, you need to discover the GPU-enabled node so it can be scheduled. To do this, install the Node Feature Discovery (NFD) Operator. The NFD operator is a tool for OCP administrators that makes it easy to detect and understand the hardware features and configurations of a cluster's nodes. With this operator, administrators can easily gather information about their nodes that can be used for scheduling, resource management, and more by controlling the life cycle of NFD.  
-[More Info](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/machine_management/managing-compute-machines-with-the-machine-api#nvidia-gpu-aws-deploying-the-node-feature-discovery-operator_creating-machineset-aws)
+### Objectives
 
-#### Steps
+- Creating the ns, OperatorGroup and subscribing the NFD Operator
 
-- List the available operators for installation searching for Node Feature Discovery (NFD)
+### Rationale
+
+- After the GPU-enabled node is created, you need to discover the GPU-enabled node so it can be scheduled. NFD makes it easy to detect and understand the hardware features and configurations of a cluster's nodes.
+
+### Takeaways
+
+- Red Hat supports this operator and it is used for all GPUs
+- NFD Operator uses [vendor PCI IDs](https://pcisig.com/membership/member-companies?combine=10de) to identify hardware in a node
+  - sources.pci.deviceClassWhitelist is a list of PCI device class IDs for which to publish a label.
+  - sources.pci.deviceLabelFields is the set of PCI ID fields to use when constructing the name of the feature label.
+
+> Refer [Here](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/machine_management/managing-compute-machines-with-the-machine-api#nvidia-gpu-aws-deploying-the-node-feature-discovery-operator_creating-machineset-aws) for more information.
+
+## Steps
+
+- [ ] List the available operators for installation searching for Node Feature Discovery (NFD)
 
   - ```sh
         oc get packagemanifests -n openshift-marketplace | grep nfd
