@@ -1,79 +1,66 @@
 # Demo - Distributed Workloads
 
-Distributed workloads enable data scientists to use multiple cluster nodes in parallel for faster and more efficient data processing and model training. The CodeFlare framework simplifies task orchestration and monitoring, and offers seamless integration for automated resource scaling and optimal node utilization with advanced GPU support.
-[More Info](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/working_with_distributed_workloads/running-distributed-workloads_distributed-workloads)
+### Objectives
+
+- Demo to showcase distributed workloads on OpenShift AI
+
+### Rationale
+
+- Distributed workloads enable data scientists to use multiple cluster nodes in parallel for faster and more efficient data processing and model training.
+- The CodeFlare framework simplifies task orchestration and monitoring, and offers seamless integration for automated resource scaling and optimal node utilization with advanced GPU support.
+  [More Info](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai_self-managed/2.10/html/working_with_distributed_workloads/running-distributed-workloads_distributed-workloads)
+
+### Takeaways
+
+- Best practice routing to the internal service versus the external route
+- Notebook #1 and the concept of Ray and Kueue
+  - Running anb pod on CPU and job on 3 pods on GPUs
+- Notebook #2 "batch" job
+- Notebook #2 "interactive" job
+
+## Prerequisites
+
+- Cluster setup steps 0 - 10 are completed (Refer [Here](/README.md) for details)
 
 ## Steps
 
-1. Access the RHOAI Dashboard
-1. Create a data science project that contains a workbench that is running one of the default notebook images, for example, the Standard Data Science notebook. (not code-server)
-1. In the JupyterLab interface, click Git > Clone a Repository
-1. In the "Clone a repo" dialog, enter `https://github.com/project-codeflare/codeflare-sdk.git`
-1. In the JupyterLab interface, in the left navigation pane, double-click codeflare-sdk.
-1. Double-click demo-notebooks.
-1. Double-click guided-demos.
-1. Execute the notebooks in order
-1. `0_basic_ray.ipynb`
-1. `1_cluster_job_client.ipynb`
-1. `2_basic_interactive.ipynb`
+- [ ] Run `oc adm policy add-role-to-group edit system:serviceaccounts:sandbox -n sandbox`
+- [ ] Access the RHOAI Dashboard
+- [ ] Access the `sandbox` project
+- [ ] Create a workbench using the `Standard Data Science` notebook and set the following environment variables as Secrets (see [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.13/html/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects) if needed):
+  1.  `ACCESS_KEY` = `rootuser`
+  1.  `SECRET_KEY` = `rootuser123`
+  1.  `ENDPOINT_URL` = `http://minio.minio:9000`
+- [ ] In the JupyterLab interface, click "Git" > "Clone a Repository"
+- [ ] In the "Clone a repo" dialog, enter `https://github.com/redhat-na-ssa/codeflare-sdk`
+- [ ] In the JupyterLab interface, in the left navigation pane, double-click the `codeflare-sdk` folder.
+- [ ] Double-click the `demo-notebooks` folder.
+- [ ] Double-click the `guided-demos` folder.
+- [ ] Execute the notebooks in order:
+  1.  `0_basic_ray.ipynb`
+  1.  `1_cluster_job_client.ipynb`
 
-### Update each example demo notebook accordingly
+> Note: To run `2_basic_interactive.ipynb`, follow below additional steps
 
-You may have to pip install the codeflare_sdk if not provided with the Notebook Image.
-`!pip install codeflare_sdk -q`
-
-Update the following `token` and `server` values from your `oc login` command values
-`oc login --token=<YOUR_TOKEN> --server=<YOUR_API_URL>`
-
-```sh
-# if you are already logged in
-oc whoami -t
-```
-
-```python
-# Create authentication object for user permissions
-# IF unused, SDK will automatically check for default kubeconfig, then in-cluster config
-# KubeConfigFileAuthentication can also be used to specify kubeconfig path manually
-auth = TokenAuthentication(
-    token = "XXXXX",  # replace with <YOUR_TOKEN>
-    server = "XXXXX", # replace with <YOUR_API_URL>
-    skip_tls=False    # change to True to bypass certificate
-)
-auth.login()
-```
-
-(Recommended) Change TLS trust certificate, this will always work and prevent unnecessary hops.
-
-you should use the internal K8s service as the server value
-`server = "https://kubernetes.default.svc.cluster.local:443"`
-
-Shorter and easier to remember
+- [ ] Create project and set environment variables
 
 ```sh
-# TLS verify with https service
-server = "https://kubernetes.default",
-skip_tls=False
-
-# Skip TLS verify with http service
-server = "http://kubernetes.default",
-skip_tls=True
+oc new-project minio
+MINIO_ROOT_USER=rootuser
+MINIO_ROOT_PASSWORD=rootuser123
 ```
 
-You may need to create a local-queue in your project - see the CHECKLIST_PROCEDURE "Create a local queue that points to your cluster queue"
+- [ ] Install MinIO helm chart
 
-![NOTE]
-It may also be helpful to ignore the warnings Jupyter displays
-
-```python
-import warnings
-warnings.filterwarnings('ignore')
+```sh
+helm repo add minio https://charts.min.io/
 ```
 
-![NOTE]
+- [ ] Deploy MinIO storage in its own namespace with a bucket for distributed workloads
 
-`2_basic_interactive.ipynb` will require you to upgrade the `codeflare-sdk` to the latest to avoid errors. Append a cell at the top with the following:
-
-```ssh
-!pip install -U pip -q
-!pip install -U codeflare-sdk -q
+```sh
+helm install minio --namespace minio --set replicas=1 --set persistence.enabled=false --set mode=standalone --set rootUser=$MINIO_ROOT_USER,rootPassword=$MINIO_ROOT_PASSWORD --set 'buckets[0].name=distributed-demo,buckets[0].policy=none,buckets[0].purge=false' minio/minio
 ```
+
+> NOTE: You may have to pip install the codeflare_sdk if not provided with the Notebook Image.
+> `!pip install codeflare_sdk -q`
