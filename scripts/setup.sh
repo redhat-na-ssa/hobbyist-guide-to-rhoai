@@ -38,6 +38,8 @@ get_script_path
 
 ################# standard init #################
 
+DEFAULT_HTPASSWD=scratch/htpasswd-local
+
 check_cluster_version(){
   OCP_VERSION=$(oc version | sed -n '/Server Version: / s/Server Version: //p')
   AVOID_VERSIONS=()
@@ -77,7 +79,6 @@ validate_setup(){
 add_admin_user(){
   DEFAULT_USER="admin"
   DEFAULT_PASS=$(genpass)
-  DEFAULT_HTPASSWD=scratch/htpasswd-local
 
   HT_USERNAME=${1:-${DEFAULT_USER}}
   HT_PASSWORD=${2:-${DEFAULT_PASS}}
@@ -107,8 +108,7 @@ help(){
   loginfo "                             10    - Configure gpu sharing method"
   loginfo "                             11    - Configure distributed workloads"
   loginfo "                             12    - Configure codeflare operator"
-  loginfo "                             13    - Configure rhoai"
-  loginfo "                             14    - All setup"
+  loginfo "                             13    - Configure rhoai / All"
   return 0
 }
 
@@ -219,8 +219,13 @@ step_13(){
 workshop_uninstall(){
   logbanner "Uninstall Workshop"
 
+  rm "${DEFAULT_HTPASSWD}"{,.txt}
+
   oc delete datasciencecluster default-dsc
   oc delete dscinitialization default-dsci
+  oc delete -n istio-system --all servicemeshmemberrolls.maistra.io
+  oc delete -n istio-system --all servicemeshcontrolplanes.maistra.io
+  oc delete -A --all servicemeshmembers.maistra.io
   oc delete -n knative-serving knativeservings.operator.knative.dev knative-serving
 
   oc delete csv -A -l operators.coreos.com/authorino-operator.openshift-operators
