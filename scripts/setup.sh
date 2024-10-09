@@ -233,6 +233,8 @@ workshop_uninstall(){
   oc delete csv -A -l operators.coreos.com/servicemeshoperator.openshift-operators
   oc delete csv -A -l operators.coreos.com/web-terminal.openshift-operators
 
+  oc delete -n openshift-operators deploy devworkspace-webhook-server 
+
   oc delete \
     -f "${GIT_ROOT}"/configs/00 \
     -f "${GIT_ROOT}"/configs/01 \
