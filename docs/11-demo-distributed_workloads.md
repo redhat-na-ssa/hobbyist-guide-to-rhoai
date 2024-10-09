@@ -14,7 +14,7 @@
 
 - Best practice routing to the internal service versus the external route
 - Notebook #1 and the concept of Ray and Kueue
-  - Running anb pod on CPU and job on 3 pods on GPUs
+  - Running and pod on CPU and job on 3 pods on GPUs
 - Notebook #2 "batch" job
 - Notebook #2 "interactive" job
 

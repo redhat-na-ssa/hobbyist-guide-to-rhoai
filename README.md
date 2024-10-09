@@ -47,6 +47,6 @@ To run all steps, from this repo's root directory, run below command
 
 ## Demo Instructions
 
-1. [Distributed Workloads](/docs/demo-distributed_workloads.md)
+1. [Distributed Workloads](/docs/11-demo-distributed_workloads.md)
 
-1. [Fraud Detection](/docs/demo-fraud-detection.md)
+1. [Fraud Detection](/docs/12-demo-fraud-detection.md)
