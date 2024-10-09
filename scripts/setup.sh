@@ -153,6 +153,7 @@ step_3(){
   logbanner "Enable gpu support"
   loginfo "Create a GPU node with autoscaling"
   ocp_aws_cluster_autoscaling
+  ocp_aws_taint_gpu_machineset
   ocp_scale_machineset
   ocp_control_nodes_not_schedulable
   retry oc apply -f "${GIT_ROOT}"/configs/03
