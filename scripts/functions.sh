@@ -16,7 +16,7 @@ check_git_root(){
   if [ -d .git ] && [ -d scripts ]; then
     GIT_ROOT=$(pwd)
     export GIT_ROOT
-    echo "GIT_ROOT: ${GIT_ROOT}"
+    echo "GIT_ROOT:   ${GIT_ROOT}"
     return
   else
     echo "Please run this script from the root of the git repo"
