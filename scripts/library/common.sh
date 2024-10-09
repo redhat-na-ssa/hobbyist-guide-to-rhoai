@@ -57,8 +57,8 @@ retry(){
   until "${@}"
   do
     if [[ $attempts -gt "1" ]]; then
-      ((attempts++))
-      echo "Remaining attempts: #$attempts - waiting ${delay}s"
+      ((attempts--))
+      echo "Remaining attempts: $attempts - waiting ${delay}s"
       sleep $delay
     else
       echo "[FAILED]"
