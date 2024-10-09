@@ -39,7 +39,7 @@ OpenShift AI provides an environment to develop, train, serve, test, and monitor
 To run all steps, from this repo's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 14
+./scripts/setup.sh -s 13
 ```
 
 > NOTE: `Steps 10 - 13 are NOT fully automated, and will need manual configurations`

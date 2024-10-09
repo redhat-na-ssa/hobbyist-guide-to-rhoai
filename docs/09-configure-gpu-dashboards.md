@@ -1,4 +1,4 @@
-## 9. Configure GPU dashboards
+# 9. Configure GPU dashboards
 
 ## 9.1 Enabling the GPU Monitoring Dashboard
 

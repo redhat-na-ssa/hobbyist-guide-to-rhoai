@@ -57,7 +57,8 @@ htpasswd_validate_user(){
   TMP_CONFIG=scratch/kubeconfig.XXX
 
   echo "This may take a few minutes..."
-  echo "Press <ctrl> + c to cancel"
+  echo "Press <ctrl> + c to cancel
+  "
 
   # login to ocp
   cp "${KUBECONFIG}" "${TMP_CONFIG}"
@@ -71,7 +72,9 @@ htpasswd_validate_user(){
   # cleanup tmp config
   rm "${TMP_CONFIG}"
 
-  echo "Login validated: ${USER}"
+  echo "
+    Login validated: ${USER}
+  "
 }
 
 which age >/dev/null 2>&1 || return 0

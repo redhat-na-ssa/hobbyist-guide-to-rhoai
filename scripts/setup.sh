@@ -77,6 +77,7 @@ validate_setup(){
 add_admin_user(){
   DEFAULT_USER=admin
   DEFAULT_PASS=$(genpass)
+  DEFAULT_HTPASSWD=scratch/htpasswd-local
 
   HT_USERNAME=${1:-${DEFAULT_USER}}
   HT_PASSWORD=${2:-${DEFAULT_PASS}}
@@ -130,28 +131,41 @@ step_0() {
   validate_setup || return 1
   
   logbanner "Install prerequisites"
-  until oc apply -f "${GIT_ROOT}"/configs/00; do : ; done
+  retry oc apply -f "${GIT_ROOT}"/configs/00
 }
 
 step_1() {
   logbanner "Creating user 'admin'"
-  add_admin_user admin
+
+  if [ -f "${DEFAULT_HTPASSWD}.txt" ]; then
+    HT_PASSWORD=$(sed '/admin/ s/# .* - //' "${DEFAULT_HTPASSWD}.txt")
+    
+    htpasswd_validate_user "${HT_USERNAME}" "${HT_PASSWORD}"
+
+    echo "Delete ${DEFAULT_HTPASSWD}.txt to recreate password
+    "
+
+    return
+  else
+    retry oc apply -f "${GIT_ROOT}"/configs/01
+    add_admin_user admin    
+  fi
 }
 
 step_2() {
   logbanner "(Optional) Install web terminal"
   loginfo "Web Terminal"
-  until oc apply -f "${GIT_ROOT}"/configs/02; do : ; done
+  retry oc apply -f "${GIT_ROOT}"/configs/02
 }
 
 step_3() {
   logbanner "Install kserve dependencies"
-  until oc apply -f "${GIT_ROOT}"/configs/03; do : ; done
+  retry oc apply -f "${GIT_ROOT}"/configs/03
 }
 
 step_4() {
   logbanner "Install RHOAI operator"
-  until oc apply -f "${GIT_ROOT}"/configs/04; do : ; done
+  retry oc apply -f "${GIT_ROOT}"/configs/04
 }
 
 step_5() {
@@ -169,37 +183,37 @@ step_7() {
   loginfo "Create a GPU node with autoscaling"
   ocp_aws_cluster_autoscaling
   ocp_scale_machineset
-  until oc apply -f "${GIT_ROOT}"/configs/07; do : ; done
+  retry oc apply -f "${GIT_ROOT}"/configs/07
 }
 
 step_8() {
   logbanner "Run sample gpu application"
-  until oc apply -f "${GIT_ROOT}"/configs/08; do : ; done
+  retry oc apply -f "${GIT_ROOT}"/configs/08
 }
 
 step_9() {
   logbanner "Configure gpu dashboards"
-  until oc apply -f "${GIT_ROOT}"/configs/09; do : ; done
+  retry oc apply -f "${GIT_ROOT}"/configs/09
 }
 
 step_10() {
   logbanner "Configure gpu sharing method"
-  until oc apply -f "${GIT_ROOT}"/configs/10; do : ; done
+  retry oc apply -f "${GIT_ROOT}"/configs/10
 }
 
 step_11() {
   logbanner "Configure distributed workloads"
-  until oc apply -f "${GIT_ROOT}"/configs/11; do : ; done
+  retry oc apply -f "${GIT_ROOT}"/configs/11
 }
 
 step_12() {
   logbanner "Configure codeflare operator"
-  until oc apply -f "${GIT_ROOT}"/configs/12; do : ; done
+  retry oc apply -f "${GIT_ROOT}"/configs/12
 }
 
 step_13() {
   logbanner "Configure rhoai"
-  until oc apply -f "${GIT_ROOT}"/configs/13; do : ; done
+  retry oc apply -f "${GIT_ROOT}"/configs/13
 }
 
 setup(){
@@ -209,8 +223,6 @@ setup(){
       help
   fi
 
-  # create_log_file
-
   if [ "$s" -eq 0 ] ; then
       loginfo "Running step 0"
       step_0
@@ -219,7 +231,6 @@ setup(){
 
   for (( i=1; i <= s; i++ ))
   do
-      echo ""
       loginfo "Running step $i"
       echo ""
       eval "step_$i"
