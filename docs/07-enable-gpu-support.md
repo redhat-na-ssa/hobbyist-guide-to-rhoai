@@ -135,84 +135,78 @@ cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu-nr59d   Running   g4dn.4xlarge   us-xx
 
 - [ ] List the available operators for installation searching for Node Feature Discovery (NFD)
 
-  - ```sh
-        oc get packagemanifests -n openshift-marketplace | grep nfd
-    ```
+```sh
+oc get packagemanifests -n openshift-marketplace | grep nfd
+```
 
-    ```sh
-        # expected output
-        openshift-nfd-operator                             Community Operators   8h
-        nfd                                                Red Hat Operators     8h
-    ```
+```sh
+# expected output
+openshift-nfd-operator                             Community Operators   8h
+nfd                                                Red Hat Operators     8h
+```
 
-- Apply the Namespace object
+- [ ] Apply the Namespace object
 
-  - ```sh
-        oc apply -f configs/07/nfd-operator-ns.yaml
-    ```
+```sh
+oc apply -f configs/07/nfd-operator-ns.yaml
+```
 
-    ```sh
-        # expected output
-        namespace/openshift-nfd created
-    ```
+```sh
+# expected output
+namespace/openshift-nfd created
+```
 
-- Apply the OperatorGroup object
+- [ ] Apply the OperatorGroup object
 
-  - ```sh
-        oc apply -f configs/07/nfd-operator-group.yaml
-    ```
+```sh
+oc apply -f configs/07/nfd-operator-group.yaml
+```
 
-    ```sh
-        # expected output
-        operatorgroup.operators.coreos.com/nfd created
-    ```
+```sh
+# expected output
+operatorgroup.operators.coreos.com/nfd created
+```
 
-- Apply the Subscription object
+- [ ] Apply the Subscription object
 
-  - ```sh
-        oc apply -f configs/07/nfd-operator-sub.yaml
-    ```
+```sh
+oc apply -f configs/07/nfd-operator-sub.yaml
+```
 
-    ```sh
-        # expected output
-        subscription.operators.coreos.com/nfd created
-    ```
+```sh
+# expected output
+subscription.operators.coreos.com/nfd created
+```
 
-- Verify the operator is installed and running
+- [ ] Verify the operator is installed and running
 
-  - ```sh
-        # watch the pods create in the new project
-        oc get pods -n openshift-nfd -w
-    ```
+```sh
+# watch the pods create in the new project
+oc get pods -n openshift-nfd -w
+```
 
-    ```sh
-        # expected output
-        NAME                                      READY   STATUS    RESTARTS   AGE
-        ...
-        nfd-controller-manager-78758c57f7-7xfh4   2/2     Running   0          48s
-    ```
+```sh
+# expected output
+NAME                                      READY   STATUS    RESTARTS   AGE
+...
+nfd-controller-manager-78758c57f7-7xfh4   2/2     Running   0          48s
+```
 
-    After Install the NFD Operator, you create instance that installs the `nfd-master` and one `nfd-worker` pod for each compute node in the `openshift-nfd` namespace.
+> After Install the NFD Operator, you create instance that installs the `nfd-master` and one `nfd-worker` pod for each compute node in the `openshift-nfd` namespace.
+> [More Info](https://docs.openshift.com/container-platform/4.15/hardware_enablement/psap-node-feature-discovery-operator.html#Configure-node-feature-discovery-operator-sources_psap-node-feature-discovery-operator)
 
-[More Info](https://docs.openshift.com/container-platform/4.15/hardware_enablement/psap-node-feature-discovery-operator.html#Configure-node-feature-discovery-operator-sources_psap-node-feature-discovery-operator)
+- [ ] Create the nfd instance object
 
-- Create the nfd instance object
+```sh
+oc apply -f configs/07/nfd-instance.yaml
+```
 
-  - ```sh
-        oc apply -f configs/07/nfd-instance.yaml
-    ```
+```sh
+# expected output
+nodefeaturediscovery.nfd.openshift.io/nfd-instance created
+```
 
-    ```sh
-        # expected output
-        nodefeaturediscovery.nfd.openshift.io/nfd-instance created
-    ```
-
-    This creates NFD pods in the `openshift-nfd` namespace that poll RHOCP nodes for hardware resources and catalogue them.
-
-    A bit information about fields in `nfd-instance.yaml`
-
-    - `sources.pci.deviceClassWhitelist` is a list of [PCI device class IDs](https://admin.pci-ids.ucw.cz/read/PD) for which to publish a label. It can be specified as a main class only (for example, `03`) or full class-subclass combination (for example `0300`). The former implies that all subclasses are accepted. The format of the labels can be further configured with deviceLabelFields.
-    - `sources.pci.deviceLabelFields` is the set of PCI ID fields to use when constructing the name of the feature label. Valid fields are `class`, `vendor`, `device`, `subsystem_vendor` and `subsystem_device`. With the example config above, NFD would publish labels such as `feature.node.kubernetes.io/pci-<vendor-id>.present=true`
+> This creates NFD pods in the `openshift-nfd` namespace that poll RHOCP nodes for hardware resources and catalogue them.
 
 > [IMPORTANT]
 > The NFD Operator uses vendor PCI IDs to identify hardware in a node.
@@ -226,254 +220,284 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 | `1002` | AMD    |
 | `8086` | Intel  |
 
-- Verify the GPU device (NVIDIA uses the PCI ID `10de`) is discovered on the GPU node. This mean the NFD Operator correctly identified the node from the GPU-enabled MachineSet.
+- [ ] Verify the GPU device (NVIDIA uses the PCI ID `10de`) is discovered on the GPU node. This mean the NFD Operator correctly identified the node from the GPU-enabled MachineSet.
 
-  - ```sh
-        oc describe node | egrep 'Roles|pci' | grep -v master
-    ```
+```sh
+oc describe node | egrep 'Roles|pci' | grep -v master
+```
 
-    ```sh
-    # expected output
-    Roles:              worker
-                        feature.node.kubernetes.io/pci-10de.present=true
-                        feature.node.kubernetes.io/pci-1d0f.present=true
-                        feature.node.kubernetes.io/pci-1d0f.present=true
-    Roles:              worker
-                        feature.node.kubernetes.io/pci-10de.present=true
-                        feature.node.kubernetes.io/pci-1d0f.present=true
-    ```
+```sh
+# expected output
+Roles:              worker
+                feature.node.kubernetes.io/pci-10de.present=true
+                feature.node.kubernetes.io/pci-1d0f.present=true
+                feature.node.kubernetes.io/pci-1d0f.present=true
+Roles:              worker
+                feature.node.kubernetes.io/pci-10de.present=true
+                feature.node.kubernetes.io/pci-1d0f.present=true
+```
 
-- Verify the NFD pods are `Running` on the cluster nodes polling for devices
+- [ ] Verify the NFD pods are `Running` on the cluster nodes polling for devices
 
-  - ```sh
-        oc get pods -n openshift-nfd
-    ```
+```sh
+oc get pods -n openshift-nfd
+```
 
-    ```sh
-    # expected output
-    NAME                                      READY   STATUS    RESTARTS   AGE
-    nfd-controller-manager-78758c57f7-7xfh4   2/2     Running   0          99s
-    nfd-master-74db665cb6-vht4l               1/1     Running   0          25s
-    nfd-worker-8zkpz                          1/1     Running   0          25s
-    nfd-worker-d7wgh                          1/1     Running   0          25s
-    nfd-worker-l6sqx                          1/1     Running   0          25s
-    ```
+```sh
+# expected output
+NAME                                      READY   STATUS    RESTARTS   AGE
+nfd-controller-manager-78758c57f7-7xfh4   2/2     Running   0          99s
+nfd-master-74db665cb6-vht4l               1/1     Running   0          25s
+nfd-worker-8zkpz                          1/1     Running   0          25s
+nfd-worker-d7wgh                          1/1     Running   0          25s
+nfd-worker-l6sqx                          1/1     Running   0          25s
+```
 
-- Verify the NVIDIA GPU is discovered
+- [ ] Verify the NVIDIA GPU is discovered
 
-  - ```sh
-    # list your nodes
-    oc get nodes
+```sh
+# list your nodes
+oc get nodes
 
-    # display the role feature list of a gpu node
-    oc describe node <NODE_NAME> | egrep 'Roles|pci'
-    ```
+# display the role feature list of a gpu node
+oc describe node <NODE_NAME> | egrep 'Roles|pci'
+```
 
-    ```sh
-    # expected output
-    Roles:              worker
-                        feature.node.kubernetes.io/pci-10de.present=true
-                        feature.node.kubernetes.io/pci-1d0f.present=true
-    ```
+```sh
+# expected output
+Roles:              worker
+                feature.node.kubernetes.io/pci-10de.present=true
+                feature.node.kubernetes.io/pci-1d0f.present=true
+```
 
-### Install the NVIDIA GPU Operator
+## 7.3 Install the NVIDIA GPU Operator
 
-Kubernetes provides access to special hardware resources such as NVIDIA GPUs, NICs, Infiniband adapters and other devices through the [device plugin framework](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/). However, configuring and managing nodes with these hardware resources requires configuration of multiple software components such as drivers, container runtimes or other libraries which are difficult and prone to errors. The NVIDIA GPU Operator uses the [operator framework](https://coreos.com/blog/introducing-operator-framework) within Kubernetes to automate the management of all NVIDIA software components needed to provision GPU. These components include:
+### Objectives
 
-1. the NVIDIA drivers (to enable CUDA) for creating high-performance, GPU-accelerated applications
-1. Kubernetes device plugin for GPUs to advertise system hardware resources to the Kubelet
-1. the NVIDIA Container Toolkit to build and run GPU accelerated containers
-1. automatic node labelling using [GPU Feature Discovery (GFD)](https://github.com/NVIDIA/gpu-feature-discovery)
-1. [NVIDIA Data Center GPU Manager (DCGM)](https://developer.nvidia.com/dcgm) for active health monitoring, comprehensive diagnostics, system alerts and governance policies including power and clock management
+- Creating the ns, OperatorGroup and subscribing the NVIDIA GPU Operator
+
+### Rationale
+
+- To install and configure
+
+  - NVIDIA drivers (to enable CUDA)
+  - Advertise system hardware resources to the Kubelet
+  - NVIDIA Container Toolkit
+  - Automatic node labelling
+  - NVIDIA Data Center GPU Manager (DCGM) for active health monitoring
+
+### Takeaways
+
+- NVIDIA supports this operator and it is used specific NVIDIA GPUs
+- The NVIDIA device plugin has a number of options, like MIG Strategy, that can be configured for it.
+- With the daemonset deployed, NVIDIA GPUs have the nvidia-device-plugin and can be requested by a container using the nvidia.com/gpu resource type. The NVIDIA device plugin has a number of options, like MIG Strategy, that can be configured for it.
 
 [More Info](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/install-gpu-ocp.html#Install-the-nvidia-gpu-operator-using-the-cli)
 
-### Steps
+## Steps
 
-- List the available operators for installation searching for Node Feature Discovery (NFD)
+- [ ] List the available operators for installation searching for Node Feature Discovery (NFD)
 
-  - ```sh
-        oc get packagemanifests -n openshift-marketplace | grep gpu
-    ```
+```sh
+oc get packagemanifests -n openshift-marketplace | grep gpu
+```
 
-    ```sh
-        # expected output
-        amd-gpu-operator                                   Community Operators   8h
-        gpu-operator-certified                             Certified Operators   8h
-    ```
+```sh
+# expected output
+amd-gpu-operator                                   Community Operators   8h
+gpu-operator-certified                             Certified Operators   8h
+```
 
-- Apply the Namespace object YAML file
+- [ ] Apply the Namespace object YAML file
 
-  - ```sh
-        oc apply -f configs/07/nvidia-gpu-operator-ns.yaml
-    ```
+```sh
+oc apply -f configs/07/nvidia-gpu-operator-ns.yaml
+```
 
-    ```sh
-        # expected output
-        namespace/nvidia-gpu-operator created
-    ```
+```sh
+# expected output
+namespace/nvidia-gpu-operator created
+```
 
-- Apply the OperatorGroup YAML file
+- [ ] Apply the OperatorGroup YAML file
 
-  - ```sh
-        oc apply -f configs/07/nvidia-gpu-operator-group.yaml
-    ```
+```sh
+oc apply -f configs/07/nvidia-gpu-operator-group.yaml
+```
 
-    ```sh
-    # expected output
-    operatorgroup.operators.coreos.com/nvidia-gpu-operator-group created
-    ```
+```sh
+# expected output
+operatorgroup.operators.coreos.com/nvidia-gpu-operator-group created
+```
 
-- Run the following command to get the channel value
+- [ ] Run the following command to get the channel value
 
-  - ```sh
-        # set channel value
-        CHANNEL=$(oc get packagemanifest gpu-operator-certified -n openshift-marketplace -o jsonpath='{.status.defaultChannel}')
-    ```
+```sh
+# set channel value
+CHANNEL=$(oc get packagemanifest gpu-operator-certified -n openshift-marketplace -o jsonpath='{.status.defaultChannel}')
+```
 
-  - ```sh
-        # echo the channel
-        echo $CHANNEL
-    ```
+```sh
+# echo the channel
+echo $CHANNEL
+```
 
-    ```sh
-        # expected output
-        v24.6
-    ```
+```sh
+# expected output
+v24.6
+```
 
-- Run the following commands to get the startingCSV
+- [ ] Run the following commands to get the startingCSV
 
-  - ```sh
-        # run the command to get the startingCSV
-        oc get packagemanifests/gpu-operator-certified -n openshift-marketplace -ojson | jq -r '.status.channels[] | select(.name == "'$CHANNEL'") | .currentCSV'
-    ```
+```sh
+# run the command to get the startingCSV
+oc get packagemanifests/gpu-operator-certified -n openshift-marketplace -ojson | jq -r '.status.channels[] | select(.name == "'$CHANNEL'") | .currentCSV'
+```
 
-    ```sh
-    # expected output
-    gpu-operator-certified.v24.6.1
-    ```
+```sh
+# expected output
+gpu-operator-certified.v24.6.1
+```
 
-- Update the `channel` and `startingCSV` fields in `nvidia-gpu-operator-subscription.yaml` with the information returned.
+- [ ] Update the `channel` and `startingCSV` fields in `nvidia-gpu-operator-subscription.yaml` with the information returned.
 
-- Apply the Subscription CR
+- [ ] Apply the Subscription CR
 
-  ````sh
-      oc apply -f configs/07/nvidia-gpu-operator-subscription.yaml
-      ```
+```sh
+oc apply -f configs/07/nvidia-gpu-operator-subscription.yaml
+```
 
-  ```sh
-  # expected output
-  subscription.operators.coreos.com/gpu-operator-certified created
-  ````
+```sh
+# expected output
+subscription.operators.coreos.com/gpu-operator-certified created
+```
 
-- Verify an install plan has been created. Be patient.
+- [ ] Verify an install plan has been created. Be patient.
 
-  - ```sh
-        # you can watch the installplan instances get created
-        oc get installplan -n nvidia-gpu-operator -w
-    ```
+```sh
+# you can watch the installplan instances get created
+oc get installplan -n nvidia-gpu-operator -w
+```
 
-    ```sh
-    # expected output
-    NAME            CSV                              APPROVAL    APPROVED
-    ...
-    install-295r6   gpu-operator-certified.v24.6.1   Automatic   true
-    ```
+```sh
+# expected output
+NAME            CSV                              APPROVAL    APPROVED
+...
+install-295r6   gpu-operator-certified.v24.6.1   Automatic   true
+```
 
-- (Optional) Approve the install plan if not `Automatic`
+- [ ] (Optional) Approve the install plan if not `Automatic`
 
-  - ```sh
-        INSTALL_PLAN=$(oc get installplan -n nvidia-gpu-operator -oname)
-    ```
+```sh
+INSTALL_PLAN=$(oc get installplan -n nvidia-gpu-operator -oname)
+```
 
-- Create the cluster policy
+- [ ] Create the cluster policy
 
-  - ```sh
-        oc get csv -n nvidia-gpu-operator gpu-operator-certified.v24.6.1 -o jsonpath='{.metadata.annotations.alm-examples}' | jq '.[0]' > scratch/nvidia-gpu-clusterpolicy.json
-    ```
+```sh
+oc get csv -n nvidia-gpu-operator gpu-operator-certified.v24.6.1 -o jsonpath='{.metadata.annotations.alm-examples}' | jq '.[0]' > scratch/nvidia-gpu-clusterpolicy.json
+```
 
-- Apply the clusterpolicy
+- [ ] Apply the clusterpolicy
 
-  - ```sh
-        oc apply -f scratch/nvidia-gpu-clusterpolicy.json
-    ```
+```sh
+oc apply -f scratch/nvidia-gpu-clusterpolicy.json
+```
 
-    ```sh
-    # expected output
-    clusterpolicy.nvidia.com/gpu-cluster-policy created
-    ```
+```sh
+# expected output
+clusterpolicy.nvidia.com/gpu-cluster-policy created
+```
 
 > At this point, the GPU Operator proceeds and installs all the required components to set up the NVIDIA GPUs in the OpenShift 4 cluster. Wait at least 10-20 minutes before digging deeper into any form of troubleshooting because this may take a period of time to finish.
 
-- Verify the successful installation of the NVIDIA GPU Operator
+- [ ] Verify the successful installation of the NVIDIA GPU Operator
 
-  - ````sh
-        oc get pods,daemonset -n nvidia-gpu-operator
-        ```
+```sh
+oc get pods,daemonset -n nvidia-gpu-operator
+```
 
-    ```sh
-    # expected output
-    NAME                                                           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                                                                                                         AGE
-    daemonset.apps/gpu-feature-discovery                           0         0         0       0            0           nvidia.com/gpu.deploy.gpu-feature-discovery=true                                                                      22s
-    daemonset.apps/nvidia-container-toolkit-daemonset              0         0         0       0            0           nvidia.com/gpu.deploy.container-toolkit=true                                                                          22s
-    daemonset.apps/nvidia-dcgm                                     0         0         0       0            0           nvidia.com/gpu.deploy.dcgm=true                                                                                       22s
-    daemonset.apps/nvidia-dcgm-exporter                            0         0         0       0            0           nvidia.com/gpu.deploy.dcgm-exporter=true                                                                              22s
-    daemonset.apps/nvidia-device-plugin-daemonset                  0         0         0       0            0           nvidia.com/gpu.deploy.device-plugin=true                                                                              22s
-    daemonset.apps/nvidia-device-plugin-mps-control-daemon         0         0         0       0            0           nvidia.com/gpu.deploy.device-plugin=true,nvidia.com/mps.capable=true                                                  22s
-    daemonset.apps/nvidia-driver-daemonset-415.92.202406251950-0   2         2         0       2            0           feature.node.kubernetes.io/system-os_release.OSTREE_VERSION=415.92.202406251950-0,nvidia.com/gpu.deploy.driver=true   22s
-    daemonset.apps/nvidia-mig-manager                              0         0         0       0            0           nvidia.com/gpu.deploy.mig-manager=true                                                                                22s
-    daemonset.apps/nvidia-node-status-exporter                     2         2         2       2            2           nvidia.com/gpu.deploy.node-status-exporter=true                                                                       22s
-    daemonset.apps/nvidia-operator-validator                       0         0         0       0            0           nvidia.com/gpu.deploy.operator-validator=true                                                                         22s
-    ````
+```sh
+# expected output
+NAME                                                           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                                                                                                         AGE
+daemonset.apps/gpu-feature-discovery                           0         0         0       0            0           nvidia.com/gpu.deploy.gpu-feature-discovery=true                                                                      22s
+daemonset.apps/nvidia-container-toolkit-daemonset              0         0         0       0            0           nvidia.com/gpu.deploy.container-toolkit=true                                                                          22s
+daemonset.apps/nvidia-dcgm                                     0         0         0       0            0           nvidia.com/gpu.deploy.dcgm=true                                                                                       22s
+daemonset.apps/nvidia-dcgm-exporter                            0         0         0       0            0           nvidia.com/gpu.deploy.dcgm-exporter=true                                                                              22s
+daemonset.apps/nvidia-device-plugin-daemonset                  0         0         0       0            0           nvidia.com/gpu.deploy.device-plugin=true                                                                              22s
+daemonset.apps/nvidia-device-plugin-mps-control-daemon         0         0         0       0            0           nvidia.com/gpu.deploy.device-plugin=true,nvidia.com/mps.capable=true                                                  22s
+daemonset.apps/nvidia-driver-daemonset-415.92.202406251950-0   2         2         0       2            0           feature.node.kubernetes.io/system-os_release.OSTREE_VERSION=415.92.202406251950-0,nvidia.com/gpu.deploy.driver=true   22s
+daemonset.apps/nvidia-mig-manager                              0         0         0       0            0           nvidia.com/gpu.deploy.mig-manager=true                                                                                22s
+daemonset.apps/nvidia-node-status-exporter                     2         2         2       2            2           nvidia.com/gpu.deploy.node-status-exporter=true                                                                       22s
+daemonset.apps/nvidia-operator-validator                       0         0         0       0            0           nvidia.com/gpu.deploy.operator-validator=true                                                                         22s
+```
 
-With the daemonset deployed, NVIDIA GPUs have the `nvidia-device-plugin` and can be requested by a container using the `nvidia.com/gpu` resource type. The [NVIDIA device plugin](https://github.com/NVIDIA/k8s-device-plugin?tab=readme-ov-file#shared-access-to-gpus) has a number of options, like MIG Strategy, that can be configured for it.
+> With the daemonset deployed, NVIDIA GPUs have the `nvidia-device-plugin` and can be requested by a container using the `nvidia.com/gpu` resource type. The [NVIDIA device plugin](https://github.com/NVIDIA/k8s-device-plugin?tab=readme-ov-file#shared-access-to-gpus) has a number of options, like MIG Strategy, that can be configured for it.
 
-### Label GPU Nodes
+## 7.4 Label GPU Nodes
 
-- When the NVIDIA operator completes labeling the nodes, you can add a label to the GPU node Role as `gpu, worker` for readability (cosmetic). You may have to rerun this command for multiple nodes.
+### Objectives
 
-  - ```sh
-        oc label node -l nvidia.com/gpu.machine node-role.kubernetes.io/gpu=''
-    ```
+- Add a label to the GPU node Role as gpu, worker for readability
 
-    ```sh
-        # expected output
-        node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal labeled
-        node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal labeled
-    ```
+### Rationale
 
-  - ```sh
+- Reliability
 
-        oc get nodes
-    ```
+### Takeaways
 
-    ```sh
-        # expected output
-        NAME                                        STATUS   ROLES                         AGE   VERSION
-        ...
-        ip-10-x-xx-xxx.us-xxxx-x.compute.internal   Ready    gpu,worker                    19h   v1.28.10+a2c84a5
-        ip-10-x-xx-xxx.us-xxxx-x.compute.internal   Ready    gpu,worker                    19h   v1.28.10+a2c84a5
-        ...
-    ```
+- nvidia.com/gpu is only used as a resource identifier, not anything else, in the context of differentiating GPU models (i.e. L40s, H100, V100, etc.). Node Selectors and Pod Affinity can still be configured arbitrarily.
+- Kueue, allows more granularity than that (including capacity reservation at the cluster and namespace levels).
+- If you have heterogeneous GPUs in a single node, this becomes more difficult and outside the capabilities of any of those solutions.
 
-- In order to apply this label to new machines/nodes:
+## Steps
 
-  - ```sh
-        # set an env value
-        MACHINE_SET_TYPE=$(oc -n openshift-machine-api get machinesets.machine.openshift.io -o name | grep gpu | head -n1)
+- [ ] Add a label to the GPU node Role as `gpu, worker` for readability (cosmetic). You may have to rerun this command for multiple nodes.
 
-        # patch the machineset
-        oc -n openshift-machine-api \
-        patch "${MACHINE_SET_TYPE}" \
-        --type=merge --patch '{"spec":{"template":{"spec":{"metadata":{"labels":{"node-role.kubernetes.io/gpu":""}}}}}}'
-    ```
+```sh
+oc label node -l nvidia.com/gpu.machine node-role.kubernetes.io/gpu=''
+```
 
-    ```sh
-    # expected output
-    machineset.machine.openshift.io/cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu patched
-    ```
+```sh
+# expected output
+node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal labeled
+node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal labeled
+```
 
-At this time, the Nvidia operator creates an extended resource called `nvidia.com/gpu` on the nodes. `nvidia.com/gpu` is only used as a resource identifier, not anything else, in the context of differentiating GPU models (i.e. L40s, H100, V100, etc.). Node Selectors and Pod Affinity can still be configured arbitrarily. Later in this procedure, Distributed Workloads, `Kueue`, allows more granularity than that (including capacity reservation at the cluster and namespace levels). If you have heterogeneous GPUs in a single node, this becomes more difficult and outside the capabilities of any of those solutions.
+- [ ] Get nodes to verify the label
+
+```sh
+
+oc get nodes
+```
+
+```sh
+# expected output
+NAME                                        STATUS   ROLES                         AGE   VERSION
+...
+ip-10-x-xx-xxx.us-xxxx-x.compute.internal   Ready    gpu,worker                    19h   v1.28.10+a2c84a5
+ip-10-x-xx-xxx.us-xxxx-x.compute.internal   Ready    gpu,worker                    19h   v1.28.10+a2c84a5
+...
+```
+
+- [ ] Apply this label to new machines/nodes:
+
+```sh
+# set an env value
+MACHINE_SET_TYPE=$(oc -n openshift-machine-api get machinesets.machine.openshift.io -o name | grep gpu | head -n1)
+
+# patch the machineset
+oc -n openshift-machine-api \
+patch "${MACHINE_SET_TYPE}" \
+--type=merge --patch '{"spec":{"template":{"spec":{"metadata":{"labels":{"node-role.kubernetes.io/gpu":""}}}}}}'
+```
+
+```sh
+# expected output
+machineset.machine.openshift.io/cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu patched
+```
+
+> At this time, the Nvidia operator creates an extended resource called `nvidia.com/gpu` on the nodes. `nvidia.com/gpu` is only used as a resource identifier, not anything else, in the context of differentiating GPU models (i.e. L40s, H100, V100, etc.). Node Selectors and Pod Affinity can still be configured arbitrarily. Later in this procedure, Distributed Workloads, `Kueue`, allows more granularity than that (including capacity reservation at the cluster and namespace levels). If you have heterogeneous GPUs in a single node, this becomes more difficult and outside the capabilities of any of those solutions.
 
 ## Validation
 
@@ -481,7 +505,8 @@ At this time, the Nvidia operator creates an extended resource called `nvidia.co
 
 ## Automation key (Catch up)
 
-- From this repository's root directory, run below command
-  - ```sh
-      ./scripts/setup.sh -s 7
-    ```
+- [ ] From this repository's root directory, run below command
+
+```sh
+./scripts/setup.sh -s 7
+```
