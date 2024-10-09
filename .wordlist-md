@@ -44,7 +44,6 @@ ccb
 cd
 cdn
 certificateCERTIFICATECERTIFICATESDFCERTIFICATEcertificateCERTIFICATE
-chargeback
 chgln
 chmod
 CLI
@@ -88,7 +87,6 @@ daemonset
 datasciencecluster
 DataScienceCluster
 datasciencepipelines
-datasets
 dcgm
 DCGM
 dcgmExporter

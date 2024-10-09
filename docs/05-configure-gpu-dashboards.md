@@ -8,7 +8,7 @@
 
 ### Rationale
 
-- Customers care about Metrics for utilization and even chargeback for tenants, this provides access to GPU data
+- Customers care about Metrics for utilization and even charge back for tenants, this provides access to GPU data
 
 ### Takeaways
 

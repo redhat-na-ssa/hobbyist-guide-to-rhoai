@@ -21,11 +21,10 @@
     migratedCompleted: "true"
     kind: ConfigMap
     metadata:
+      name: migration-gpu-status
+      namespace: redhat-ods-applications
     ...
-    name: migration-gpu-status
-    namespace: redhat-ods-applications
-    ...
-    ```
+
 
 - Delete the migration-gpu-status ConfigMap
 
