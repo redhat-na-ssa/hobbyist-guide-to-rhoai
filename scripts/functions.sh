@@ -27,7 +27,8 @@ check_git_root(){
 check_script_path(){
   [ -n "${SCRIPT_DIR}" ] && return
 
-  export SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+  SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+  export SCRIPT_DIR
   echo "SCRIPT_DIR: ${SCRIPT_DIR}"
 }
 
