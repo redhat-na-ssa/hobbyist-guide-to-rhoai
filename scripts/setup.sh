@@ -126,7 +126,7 @@ step_0(){
 
 step_1(){
   logbanner "Add administrative user"
-  loinfo "Creating user 'admin'"
+  loginfo "Creating user 'admin'"
 
   if [ -f "${DEFAULT_HTPASSWD}.txt" ]; then
     HT_PASSWORD=$(sed '/admin/ s/# .* - //' "${DEFAULT_HTPASSWD}.txt")
