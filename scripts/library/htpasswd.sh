@@ -72,9 +72,9 @@ htpasswd_validate_user(){
   # cleanup tmp config
   rm "${TMP_CONFIG}"
 
-  echo "
-    Login validated: ${USER}
-  "
+  echo ""
+  echo "Validated Login: ${USER}"
+  echo ""
 }
 
 which age >/dev/null 2>&1 || return 0

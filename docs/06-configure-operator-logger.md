@@ -41,5 +41,5 @@ oc get pods -l name=rhods-operator -o name -n redhat-ods-operator |  xargs -I {}
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/runstep.sh -s 6
+./scripts/setup.sh -s 6
 ```

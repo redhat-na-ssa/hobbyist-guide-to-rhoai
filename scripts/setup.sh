@@ -88,7 +88,6 @@ add_admin_user(){
   htpasswd_validate_user "${HT_USERNAME}" "${HT_PASSWORD}"
 }
 
-
 help() {
   loginfo "This script installs RHOAI and other dependencies"
   loginfo "Usage: $(basename "$0") -s <step-number>"
