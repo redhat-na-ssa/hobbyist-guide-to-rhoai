@@ -22,7 +22,7 @@ git checkout hshishir-25ba6c
 - [ ] Create scratch directory
 
 ```sh
-mkdir scratch
+mkdir -p scratch
 ```
 
 - [ ] Login to the cluster via terminal
