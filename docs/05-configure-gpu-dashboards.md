@@ -44,7 +44,7 @@ curl -Lf https://github.com/NVIDIA/dcgm-exporter/raw/main/grafana/dcgm-exporter-
 - [ ] Check for modifications
 
 ```sh
-diff -u configs/05/nvidia-dcgm-dashboard.json scratch/dcgm-exporter-dashboard.json
+diff -u configs/05/other/nvidia-dcgm-dashboard.json scratch/dcgm-exporter-dashboard.json
 ```
 
 ```sh
