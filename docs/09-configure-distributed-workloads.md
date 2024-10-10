@@ -111,7 +111,7 @@ clusterqueue.kueue.x-k8s.io/cluster-queue created
 
 ```sh
 # go to sandbox
-oc project sandbox
+oc project sandbox || oc new-project sandbox
 
 ## create local queue
 oc apply -f configs/09/rhoai-kueue-local-queue.yaml
