@@ -1,3 +1,4 @@
+---
 apiVersion: datasciencepipelinesapplications.opendatahub.io/v1alpha1
 kind: DataSciencePipelinesApplication
 metadata:
@@ -21,12 +22,16 @@ spec:
     terminateStatus: Cancelled
     trackArtifacts: true
   database:
-    disableHealthCheck: false
-    mariaDB:
-      deploy: true
-      pipelineDBName: mlpipeline
-      pvcSize: 10Gi
-      username: mlpipeline
+    customExtraParams: '{"tls":"false"}'
+    disableHealthChecks: false
+    externalDB:
+      host: mysql.database
+      passwordSecret:
+        key: dbpassword
+        name: dbpassword
+      pipelineDBName: pipelines
+      port: "3306"
+      username: user
   dspVersion: v2
   objectStorage:
     disableHealthCheck: false
@@ -40,8 +45,8 @@ spec:
       s3CredentialsSecret:
         accessKey: AWS_ACCESS_KEY_ID
         secretKey: AWS_SECRET_ACCESS_KEY
-        secretName: dashboard-dspa-secret
-      scheme: https
+        secretName: dspa-secret
+      scheme: http
   persistenceAgent:
     deploy: true
     numWorkers: 2
