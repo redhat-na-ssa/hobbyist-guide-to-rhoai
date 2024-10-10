@@ -12,8 +12,8 @@
 # git clone repo
 git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
 
-# checkout sa-bootcamp branch
-git checkout sa-bootcamp
+# checkout below branch
+git checkout hshishir-25ba6c
 ```
 
 - [ ] Create scratch directory
