@@ -167,12 +167,13 @@ step_4(){
 step_5(){
   logbanner "Configure gpu dashboards"
   retry oc apply -f "${GIT_ROOT}"/configs/05
+  retry oc apply -k "${GIT_ROOT}"/configs/05/console-plugin
 }
 
 step_6(){
   logbanner "Configure gpu sharing method"
   retry oc apply -f "${GIT_ROOT}"/configs/06
-  retry oc apply -k "${GIT_ROOT}"/configs/06/console-plugin
+
 }
 
 step_7(){
