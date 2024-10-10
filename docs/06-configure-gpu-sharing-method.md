@@ -186,18 +186,10 @@ node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal modified
 node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal modified
 ```
 
-- [ ] Edit the `ClusterPolicy` in the NVIDIA GPU Operator under the `nvidia-gpu-operator` project. Add the below section to `.spec.daemonsets:`
+- [ ] Patch the `ClusterPolicy` in the NVIDIA GPU Operator to tolerate the taints that we applied.
 
 ```sh
-oc edit ClusterPolicy
-```
-
-```sh
-daemonsets:
-  tolerations:
-  - effect: NoSchedule
-  operator: Exists
-  key: nvidia.com/gpu
+oc patch clusterpolicy gpu-cluster-policy --type=merge --patch '{"spec":{"daemonsets":{"tolerations":[{"effect":"NoSchedule","operator":"Exists","key":"nvidia.com/gpu"}]}}}'
 ```
 
 - [ ] Cordon the GPU node, drain the GPU tainted nodes and terminate workloads
