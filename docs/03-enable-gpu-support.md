@@ -358,7 +358,7 @@ install-295r6   gpu-operator-certified.v24.6.1   Automatic   true
 - [ ] Create the cluster policy
 
 ```sh
-oc get csv -n nvidia-gpu-operator gpu-operator-certified.v24.6.1 -o jsonpath='{.metadata.annotations.alm-examples}' | jq '.[0]' > scratch/nvidia-gpu-clusterpolicy.json
+oc get csv -n nvidia-gpu-operator -l operators.coreos.com/gpu-operator-certified.nvidia-gpu-operator -ojsonpath='{.items[0].metadata.annotations.alm-examples}' | jq '.[0]' > scratch/nvidia-gpu-clusterpolicy.json
 ```
 
 - [ ] Apply the clusterpolicy
