@@ -41,21 +41,10 @@ curl -Lf https://github.com/NVIDIA/dcgm-exporter/raw/main/grafana/dcgm-exporter-
 100 18114  100 18114    0     0  23496      0 --:--:-- --:--:-- --:--:-- 23496
 ```
 
-- [ ] Check for modifications
-
-```sh
-diff -u configs/05/other/nvidia-dcgm-dashboard.json scratch/dcgm-exporter-dashboard.json
-```
-
-```sh
-# expected output
-<blank>
-```
-
 - [ ] Create a config map from the downloaded file in the openshift-config-managed namespace
 
 ```sh
-oc create -f configs/05/nvidia-dcgm-dashboard-cm.yaml
+oc create configmap -n openshift-config-managed nvidia-dcgm-exporter-dashboard --from-file=nvidia-dcgm-dashboard.json=scratch/dcgm-exporter-dashboard.json
 ```
 
 ```sh
