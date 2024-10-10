@@ -36,6 +36,10 @@ oc adm policy add-role-to-group edit system:serviceaccounts:sandbox -n sandbox
   1. `ACCESS_KEY` = `rootuser`
   1. `SECRET_KEY` = `rootuser123`
   1. `ENDPOINT_URL` = `http://minio.minio:9000`
+
+> [!NOTE]
+> TODO: Add a Gif for this
+
 - [ ] In the JupyterLab interface, click "Git" > "Clone a Repository"
 - [ ] In the "Clone a repo" dialog, enter `https://github.com/redhat-na-ssa/codeflare-sdk`
 - [ ] In the JupyterLab interface, in the left navigation pane, double-click the `codeflare-sdk` folder.
