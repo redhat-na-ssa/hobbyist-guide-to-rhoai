@@ -33,6 +33,9 @@ Now using project "sandbox" on server "https://api.cluster-582gr.582gr.sandbox26
   oc create -f configs/04/nvidia-gpu-sample-app.yaml
 ```
 
+> [!NOTE]
+> You may get a warning about PodSecurity Admission in addition to the notification that it was created, because we're not enforcing and simply auditing for the security violations in this pod. This is fine.
+
 ```sh
 # expected output
 pod/cuda-vectoradd created
