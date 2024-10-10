@@ -104,7 +104,13 @@ Create database
 MYSQL_USER=user
 MYSQL_PASSWORD=user123
 MYSQL_DATABASE=pipelines
-oc new-app -i mysql:8.0-el9 -e MYSQL_DEFAULT_AUTHENTICATION_PLUGIN=mysql_native_password -e MYSQL_DATABASE=$MYSQL_DATABASE -e MYSQL_USER=$MYSQL_USER -e MYSQL_PASSWORD=$MYSQL_PASSWORD
+
+oc new-app \
+  -i mysql:8.0-el9 \
+  -e MYSQL_DEFAULT_AUTHENTICATION_PLUGIN=mysql_native_password \
+  -e MYSQL_DATABASE=$MYSQL_DATABASE \
+  -e MYSQL_USER=$MYSQL_USER \
+  -e MYSQL_PASSWORD=$MYSQL_PASSWORD
 ```
 
 Wait for the database to install
