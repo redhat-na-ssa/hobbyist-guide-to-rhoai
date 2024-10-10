@@ -105,7 +105,7 @@ MYSQL_USER=user
 MYSQL_PASSWORD=user123
 MYSQL_DATABASE=pipelines
 
-oc new-app \
+oc new-app mysql \
   -i mysql:8.0-el9 \
   -e MYSQL_DEFAULT_AUTHENTICATION_PLUGIN=mysql_native_password \
   -e MYSQL_DATABASE=$MYSQL_DATABASE \
