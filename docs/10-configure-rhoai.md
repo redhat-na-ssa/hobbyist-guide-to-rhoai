@@ -135,6 +135,143 @@
 - Data scientists
 - Administrators
 
+#### Pipelines
+
+##### Configure External DB
+
+When a pipeline server is configured for a Data Science Project, a local database using MariaDB is automatically configured for the pipelines. This database is local to the project and not intended for reuse. 
+
+Instead, the best practice is to configure an external SQL database for the pipeline server. Let's configure an external database for pipelines.
+
+Create a new project for the database
+
+```sh
+oc new-project database
+```
+
+Create database
+
+![NOTE]
+The pipeline server's metadata service uses a client that *cannot* handle the default `caching_sha2_password` authentication method in MySQL 8+. You must enable the older `mysql_native_password` authentication method in the MySQL server.
+
+![NOTE]
+Also note that MySQL v9 will not work with Data Science Pipelines because the `mysql_native_password` authentication method has been fully deprecated and removed. See this [blog post](https://blogs.oracle.com/mysql/post/mysql-90-its-time-to-abandon-the-weak-authentication-method) for more details.
+
+```sh
+MYSQL_USER=user
+MYSQL_PASSWORD=user123
+MYSQL_DATABASE=pipelines
+oc new-app -i mysql:8.0-el9 -e MYSQL_DEFAULT_AUTHENTICATION_PLUGIN=mysql_native_password -e MYSQL_DATABASE=$MYSQL_DATABASE -e MYSQL_USER=$MYSQL_USER -e MYSQL_PASSWORD=$MYSQL_PASSWORD
+```
+
+Wait for the database to install
+
+```sh
+oc wait --for=jsonpath='{.status.replicas}'=1 deploy mysql -n database
+```
+
+Object storage is also needed for pipelines. Create a project and set env vars. 
+
+```sh
+oc new-project minio
+MINIO_ROOT_USER=rootuser
+MINIO_ROOT_PASSWORD=rootuser123
+```
+
+Install MinIO helm chart
+
+```sh
+helm repo add minio https://charts.min.io/
+```
+
+Deploy MinIO storage in its own namespace with a bucket for pipelines
+
+```sh
+helm install minio --namespace minio --set replicas=1 --set persistence.enabled=false --set mode=standalone --set rootUser=$MINIO_ROOT_USER,rootPassword=$MINIO_ROOT_PASSWORD --set 'buckets[0].name=pipeline-artifacts,buckets[0].policy=none,buckets[0].purge=false' minio/minio
+```
+
+Create data science projects
+
+```sh
+oc new-project pipeline-test
+oc label ns pipeline-test opendatahub.io/dashboard=true
+```
+
+Create required secrets for pipeline server
+
+```sh
+oc create secret generic dbpassword --from-literal=dbpassword=$MYSQL_PASSWORD -n pipeline-test
+oc create secret generic dspa-secret --from-literal=AWS_ACCESS_KEY_ID=$MINIO_ROOT_USER --from-literal=AWS_SECRET_ACCESS_KEY=$MINIO_ROOT_PASSWORD -n pipeline-test
+```
+
+Create the pipeline server
+
+![NOTE]
+The sample MySQL deployment does not have SSL configured so we need to add a `customExtraParams` field to disable the tls check. For a production MySQL deployment, you can remove this parameter to enable the tls check.
+
+```sh
+cat <<EOF | oc apply -n pipeline-test -f -
+apiVersion: datasciencepipelinesapplications.opendatahub.io/v1alpha1
+kind: DataSciencePipelinesApplication
+metadata:
+  name: dspa
+spec:
+  apiServer:
+    applyTektonCustomResource: true
+    archiveLogs: false
+    autoUpdatePipelineDefaultVersion: true
+    caBundleFileMountPath: ""
+    caBundleFileName: ""
+    collectMetrics: true
+    dbConfigConMaxLifetimeSec: 120
+    deploy: true
+    enableOauth: true
+    enableSamplePipeline: true
+    injectDefaultScript: true
+    stripEOF: true
+    terminateStatus: Cancelled
+    trackArtifacts: true
+  database:
+    customExtraParams: '{"tls":"false"}'
+    disableHealthChecks: false
+    externalDB:
+      host: mysql.database
+      passwordSecret:
+        key: dbpassword
+        name: dbpassword
+      pipelineDBName: pipelines
+      port: "3306"
+      username: user
+  dspVersion: v2
+  objectStorage:
+    disableHealthCheck: false
+    enableExternalRoute: false
+    externalStorage:
+      basePath: ""
+      bucket: pipeline-artifacts
+      host: minio.minio:9000
+      port: ""
+      region: us-east-1
+      s3CredentialsSecret:
+        accessKey: AWS_ACCESS_KEY_ID
+        secretKey: AWS_SECRET_ACCESS_KEY
+        secretName: dspa-secret
+      scheme: http
+  persistenceAgent:
+    deploy: true
+    numWorkers: 2
+  scheduledWorkflow:
+    cronScheduleTimezone: UTC
+    deploy: true
+EOF
+```
+
+The pipeline server was configured with an example pipeline using the parameter `enableSamplePipeline`.
+
+Navigate to RHOAI dashboard -> Data Science Pipelines -> Project `pipeline-test`
+
+You should see the `iris-training` pipeline and be able to execute a pipeline run.
+
 ### Review Backing up data
 
 Refer to [A Guide to High Availability / Disaster Recovery for Applications on OpenShift](https://www.redhat.com/en/blog/a-guide-to-high-availability/disaster-recovery-for-applications-on-openshift)
