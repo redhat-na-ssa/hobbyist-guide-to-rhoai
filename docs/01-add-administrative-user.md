@@ -88,12 +88,7 @@ oc get co authentication -w
 > [!WARNING]
 > Ensure that you wait for the authentication ClusterOperator to become degraded, and then show Available with the "SINCE" column in a period of time related to you applying the OAuth configuration.
 
-```sh
-# expected output
-
-NAME             VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE   MESSAGE
-authentication   4.16.6    True        False         False      0s
-```
+![](/assets/01-add-admin-since-col.png)
 
 - [ ] As kubeadmin, assign the cluster-admin role to perform administrator level tasks
 
