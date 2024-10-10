@@ -19,7 +19,7 @@ oc get node -l nvidia.com/gpu.machine -ojsonpath='{range .items[0].spec.taints[*
 ```
 
 > [!NOTE]
-> If the taint keys do not match, you can either edit the AcceleratorProfile or, if no AcceleratorProfile was present at all you can trigger redection by the RHOAI Console. See the steps [here](/docs/info-regenerate-accelerator-profiles.md) for the procedure to do this.
+> If the taint keys do not match, you can either edit the AcceleratorProfile or, if no AcceleratorProfile was present at all you can trigger regeneration by the RHOAI Console. See the steps [here](/docs/info-regenerate-accelerator-profiles.md) for the procedure to do this.
 
 ### 10.2 Increasing your non-GPU compute capacity
 
@@ -36,8 +36,8 @@ oc get machineset -n openshift-machine-api
 ```sh
 # expected output
 NAME                                        DESIRED   CURRENT   READY   AVAILABLE   AGE
-cluster-qcrdx-dkqx2-gpu-worker-us-east-2a   2         2         2       2           3h52m
-cluster-qcrdx-dkqx2-worker-us-east-2a       0         0                             5h24m
+cluster-xxxxx-xxxxx-gpu-worker-us-east-2a   2         2         2       2           3h52m
+cluster-xxxxx-xxxxx-worker-us-east-2a       0         0                             5h24m
 ```
 
 - [ ] Either copy the name of the non-GPU MachineSet you want to scale, or run the following command if you have the tooling available

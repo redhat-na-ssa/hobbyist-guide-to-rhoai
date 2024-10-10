@@ -1,3 +1,4 @@
+
 acceleratorprofile
 AcceleratorProfile
 acceleratorprofiles
@@ -131,6 +132,7 @@ ECC
 ef
 egrep
 egressgateway
+el
 Elyra
 embeddings
 Enablement
@@ -167,6 +169,7 @@ GCP
 GFD
 Gi
 GiB
+gif
 github
 GitLab
 gitops
@@ -303,6 +306,7 @@ mutatingwebhook
 MutatingWebhookConfiguration
 mv
 mxvx
+mysql
 na
 namespace
 Namespace
@@ -489,6 +493,7 @@ uncordoned
 Uncorr
 unixODBC
 Unmanaged
+untolerated
 url
 Util
 UTIL
