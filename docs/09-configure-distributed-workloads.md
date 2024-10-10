@@ -7,7 +7,7 @@
 ### Rationale
 
 - You can iterate faster and experiment more frequently because of the reduced processing time.
-- You can use larger datasets, which can lead to more accurate models.
+- You can use larger data sets, which can lead to more accurate models.
 - You can use complex models that could not be trained on a single node.
 - You can submit distributed workloads at any time, and the system then schedules the distributed workload when the required resources are available.
 

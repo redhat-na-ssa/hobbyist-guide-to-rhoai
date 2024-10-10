@@ -44,7 +44,7 @@ Overview of the features in Red Hat OpenShift dependencies.
     - Single- or multi-model serving platforms, to deploy stored models.
     - Data science pipelines, to store artifacts, logs, and intermediate results.
   - Object storage can be used by the following components:
-    - Workbenches, to access large datasets.
+    - Workbenches, to access large data sets.
     - Distributed workloads, to pull input data from and push results to.
     - Code executed inside a pipeline. For example, to store the resulting model in object storage.
 
