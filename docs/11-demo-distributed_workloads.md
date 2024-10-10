@@ -49,7 +49,7 @@ oc adm policy add-role-to-group edit system:serviceaccounts:sandbox -n sandbox
   1. `0_basic_ray.ipynb`
   1. `1_cluster_job_client.ipynb`
 
-> [!URGENT]
+> [!IMPORTANT]
 > In 1_cluster_job_client, if your RayCluster does not come ready and hangs, you can check the pods in your Sandbox namespace to see if they are stuck in a `Pending` state due to an untolerated taint. If it does, you'll need to restart the Kueue controller in the `redhat-ods-applications` namespace by deleting the pod.
 
   ```sh
