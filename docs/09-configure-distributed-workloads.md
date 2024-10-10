@@ -102,7 +102,7 @@ clusterqueue.kueue.x-k8s.io/cluster-queue created
 
 > In this example, the kueue.x-k8s.io/default-queue: "true" annotation defines this local queue as the default local queue for the `sandbox` project. If a user submits a distributed workload in the `sandbox` project and that distributed workload does not specify a local queue in the cluster configuration, Kueue automatically routes the distributed workload to the `local-queue-test` local queue. The distributed workload can then access the resources that the cluster-queue cluster queue manages.
 
-> ![NOTE]
+> [!NOTE]
 > Update the `name` and `namespace` accordingly.
 
 ## Steps

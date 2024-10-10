@@ -15,7 +15,8 @@
 - You can [customize the terminal](https://github.com/redhat-na-ssa/demo-ai-gitops-catalog/tree/main/components/operators/web-terminal) with custom tooling and styles
 - You can do the rest of this deployment in the terminal with your new user
 
-> [NOTE] We could not do this sooner as `kubeadmin` is able to install the Web Terminal Operator, however unable to create web terminal instances. [More info](https://github.com/redhat-developer/web-terminal-operator/issues/162).
+> [!NOTE]
+> We could not do this sooner as `kubeadmin` is able to install the Web Terminal Operator, however unable to create web terminal instances. [More info](https://github.com/redhat-developer/web-terminal-operator/issues/162).
 
 ## Steps
 

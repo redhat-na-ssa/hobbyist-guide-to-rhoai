@@ -56,7 +56,8 @@ oc create -f configs/07/servicemesh-subscription.yaml
 subscription.operators.coreos.com/servicemeshoperator created
 ```
 
-> NOTE: For `Unmanaged` configuration details, see the \_APPENDIX.md.
+> [!NOTE]
+> For `Unmanaged` configuration details, see the \_APPENDIX.md.
 
 ## 7.2 Install Red Hat OpenShift Serverless Operator
 

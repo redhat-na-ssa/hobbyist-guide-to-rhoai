@@ -200,7 +200,8 @@ oc patch clusterpolicies.nvidia.com gpu-cluster-policy --patch '{ "spec": { "dcg
 clusterpolicy.nvidia.com/gpu-cluster-policy patched
 ```
 
-> NOTE: You should receive a message on the console "Web console update is available" > Refresh the web console.
+> [!NOTE]
+> You should receive a message on the console "Web console update is available" > Refresh the web console.
 
 > If your gauges are not displaying, you can go to your user (top right menu dropdown) > User Preferences > change your theme to `Light`.
 

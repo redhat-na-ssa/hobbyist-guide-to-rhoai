@@ -28,17 +28,17 @@
 - [ ] Access the RHOAI Dashboard
 - [ ] Access the `sandbox` project
 - [ ] Create a workbench using the `Standard Data Science` notebook and set the following environment variables as Secrets (see [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.13/html/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects) if needed):
-  1.  `ACCESS_KEY` = `rootuser`
-  1.  `SECRET_KEY` = `rootuser123`
-  1.  `ENDPOINT_URL` = `http://minio.minio:9000`
+  1. `ACCESS_KEY` = `rootuser`
+  1. `SECRET_KEY` = `rootuser123`
+  1. `ENDPOINT_URL` = `http://minio.minio:9000`
 - [ ] In the JupyterLab interface, click "Git" > "Clone a Repository"
 - [ ] In the "Clone a repo" dialog, enter `https://github.com/redhat-na-ssa/codeflare-sdk`
 - [ ] In the JupyterLab interface, in the left navigation pane, double-click the `codeflare-sdk` folder.
 - [ ] Double-click the `demo-notebooks` folder.
 - [ ] Double-click the `guided-demos` folder.
 - [ ] Execute the notebooks in order:
-  1.  `0_basic_ray.ipynb`
-  1.  `1_cluster_job_client.ipynb`
+  1. `0_basic_ray.ipynb`
+  1. `1_cluster_job_client.ipynb`
 
 > Note: To run `2_basic_interactive.ipynb`, follow below additional steps
 
@@ -62,5 +62,6 @@ helm repo add minio https://charts.min.io/
 helm install minio --namespace minio --set replicas=1 --set persistence.enabled=false --set mode=standalone --set rootUser=$MINIO_ROOT_USER,rootPassword=$MINIO_ROOT_PASSWORD --set 'buckets[0].name=distributed-demo,buckets[0].policy=none,buckets[0].purge=false' minio/minio
 ```
 
-> NOTE: You may have to pip install the codeflare_sdk if not provided with the Notebook Image.
+> [!NOTE]
+> You may have to pip install the codeflare_sdk if not provided with the Notebook Image.
 > `!pip install codeflare_sdk -q`

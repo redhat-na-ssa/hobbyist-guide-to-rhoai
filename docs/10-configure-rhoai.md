@@ -128,6 +128,7 @@
   - ```sh
       oc apply -f configs/10/rhoai-add-serving-runtime-template.yaml -n redhat-ods-applications
     ```
+
   - Add and confirm the runtime can be selected in a Data Science Project
 
 #### User Management
@@ -151,11 +152,11 @@ oc new-project database
 
 Create database
 
-![NOTE]
-The pipeline server's metadata service uses a client that _cannot_ handle the default `caching_sha2_password` authentication method in MySQL 8+. You must enable the older `mysql_native_password` authentication method in the MySQL server.
+> [!NOTE]
+> The pipeline server's metadata service uses a client that _cannot_ handle the default `caching_sha2_password` authentication method in MySQL 8+. You must enable the older `mysql_native_password` authentication method in the MySQL server.
 
-![NOTE]
-Also note that MySQL v9 will not work with Data Science Pipelines because the `mysql_native_password` authentication method has been fully deprecated and removed. See this [blog post](https://blogs.oracle.com/mysql/post/mysql-90-its-time-to-abandon-the-weak-authentication-method) for more details.
+  [!NOTE]
+> Also note that MySQL v9 will not work with Data Science Pipelines because the `mysql_native_password` authentication method has been fully deprecated and removed. See this [blog post](https://blogs.oracle.com/mysql/post/mysql-90-its-time-to-abandon-the-weak-authentication-method) for more details.
 
 ```sh
 MYSQL_USER=user
@@ -206,8 +207,8 @@ oc create secret generic dspa-secret --from-literal=AWS_ACCESS_KEY_ID=$MINIO_ROO
 
 Create the pipeline server
 
-![NOTE]
-The sample MySQL deployment does not have SSL configured so we need to add a `customExtraParams` field to disable the tls check. For a production MySQL deployment, you can remove this parameter to enable the tls check.
+> [!NOTE]
+> The sample MySQL deployment does not have SSL configured so we need to add a `customExtraParams` field to disable the tls check. For a production MySQL deployment, you can remove this parameter to enable the tls check.
 
 ```sh
 cat <<EOF | oc apply -n pipeline-test -f -
@@ -289,6 +290,7 @@ However, OADP does not serve as a disaster recovery solution for [etcd](https://
 ## Automation key (Catch up)
 
 - From this repository's root directory, run below command
+
   - ```sh
       ./scripts/setup.sh -s 10
     ```
