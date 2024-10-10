@@ -196,7 +196,13 @@ oc create -f configs/08/rhoai-operator-dsc.yaml
 datasciencecluster.datasciencecluster.opendatahub.io/default-dsc created
 ```
 
-- [ ] Verify DSC object creation
+- [ ] Wait for the DSC to show Ready
+
+```sh
+echo -n 'Progressing'; while [ "$(oc get datasciencecluster default-dsc -ojsonpath='{.status.phase}' 2>/dev/null)" != "Ready" ]; do sleep 1; echo -n '.'; done; echo; echo Ready
+```
+
+- [ ] Verify DSC and related object creation
 
 ```sh
 oc get DSCInitialization,FeatureTracker -n redhat-ods-operator
