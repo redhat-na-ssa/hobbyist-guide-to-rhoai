@@ -39,26 +39,26 @@ Adding password for user <username>
 - [ ] Create a secret to represent the htpasswd file
 
 ```sh
-oc create secret generic htpasswd-secret --from-file=htpasswd=scratch/users.htpasswd -n openshift-config
+oc create secret generic htpasswd-local --from-file=htpasswd=scratch/users.htpasswd -n openshift-config
 ```
 
 ```sh
 # expected output
 
-secret/htpasswd-secret created
+secret/htpasswd-local created
 ```
 
-- [ ] Verify you created a `secret/htpasswd-secret` object in `openshift-config` project
+- [ ] Verify you created a `secret/htpasswd-local` object in `openshift-config` project
 
 ```sh
-oc get secret/htpasswd-secret -n openshift-config
+oc get secret/htpasswd-local -n openshift-config
 ```
 
 ```sh
 # expected output
 
 NAME              TYPE     DATA   AGE
-htpasswd-secret   Opaque   1      4m46s
+htpasswd-local   Opaque   1      4m46s
 ```
 
 - [ ] Apply the resource to the default OAuth configuration to add the identity provider
