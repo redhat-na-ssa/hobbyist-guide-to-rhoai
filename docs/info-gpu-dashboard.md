@@ -155,3 +155,11 @@ namespace: nvidia-gpu-operator
 ```sh
 oc -n nvidia-gpu-operator get all -l app.kubernetes.io/name=console-plugin-nvidia-gpu
 ```
+
+## Automation key (Catch up)
+
+- [ ] From this repository's root directory, run below command
+
+```sh
+oc apply -k configs/05/console-plugin
+```
