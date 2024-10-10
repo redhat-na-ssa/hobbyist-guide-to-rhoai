@@ -122,60 +122,7 @@ Create the pipeline server
 > The sample MySQL deployment does not have SSL configured so we need to add a `customExtraParams` field to disable the tls check. For a production MySQL deployment, you can remove this parameter to enable the tls check.
 
 ```sh
-cat <<EOF | oc apply -n pipeline-test -f -
-apiVersion: datasciencepipelinesapplications.opendatahub.io/v1alpha1
-kind: DataSciencePipelinesApplication
-metadata:
-  name: dspa
-spec:
-  apiServer:
-    applyTektonCustomResource: true
-    archiveLogs: false
-    autoUpdatePipelineDefaultVersion: true
-    caBundleFileMountPath: ""
-    caBundleFileName: ""
-    collectMetrics: true
-    dbConfigConMaxLifetimeSec: 120
-    deploy: true
-    enableOauth: true
-    enableSamplePipeline: true
-    injectDefaultScript: true
-    stripEOF: true
-    terminateStatus: Cancelled
-    trackArtifacts: true
-  database:
-    customExtraParams: '{"tls":"false"}'
-    disableHealthChecks: false
-    externalDB:
-      host: mysql.database
-      passwordSecret:
-        key: dbpassword
-        name: dbpassword
-      pipelineDBName: pipelines
-      port: "3306"
-      username: user
-  dspVersion: v2
-  objectStorage:
-    disableHealthCheck: false
-    enableExternalRoute: false
-    externalStorage:
-      basePath: ""
-      bucket: pipeline-artifacts
-      host: minio.minio:9000
-      port: ""
-      region: us-east-1
-      s3CredentialsSecret:
-        accessKey: AWS_ACCESS_KEY_ID
-        secretKey: AWS_SECRET_ACCESS_KEY
-        secretName: dspa-secret
-      scheme: http
-  persistenceAgent:
-    deploy: true
-    numWorkers: 2
-  scheduledWorkflow:
-    cronScheduleTimezone: UTC
-    deploy: true
-EOF
+oc apply -f configs/10/rhoa-test-pipeline-server.yaml
 ```
 
 The pipeline server was configured with an example pipeline using the parameter `enableSamplePipeline`.
