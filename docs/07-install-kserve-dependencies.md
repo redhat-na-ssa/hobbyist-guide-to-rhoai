@@ -34,6 +34,9 @@
 
 ## Steps
 
+> [!WARNING]
+> Do not create the ServiceMeshControlPlane object, as you would if interactively installing OpenShift Service Mesh in the web console.
+
 - [ ] Create the required namespace for Red Hat OpenShift Service Mesh.
 
 ```sh
@@ -75,6 +78,9 @@ subscription.operators.coreos.com/servicemeshoperator created
 
 ## Steps
 
+> [!WARNING]
+> Do not create the KnativeServing object, as you would if interactively installing OpenShift Serverless in the web console.
+
 - [ ] Create the Serverless Operator objects
 
 ```sh
@@ -107,6 +113,9 @@ subscription.operators.coreos.com/serverless-operator created
 - Good [FAQs](https://github.com/kuadrant/authorino?tab=readme-ov-file#faq) section
 
 ## Steps
+
+> [!WARNING]
+> Do not create the Authorino object, as you would if interactively installing Authorino in the web console.
 
 - [ ] Create the Authorino subscription
 
