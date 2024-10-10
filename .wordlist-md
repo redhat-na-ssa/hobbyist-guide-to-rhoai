@@ -50,6 +50,7 @@ chmod
 CLI
 clp
 ClusterIP
+ClusterOperator
 clusterpolicies
 clusterpolicy
 ClusterPolicy
@@ -362,6 +363,7 @@ PID
 Pipfile
 PKGS
 PoC
+PodSecurity
 pre
 prebuilt
 Prem
