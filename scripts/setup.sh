@@ -39,6 +39,7 @@ get_script_path
 ################# standard init #################
 
 DEFAULT_HTPASSWD=scratch/htpasswd-local
+DEFAULT_ADMIN_PASS=scratch/password.txt
 
 check_cluster_version(){
   OCP_VERSION=$(oc version | sed -n '/Server Version: / s/Server Version: //p')
@@ -82,6 +83,8 @@ add_admin_user(){
 
   HT_USERNAME=${1:-${DEFAULT_USER}}
   HT_PASSWORD=${2:-${DEFAULT_PASS}}
+
+  echo "${HT_PASSWORD}" > "${DEFAULT_ADMIN_PASS}"
 
   htpasswd_ocp_get_file
   htpasswd_add_user "${HT_USERNAME}" "${HT_PASSWORD}"
@@ -128,12 +131,12 @@ step_1(){
   logbanner "Add administrative user"
   loginfo "Creating user 'admin'"
 
-  if [ -f "${DEFAULT_HTPASSWD}.txt" ]; then
-    HT_PASSWORD=$(sed '/admin/ s/# .* - //' "${DEFAULT_HTPASSWD}.txt")
+  if [ -f "${DEFAULT_ADMIN_PASS}" ]; then
+    HT_PASSWORD=$(cat "${DEFAULT_ADMIN_PASS}")
     
     htpasswd_validate_user "${HT_USERNAME}" "${HT_PASSWORD}"
 
-    echo "Delete ${DEFAULT_HTPASSWD}.txt to recreate password
+    echo "Delete ${DEFAULT_ADMIN_PASS} to recreate password
     "
     return
   else
