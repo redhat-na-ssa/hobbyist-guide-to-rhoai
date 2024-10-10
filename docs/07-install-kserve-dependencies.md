@@ -37,17 +37,6 @@
 > [!WARNING]
 > Do not create the ServiceMeshControlPlane object, as you would if interactively installing OpenShift Service Mesh in the web console.
 
-- [ ] Create the required namespace for Red Hat OpenShift Service Mesh.
-
-```sh
-oc create ns istio-system
-```
-
-```sh
-# expected output
-namespace/istio-system created
-```
-
 Apply the Service Mesh subscription to install the operator
 
 ```sh
