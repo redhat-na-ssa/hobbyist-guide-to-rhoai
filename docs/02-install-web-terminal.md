@@ -23,6 +23,10 @@
 
 ```sh
 oc apply -f configs/02/web-terminal-subscription.yaml
+
+# The CRDs may take a few minutes to get setup by the operator
+# Re-run the following command until it completes successfully
+oc apply -f configs/02/web-terminal-tooling.yaml
 ```
 
 > From the OCP Web Console, Refresh the browser and click the `>_` icon in the top right of the window. This can serve as your browser based CLI.
