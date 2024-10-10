@@ -19,7 +19,7 @@ oc get node -l nvidia.com/gpu.machine -ojsonpath='{range .items[0].spec.taints[*
 ```
 
 > [!NOTE]
-> If the taint keys do not match, you can either edit the AcceleratorProfile or, if no AcceleratorProfile was present at all you can trigger redection by the RHOAI Console. See the steps [here](docs/info-regenerate-accelerator-profiles.md) for the procedure to do this.
+> If the taint keys do not match, you can either edit the AcceleratorProfile or, if no AcceleratorProfile was present at all you can trigger redection by the RHOAI Console. See the steps [here](/docs/info-regenerate-accelerator-profiles.md) for the procedure to do this.
 
 ### 10.2 Add serving runtime
 
