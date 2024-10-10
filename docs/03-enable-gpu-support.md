@@ -181,7 +181,7 @@ subscription.operators.coreos.com/nfd created
 - [ ] Verify the operator is installed and running
 
 ```sh
-# watch the pods create in the new project
+# watch the pods get created in the new project
 oc get pods -n openshift-nfd -w
 ```
 
