@@ -19,7 +19,8 @@ Your cluster must have at least **2 worker nodes with at least 8 CPUs and 32 GiB
 
 ### Get cluster URL and admin username and password
 
-- After cluster is provisioned, go to **Services** page on redhat demo site
+- After cluster is provisioned, go to **Services** page on Red Hat demo platform page that shows your service information
+- **OPTIONAL**: It may make sense to SSH into the bastion host specified here, before working with the username and password for the cluster, if you're unable to manage or install command line tools in your environment.
 - Get
 
 ![](/assets/oc-url-user.png)

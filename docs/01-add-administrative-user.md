@@ -43,9 +43,9 @@ oc create secret generic htpasswd-secret --from-file=htpasswd=scratch/users.htpa
 ```
 
 ```sh
-  # expected output
+# expected output
 
-  secret/htpasswd-secret created
+secret/htpasswd-secret created
 ```
 
 - [ ] Verify you created a `secret/htpasswd-secret` object in `openshift-config` project
@@ -64,7 +64,7 @@ htpasswd-secret   Opaque   1      4m46s
 - [ ] Apply the resource to the default OAuth configuration to add the identity provider
 
 ```sh
-  oc apply -f configs/01/htpasswd-cr.yaml
+oc apply -f configs/01/htpasswd-cr.yaml
 ```
 
 ```sh
@@ -85,8 +85,10 @@ oc get oauth/cluster -o yaml
 oc get co authentication -w
 ```
 
+> [!WARNING]
+> Ensure that you wait for the authentication ClusterOperator to become degraded, and then show Available with the "SINCE" column in a period of time related to you applying the OAuth configuration.
+
 ```sh
-# wait until you see the co refresh to `0s`
 # expected output
 
 NAME             VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE   MESSAGE
@@ -111,13 +113,15 @@ clusterrole.rbac.authorization.k8s.io/cluster-admin added: "<username>"
 oc cluster-info
 ```
 
-> NOTE: You may need to add the parameter `--insecure-skip-tls-verify=true` if your clusters api endpoint does not have a trusted cert.
+> [!NOTE]
+> You may need to add the parameter `--insecure-skip-tls-verify=true` if your clusters api endpoint does not have a trusted cert.
 
 ```sh
 oc login https://api.cluster-<id>.<id>.sandbox.opentlc.com:6443 --insecure-skip-tls-verify=true -u <username> -p <password>
 ```
 
-> NOTE: The remainder of the procedure should be completed with the new cluster-admin `<username>`.
+> [!NOTE]
+> The remainder of the procedure should be completed with the new cluster-admin `<username>`.
 
 ## Validation
 

@@ -29,7 +29,8 @@ Before you install RHOAI, it is important to understand how it's dependencies wi
 | `HabanaAI Operator`                             | if Intel Gaudi accelerators exist                                   |
 | `AMD GPU Operator`                              | if AMD accelerators exist                                           |
 
-> NOTE: `NFD` and `KMM` operators exists with other patterns, these are the most common.  
+> [!NOTE]
+> `NFD` and `KMM` operators exists with other patterns, these are the most common.  
 > [More Info](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/Install-and-deploying-openshift-ai_install#Install-the-openshift-data-science-operator_operator-install)
 
 ## Steps

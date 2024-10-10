@@ -181,7 +181,7 @@ subscription.operators.coreos.com/nfd created
 - [ ] Verify the operator is installed and running
 
 ```sh
-# watch the pods create in the new project
+# watch the pods get created in the new project
 oc get pods -n openshift-nfd -w
 ```
 
@@ -330,37 +330,6 @@ oc apply -f configs/03/nvidia-gpu-operator-group.yaml
 operatorgroup.operators.coreos.com/nvidia-gpu-operator-group created
 ```
 
-- [ ] Run the following command to get the channel value
-
-```sh
-# set channel value
-CHANNEL=$(oc get packagemanifest gpu-operator-certified -n openshift-marketplace -o jsonpath='{.status.defaultChannel}')
-```
-
-```sh
-# echo the channel
-echo $CHANNEL
-```
-
-```sh
-# expected output
-v24.6
-```
-
-- [ ] Run the following commands to get the startingCSV
-
-```sh
-# run the command to get the startingCSV
-oc get packagemanifests/gpu-operator-certified -n openshift-marketplace -ojson | jq -r '.status.channels[] | select(.name == "'$CHANNEL'") | .currentCSV'
-```
-
-```sh
-# expected output
-gpu-operator-certified.v24.6.1
-```
-
-- [ ] Update the `channel` and `startingCSV` fields in `nvidia-gpu-operator-subscription.yaml` with the information returned.
-
 - [ ] Apply the Subscription CR
 
 ```sh
@@ -386,16 +355,10 @@ NAME            CSV                              APPROVAL    APPROVED
 install-295r6   gpu-operator-certified.v24.6.1   Automatic   true
 ```
 
-- [ ] (Optional) Approve the install plan if not `Automatic`
-
-```sh
-INSTALL_PLAN=$(oc get installplan -n nvidia-gpu-operator -oname)
-```
-
 - [ ] Create the cluster policy
 
 ```sh
-oc get csv -n nvidia-gpu-operator gpu-operator-certified.v24.6.1 -o jsonpath='{.metadata.annotations.alm-examples}' | jq '.[0]' > scratch/nvidia-gpu-clusterpolicy.json
+oc get csv -n nvidia-gpu-operator -l operators.coreos.com/gpu-operator-certified.nvidia-gpu-operator -ojsonpath='{.items[0].metadata.annotations.alm-examples}' | jq '.[0]' > scratch/nvidia-gpu-clusterpolicy.json
 ```
 
 - [ ] Apply the clusterpolicy

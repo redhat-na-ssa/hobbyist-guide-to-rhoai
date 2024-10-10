@@ -19,7 +19,7 @@
 - [ ] Create a test project
 
 ```sh
-  oc new-project sandbox
+oc new-project sandbox
 ```
 
 ```sh
@@ -30,8 +30,11 @@ Now using project "sandbox" on server "https://api.cluster-582gr.582gr.sandbox26
 - [ ] Create the sample app
 
 ```sh
-  oc create -f configs/04/nvidia-gpu-sample-app.yaml
+oc create -f configs/04/nvidia-gpu-sample-app.yaml
 ```
+
+> [!NOTE]
+> You may get a warning about PodSecurity Admission in addition to the notification that it was created, because we're not enforcing and simply auditing for the security violations in this pod. This is fine.
 
 ```sh
 # expected output
@@ -41,7 +44,7 @@ pod/cuda-vectoradd created
 - [ ] Check the logs of the container
 
 ```sh
-  oc logs cuda-vectoradd
+oc logs cuda-vectoradd
 ```
 
 ```sh
@@ -57,12 +60,11 @@ Done
 - [ ] Get the sample app pods
 
 ```sh
-  oc get pods
+oc get pods
 ```
 
 ```sh
 # expected output
-oc get pods
 NAME             READY   STATUS      RESTARTS   AGE
 cuda-vectoradd   0/1     Completed   0          54s
 ```
@@ -70,7 +72,7 @@ cuda-vectoradd   0/1     Completed   0          54s
 - [ ] View the new pods
 
 ```sh
-  oc get pod -o wide -l openshift.driver-toolkit=true -n nvidia-gpu-operator
+oc get pod -o wide -l openshift.driver-toolkit=true -n nvidia-gpu-operator
 ```
 
 ```sh
@@ -83,7 +85,7 @@ nvidia-driver-daemonset-415.92.202407091355-0-clp7f   2/2     Running   2       
 - [ ] With the Pod and node name, run the nvidia-smi on the correct node.
 
 ```sh
-  oc exec -it nvidia-driver-daemonset-410.84.202203290245-0-xxgdv -- nvidia-smi
+oc exec -it nvidia-driver-daemonset-410.84.202203290245-0-xxgdv -- nvidia-smi
 ```
 
 ```sh
@@ -118,5 +120,5 @@ Fri Jul 26 20:06:33 2024
 - [ ] From this repository's root directory, run below command
 
 ```sh
-  ./scripts/setup.sh -s 4
+./scripts/setup.sh -s 4
 ```

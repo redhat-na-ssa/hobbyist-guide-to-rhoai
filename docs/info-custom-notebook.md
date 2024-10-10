@@ -2,8 +2,8 @@
 
 It is possible to take an existing supported RHOAI notebook image and add OS and Python packages. By launching a custom notebook image, users don't have to download custom packages every time they launch a notebook.
 
-![NOTE]
-Red Hat supports the base notebook image, whereas the additional packages are the customer's responsibility.
+> [!NOTE]
+> Red Hat supports the base notebook image, whereas the additional packages are the customer's responsibility.
 
 In this example, we'll take the existing RHOAI `Minimal Python` notebook image and add OS and Python packages for ODBC database connections.
 

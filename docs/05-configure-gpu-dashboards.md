@@ -30,7 +30,7 @@
 - [ ] Download the latest NVIDIA DCGM Exporter Dashboard from the DCGM Exporter repository on GitHub:
 
 ```sh
-  curl -Lf https://github.com/NVIDIA/dcgm-exporter/raw/main/grafana/dcgm-exporter-dashboard.json -o scratch/dcgm-exporter-dashboard.json
+curl -Lf https://github.com/NVIDIA/dcgm-exporter/raw/main/grafana/dcgm-exporter-dashboard.json -o scratch/dcgm-exporter-dashboard.json
 ```
 
 ```sh
@@ -41,21 +41,10 @@
 100 18114  100 18114    0     0  23496      0 --:--:-- --:--:-- --:--:-- 23496
 ```
 
-- [ ] Check for modifications
-
-```sh
-  diff -u configs/05/nvidia-dcgm-dashboard.json scratch/dcgm-exporter-dashboard.json
-```
-
-```sh
-# expected output
-<blank>
-```
-
 - [ ] Create a config map from the downloaded file in the openshift-config-managed namespace
 
 ```sh
-oc create -f configs/05/nvidia-dcgm-dashboard-cm.yaml
+oc create configmap -n openshift-config-managed nvidia-dcgm-exporter-dashboard --from-file=nvidia-dcgm-dashboard.json=scratch/dcgm-exporter-dashboard.json
 ```
 
 ```sh
@@ -97,7 +86,10 @@ NAME                             DATA   AGE     LABELS
 nvidia-dcgm-exporter-dashboard   1      3m28s   console.openshift.io/dashboard=true,console.openshift.io/odc-dashboard=true
 ```
 
-> View the NVIDIA DCGM Exporter Dashboard from the OCP UI from Administrator and Developer
+- [ ] View the NVIDIA DCGM Exporter Dashboard from the OCP UI from Administrator and Developer
+
+> [!TODO]
+> We need to insert a picture here
 
 ## 5.2 Install the NVIDIA GPU administration dashboard
 
@@ -200,7 +192,8 @@ oc patch clusterpolicies.nvidia.com gpu-cluster-policy --patch '{ "spec": { "dcg
 clusterpolicy.nvidia.com/gpu-cluster-policy patched
 ```
 
-> NOTE: You should receive a message on the console "Web console update is available" > Refresh the web console.
+> [!NOTE]
+> You should receive a message on the console "Web console update is available" > Refresh the web console.
 
 > If your gauges are not displaying, you can go to your user (top right menu dropdown) > User Preferences > change your theme to `Light`.
 
@@ -208,7 +201,8 @@ clusterpolicy.nvidia.com/gpu-cluster-policy patched
 
 - [ ] Go to Compute > GPUs
 
-  > Notice the `Telsa T4 Single-Instance` at the top of the screen. This GPU is NOT shareable (i.e. sliced, partitioned, fractioned) yet. As Manfred Manns lyrics go, be ready to be `Blinded by the light`.
+> [!NOTE]
+> Notice the `Telsa T4 Single-Instance` at the top of the screen. This GPU is NOT shareable (i.e. sliced, partitioned, fractioned) yet. As Manfred Manns lyrics go, be ready to be `Blinded by the light`.
 
 ```sh
 oc get cm console-plugin-nvidia-gpu -n nvidia-gpu-operator -o yaml
