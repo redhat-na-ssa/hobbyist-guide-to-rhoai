@@ -123,31 +123,34 @@ oc describe DSCInitialization -n redhat-ods-operator
 ```
 
 ```yaml
-# expected output
----
-apiVersion: dscinitialization.opendatahub.io/v1
-kind: DSCInitialization
-metadata:
-finalizers:
-- dscinitialization.opendatahub.io/finalizer
-name: default-dsci
-spec:
-applicationsNamespace: redhat-ods-applications
-monitoring:
-managementState: Managed
-namespace: redhat-ods-monitoring
-serviceMesh:
-auth:
-audiences:
-  - "https://kubernetes.default"
-controlPlane:
-metricsCollection: Istio
-name: data-science-smcp
-namespace: istio-system
-managementState: Managed
-trustedCABundle:
-customCABundle: ""
-managementState: Managed
+Name:         default-dsci
+Namespace:    
+Labels:       <none>
+Annotations:  <none>
+API Version:  dscinitialization.opendatahub.io/v1
+Kind:         DSCInitialization
+Metadata:
+  Creation Timestamp:  2024-10-10T18:03:16Z
+  Generation:          1
+  Resource Version:    682898
+  UID:                 2a74b85d-34ca-4c56-90c5-b56d5e31d380
+Spec:
+  Applications Namespace:  redhat-ods-applications
+  Monitoring:
+    Management State:  Managed
+    Namespace:         redhat-ods-monitoring
+  Service Mesh:
+    Auth:
+      Audiences:
+        https://kubernetes.default.svc
+    Control Plane:
+      Metrics Collection:  Istio
+      Name:                minimal
+      Namespace:           istio-system
+    Management State:      Unmanaged
+  Trusted CA Bundle:
+    Custom CA Bundle:  
+    Management State:  Managed
 ```
 
 ## 8.1 Install RHOAI components
