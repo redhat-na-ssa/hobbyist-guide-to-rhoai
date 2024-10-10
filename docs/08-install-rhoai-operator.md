@@ -124,16 +124,8 @@ oc describe DSCInitialization -n redhat-ods-operator
 
 ```yaml
 Name:         default-dsci
-Namespace:    
-Labels:       <none>
-Annotations:  <none>
 API Version:  dscinitialization.opendatahub.io/v1
 Kind:         DSCInitialization
-Metadata:
-  Creation Timestamp:  2024-10-10T18:03:16Z
-  Generation:          1
-  Resource Version:    682898
-  UID:                 2a74b85d-34ca-4c56-90c5-b56d5e31d380
 Spec:
   Applications Namespace:  redhat-ods-applications
   Monitoring:
@@ -145,7 +137,7 @@ Spec:
         https://kubernetes.default.svc
     Control Plane:
       Metrics Collection:  Istio
-      Name:                minimal
+      Name:                data-science-smcp
       Namespace:           istio-system
     Management State:      Unmanaged
   Trusted CA Bundle:

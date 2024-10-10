@@ -207,7 +207,7 @@ workshop_uninstall(){
   oc delete dscinitialization default-dsci
   oc -n istio-system delete --all servicemeshmemberrolls.maistra.io
   oc -n istio-system delete --all servicemeshcontrolplanes.maistra.io
-  oc -A delete --all servicemeshmembers.maistra.io
+  oc delete --all -A servicemeshmembers.maistra.io
   oc -n knative-serving delete knativeservings.operator.knative.dev knative-serving
 
   oc delete csv -A -l operators.coreos.com/authorino-operator.openshift-operators
