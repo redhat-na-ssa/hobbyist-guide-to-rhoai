@@ -18,7 +18,7 @@
     # expected output
     apiVersion: v1
     data:
-    migratedCompleted: "true"
+      migratedCompleted: "true"
     kind: ConfigMap
     metadata:
       name: migration-gpu-status
