@@ -15,7 +15,7 @@ spec:
     dbConfigConMaxLifetimeSec: 120
     deploy: true
     enableOauth: true
-    enableSamplePipeline: false
+    enableSamplePipeline: true
     injectDefaultScript: true
     stripEOF: true
     terminateStatus: Cancelled
@@ -33,8 +33,8 @@ spec:
     enableExternalRoute: false
     externalStorage:
       basePath: ""
-      bucket: asdfsdaf
-      host: asdfasdf
+      bucket: pipeline-artifacts
+      host: minio.minio:9000
       port: ""
       region: us-east-1
       s3CredentialsSecret:
