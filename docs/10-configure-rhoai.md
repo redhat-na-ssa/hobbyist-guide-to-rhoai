@@ -136,7 +136,15 @@ helm repo add minio https://charts.min.io/
 Deploy MinIO storage in its own namespace with a bucket for pipelines
 
 ```sh
-helm install minio --namespace minio --create-namespace --set replicas=1 --set persistence.enabled=false --set mode=standalone --set rootUser=$MINIO_ROOT_USER,rootPassword=$MINIO_ROOT_PASSWORD --set 'buckets[0].name=pipeline-artifacts,buckets[0].policy=none,buckets[0].purge=false' minio/minio
+helm install minio \
+  --namespace minio \
+  --create-namespace \
+  --set replicas=1 \
+  --set persistence.enabled=false \
+  --set mode=standalone \
+  --set rootUser=$MINIO_ROOT_USER,rootPassword=$MINIO_ROOT_PASSWORD \
+  --set 'buckets[0].name=pipeline-artifacts,buckets[0].policy=none,buckets[0].purge=false' \
+  minio/minio
 ```
 
 Create data science projects
