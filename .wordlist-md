@@ -23,6 +23,7 @@ autoscaler
 autoscaling
 awk
 aws
+ba
 backend
 balancers
 bb
@@ -30,7 +31,6 @@ bbc
 bbff
 bc
 bd
-ba
 bdhps
 bfcd
 bootcamp
@@ -71,6 +71,7 @@ coreos
 cpu
 CPUs
 CRB
+CRDs
 creationTimestamp
 credentialName
 Cron
