@@ -122,13 +122,13 @@ oc get node --selector=nvidia.com/gpu.product=Tesla-T4-SHARED -o json | jq '.ite
 ```sh
 # expected output
 {
-"cpu": "16",
-"ephemeral-storage": "104266732Ki",
-"hugepages-1Gi": "0",
-"hugepages-2Mi": "0",
-"memory": "65029276Ki",
-"nvidia.com/gpu": "8",
-"pods": "250"
+  "cpu": "16",
+  "ephemeral-storage": "104266732Ki",
+  "hugepages-1Gi": "0",
+  "hugepages-2Mi": "0",
+  "memory": "65026144Ki",
+  "nvidia.com/gpu": "8",
+  "pods": "250"
 }
 ```
 
