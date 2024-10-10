@@ -85,8 +85,10 @@ oc get oauth/cluster -o yaml
 oc get co authentication -w
 ```
 
+> [!WARNING]
+> Ensure that you wait for the authentication ClusterOperator to become degraded, and then show Available with the "SINCE" column in a period of time related to you applying the OAuth configuration.
+
 ```sh
-# wait until you see the co refresh to `0s`
 # expected output
 
 NAME             VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE   MESSAGE
