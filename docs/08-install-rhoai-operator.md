@@ -198,6 +198,9 @@ datasciencecluster.datasciencecluster.opendatahub.io/default-dsc created
 
 - [ ] Wait for the DSC to show Ready
 
+> [!NOTE]
+> This may take up to around ten minutes.
+
 ```sh
 echo -n 'Progressing'; while [ "$(oc get datasciencecluster default-dsc -ojsonpath='{.status.phase}' 2>/dev/null)" != "Ready" ]; do sleep 1; echo -n '.'; done; echo; echo Ready
 ```
