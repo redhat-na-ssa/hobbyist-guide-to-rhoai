@@ -135,7 +135,6 @@ step_1(){
 
     echo "Delete ${DEFAULT_HTPASSWD}.txt to recreate password
     "
-
     return
   else
     retry oc apply -f "${GIT_ROOT}"/configs/01
@@ -151,11 +150,12 @@ step_2(){
 
 step_3(){
   logbanner "Enable gpu support"
-  loginfo "Create a GPU node with autoscaling"
-  ocp_aws_cluster_autoscaling
+  loginfo "Create a GPU machineset"
+  ocp_aws_create_gpu_machineset
+  # ocp_aws_cluster_autoscaling
   ocp_aws_taint_gpu_machineset
   ocp_scale_machineset
-  ocp_control_nodes_not_schedulable
+  # ocp_control_nodes_not_schedulable
   retry oc apply -f "${GIT_ROOT}"/configs/03
 }
 
@@ -209,6 +209,7 @@ workshop_uninstall(){
   oc -n istio-system delete --all servicemeshcontrolplanes.maistra.io
   oc delete --all -A servicemeshmembers.maistra.io
   oc -n knative-serving delete knativeservings.operator.knative.dev knative-serving
+  oc delete consoleplugin console-plugin-nvidia-gpu
 
   oc delete csv -A -l operators.coreos.com/authorino-operator.openshift-operators
   oc delete csv -A -l operators.coreos.com/devworkspace-operator.openshift-operators
