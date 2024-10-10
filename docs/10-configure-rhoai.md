@@ -62,7 +62,7 @@ oc scale machineset --replicas=1 -n openshift-machine-api $machineset
 
   - Select `Multi-model serving`
   - Select `Start from scratch`
-  - Review, Copy and Paste in the content from `configs/10/rhoai-add-serving-runtime.yaml`
+  - Review, Copy and Paste in the content from `configs/10/other/rhoai-add-serving-runtime.yaml`
   - Add and confirm the runtime can be selected in a Data Science Project
 
   **Option 2**:
