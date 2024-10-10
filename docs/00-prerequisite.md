@@ -12,6 +12,9 @@
 # git clone repo
 git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
 
+# change into the repo directory
+cd hobbyist-guide-to-rhoai
+
 # checkout below branch
 git checkout hshishir-25ba6c
 ```
