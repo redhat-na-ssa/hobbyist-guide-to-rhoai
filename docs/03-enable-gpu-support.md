@@ -330,37 +330,6 @@ oc apply -f configs/03/nvidia-gpu-operator-group.yaml
 operatorgroup.operators.coreos.com/nvidia-gpu-operator-group created
 ```
 
-- [ ] Run the following command to get the channel value
-
-```sh
-# set channel value
-CHANNEL=$(oc get packagemanifest gpu-operator-certified -n openshift-marketplace -o jsonpath='{.status.defaultChannel}')
-```
-
-```sh
-# echo the channel
-echo $CHANNEL
-```
-
-```sh
-# expected output
-v24.6
-```
-
-- [ ] Run the following commands to get the startingCSV
-
-```sh
-# run the command to get the startingCSV
-oc get packagemanifests/gpu-operator-certified -n openshift-marketplace -ojson | jq -r '.status.channels[] | select(.name == "'$CHANNEL'") | .currentCSV'
-```
-
-```sh
-# expected output
-gpu-operator-certified.v24.6.1
-```
-
-- [ ] Update the `channel` and `startingCSV` fields in `nvidia-gpu-operator-subscription.yaml` with the information returned.
-
 - [ ] Apply the Subscription CR
 
 ```sh
