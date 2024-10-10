@@ -30,7 +30,7 @@
 - [ ] Download the latest NVIDIA DCGM Exporter Dashboard from the DCGM Exporter repository on GitHub:
 
 ```sh
-  curl -Lf https://github.com/NVIDIA/dcgm-exporter/raw/main/grafana/dcgm-exporter-dashboard.json -o scratch/dcgm-exporter-dashboard.json
+curl -Lf https://github.com/NVIDIA/dcgm-exporter/raw/main/grafana/dcgm-exporter-dashboard.json -o scratch/dcgm-exporter-dashboard.json
 ```
 
 ```sh
@@ -44,7 +44,7 @@
 - [ ] Check for modifications
 
 ```sh
-  diff -u configs/05/nvidia-dcgm-dashboard.json scratch/dcgm-exporter-dashboard.json
+diff -u configs/05/nvidia-dcgm-dashboard.json scratch/dcgm-exporter-dashboard.json
 ```
 
 ```sh
