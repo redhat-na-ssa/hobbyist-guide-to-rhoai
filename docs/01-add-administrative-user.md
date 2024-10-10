@@ -113,13 +113,15 @@ clusterrole.rbac.authorization.k8s.io/cluster-admin added: "<username>"
 oc cluster-info
 ```
 
-> NOTE: You may need to add the parameter `--insecure-skip-tls-verify=true` if your clusters api endpoint does not have a trusted cert.
+> [!NOTE]
+> You may need to add the parameter `--insecure-skip-tls-verify=true` if your clusters api endpoint does not have a trusted cert.
 
 ```sh
 oc login https://api.cluster-<id>.<id>.sandbox.opentlc.com:6443 --insecure-skip-tls-verify=true -u <username> -p <password>
 ```
 
-> NOTE: The remainder of the procedure should be completed with the new cluster-admin `<username>`.
+> [!NOTE]
+> The remainder of the procedure should be completed with the new cluster-admin `<username>`.
 
 ## Validation
 
