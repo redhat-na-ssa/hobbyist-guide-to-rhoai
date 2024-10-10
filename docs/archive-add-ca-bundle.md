@@ -103,8 +103,8 @@ certificateCERTIFICATECERTIFICATESDFCERTIFICATEcertificateCERTIFICATE
 spec:
 trustedCABundle:
   customCABundle: |
-  -----BEGIN CERTIFICATE-----
-  -----END CERTIFICATE-----
+    -----BEGIN CERTIFICATE-----
+    -----END CERTIFICATE-----
   managementState: Managed
 ```
 
