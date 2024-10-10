@@ -85,7 +85,7 @@ nvidia-driver-daemonset-415.92.202407091355-0-clp7f   2/2     Running   2       
 - [ ] With the Pod and node name, run the nvidia-smi on the correct node.
 
 ```sh
-oc exec -it nvidia-driver-daemonset-410.84.202203290245-0-xxgdv -- nvidia-smi
+oc exec -itn nvidia-gpu-operator $(oc get pod -n nvidia-gpu-operator -l openshift.driver-toolkit=true -ojsonpath='{.items[0].metadata.name}') -- nvidia-smi
 ```
 
 ```sh
