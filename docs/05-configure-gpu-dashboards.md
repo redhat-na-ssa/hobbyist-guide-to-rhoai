@@ -86,7 +86,10 @@ NAME                             DATA   AGE     LABELS
 nvidia-dcgm-exporter-dashboard   1      3m28s   console.openshift.io/dashboard=true,console.openshift.io/odc-dashboard=true
 ```
 
-> View the NVIDIA DCGM Exporter Dashboard from the OCP UI from Administrator and Developer
+- [ ] View the NVIDIA DCGM Exporter Dashboard from the OCP UI from Administrator and Developer
+
+> [!TODO]
+> We need to insert a picture here
 
 ## 5.2 Install the NVIDIA GPU administration dashboard
 
