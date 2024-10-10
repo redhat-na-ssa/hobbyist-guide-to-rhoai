@@ -22,9 +22,10 @@
 - [ ] Apply the subscription object
 
 ```sh
+# Install web terminal operator
 oc apply -f configs/02/web-terminal-subscription.yaml
 
-# The CRDs may take a few minutes to get setup by the operator
+# CRDs may take a few minutes to get setup by the operator
 # Re-run the following command until it completes successfully
 oc apply -f configs/02/web-terminal-tooling.yaml
 ```
