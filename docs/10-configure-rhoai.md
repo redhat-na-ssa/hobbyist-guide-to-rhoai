@@ -1,4 +1,4 @@
-## 10. Administrative Configurations for RHOAI
+# 10. Administrative Configurations for RHOAI
 
 ### 10.1 Add a new Accelerator Profile
 
@@ -24,7 +24,7 @@
       name: migration-gpu-status
       namespace: redhat-ods-applications
     ...
-
+    ```
 
 - Delete the migration-gpu-status ConfigMap
 
@@ -139,7 +139,7 @@
 
 ##### Configure External DB
 
-When a pipeline server is configured for a Data Science Project, a local database using MariaDB is automatically configured for the pipelines. This database is local to the project and not intended for reuse. 
+When a pipeline server is configured for a Data Science Project, a local database using MariaDB is automatically configured for the pipelines. This database is local to the project and not intended for reuse.
 
 Instead, the best practice is to configure an external SQL database for the pipeline server. Let's configure an external database for pipelines.
 
@@ -152,7 +152,7 @@ oc new-project database
 Create database
 
 ![NOTE]
-The pipeline server's metadata service uses a client that *cannot* handle the default `caching_sha2_password` authentication method in MySQL 8+. You must enable the older `mysql_native_password` authentication method in the MySQL server.
+The pipeline server's metadata service uses a client that _cannot_ handle the default `caching_sha2_password` authentication method in MySQL 8+. You must enable the older `mysql_native_password` authentication method in the MySQL server.
 
 ![NOTE]
 Also note that MySQL v9 will not work with Data Science Pipelines because the `mysql_native_password` authentication method has been fully deprecated and removed. See this [blog post](https://blogs.oracle.com/mysql/post/mysql-90-its-time-to-abandon-the-weak-authentication-method) for more details.
@@ -170,7 +170,7 @@ Wait for the database to install
 oc wait --for=jsonpath='{.status.replicas}'=1 deploy mysql -n database
 ```
 
-Object storage is also needed for pipelines. Create a project and set env vars. 
+Object storage is also needed for pipelines. Create a project and set env vars.
 
 ```sh
 oc new-project minio

@@ -1,4 +1,4 @@
-### 6. GPU sharing methods
+# 6. GPU sharing methods
 
 ### Objectives
 
