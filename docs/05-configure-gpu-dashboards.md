@@ -209,7 +209,8 @@ clusterpolicy.nvidia.com/gpu-cluster-policy patched
 
 - [ ] Go to Compute > GPUs
 
-  > Notice the `Telsa T4 Single-Instance` at the top of the screen. This GPU is NOT shareable (i.e. sliced, partitioned, fractioned) yet. As Manfred Manns lyrics go, be ready to be `Blinded by the light`.
+> [!NOTE]
+> Notice the `Telsa T4 Single-Instance` at the top of the screen. This GPU is NOT shareable (i.e. sliced, partitioned, fractioned) yet. As Manfred Manns lyrics go, be ready to be `Blinded by the light`.
 
 ```sh
 oc get cm console-plugin-nvidia-gpu -n nvidia-gpu-operator -o yaml

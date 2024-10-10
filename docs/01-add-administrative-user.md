@@ -43,9 +43,9 @@ oc create secret generic htpasswd-secret --from-file=htpasswd=scratch/users.htpa
 ```
 
 ```sh
-  # expected output
+# expected output
 
-  secret/htpasswd-secret created
+secret/htpasswd-secret created
 ```
 
 - [ ] Verify you created a `secret/htpasswd-secret` object in `openshift-config` project
@@ -64,7 +64,7 @@ htpasswd-secret   Opaque   1      4m46s
 - [ ] Apply the resource to the default OAuth configuration to add the identity provider
 
 ```sh
-  oc apply -f configs/01/htpasswd-cr.yaml
+oc apply -f configs/01/htpasswd-cr.yaml
 ```
 
 ```sh

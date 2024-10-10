@@ -11,7 +11,7 @@
 - Check the current configmap
 
   - ```sh
-      oc get cm migration-gpu-status -n redhat-ods-applications -o yaml
+    oc get cm migration-gpu-status -n redhat-ods-applications -o yaml
     ```
 
     ```sh
@@ -29,7 +29,7 @@
 - Delete the migration-gpu-status ConfigMap
 
   - ```sh
-      oc delete cm migration-gpu-status -n redhat-ods-applications
+    oc delete cm migration-gpu-status -n redhat-ods-applications
     ```
 
     ```sh
@@ -40,7 +40,7 @@
 - Restart the dashboard replicaset
 
   - ```sh
-      oc rollout restart deployment rhods-dashboard -n redhat-ods-applications
+    oc rollout restart deployment rhods-dashboard -n redhat-ods-applications
     ```
 
     ```sh
@@ -51,7 +51,7 @@
 - Wait until the Status column indicates that all pods in the rollout have fully restarted
 
   - ```sh
-      oc get pods -n redhat-ods-applications | egrep rhods-dashboard
+    oc get pods -n redhat-ods-applications | egrep rhods-dashboard
     ```
 
     ```sh
@@ -69,7 +69,7 @@
 - Check the acceleratorprofiles
 
   - ```sh
-      oc get acceleratorprofile -n redhat-ods-applications
+    oc get acceleratorprofile -n redhat-ods-applications
     ```
 
     ```sh
@@ -81,7 +81,7 @@
 - Review the acceleratorprofile configuration
 
   - ```sh
-      oc describe acceleratorprofile -n redhat-ods-applications
+    oc describe acceleratorprofile -n redhat-ods-applications
     ```
 
     ```sh
@@ -126,7 +126,7 @@
   **Option 2**:
 
   - ```sh
-      oc apply -f configs/10/rhoai-add-serving-runtime-template.yaml -n redhat-ods-applications
+    oc apply -f configs/10/rhoai-add-serving-runtime-template.yaml -n redhat-ods-applications
     ```
 
   - Add and confirm the runtime can be selected in a Data Science Project
@@ -155,7 +155,7 @@ Create database
 > [!NOTE]
 > The pipeline server's metadata service uses a client that _cannot_ handle the default `caching_sha2_password` authentication method in MySQL 8+. You must enable the older `mysql_native_password` authentication method in the MySQL server.
 
-  [!NOTE]
+> [!NOTE]
 > Also note that MySQL v9 will not work with Data Science Pipelines because the `mysql_native_password` authentication method has been fully deprecated and removed. See this [blog post](https://blogs.oracle.com/mysql/post/mysql-90-its-time-to-abandon-the-weak-authentication-method) for more details.
 
 ```sh
@@ -292,5 +292,5 @@ However, OADP does not serve as a disaster recovery solution for [etcd](https://
 - From this repository's root directory, run below command
 
   - ```sh
-      ./scripts/setup.sh -s 10
+    ./scripts/setup.sh -s 10
     ```

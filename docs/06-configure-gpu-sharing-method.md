@@ -23,6 +23,7 @@
     - AI inference on MIG during the day
     - DL training on single instance off-hours
 
+> [!NOTE]
 > By default, you get one workload per GPU. This is inefficient for most use cases. [How can you share a GPU to 1:N workloads](https://docs.openshift.com/container-platform/4.15/architecture/nvidia-gpu-architecture-overview.html#nvidia-gpu-prerequisites_nvidia-gpu-architecture-overview):
 
 For NVIDIA GPU there are a few methods to optimize GPU utilization:
