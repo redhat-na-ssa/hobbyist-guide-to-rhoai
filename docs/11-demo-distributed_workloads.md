@@ -24,7 +24,12 @@
 
 ## Steps
 
-- [ ] Run `oc adm policy add-role-to-group edit system:serviceaccounts:sandbox -n sandbox`
+- [ ] Run the following command:
+
+```sh
+oc adm policy add-role-to-group edit system:serviceaccounts:sandbox -n sandbox
+```
+
 - [ ] Access the RHOAI Dashboard
 - [ ] Access the `sandbox` project
 - [ ] Create a workbench using the `Standard Data Science` notebook and set the following environment variables as Secrets (see [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.13/html/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects) if needed):
