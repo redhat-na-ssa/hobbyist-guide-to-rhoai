@@ -49,6 +49,14 @@ oc adm policy add-role-to-group edit system:serviceaccounts:sandbox -n sandbox
   1. `0_basic_ray.ipynb`
   1. `1_cluster_job_client.ipynb`
 
+> [!URGENT]
+> In 1_cluster_job_client, if your RayCluster does not come ready and hangs, you can check the pods in your Sandbox namespace to see if they are stuck in a `Pending` state due to an untolerated taint. If it does, you'll need to restart the Kueue controller in the `redhat-ods-applications` namespace by deleting the pod.
+
+  ```sh
+  oc get pod -n sandbox -l ray.io/is-ray-node -ojsonpath='{range .items[0].status.conditions[*]}{.message}{"\n"}{end}' | grep 'untolerated'
+  oc delete pod -n redhat-ods-applications -l app.opendatahub.io/kueue
+  ```
+
 > Note: To run `2_basic_interactive.ipynb`, follow below additional steps
 
 - [ ] Create project and set environment variables
