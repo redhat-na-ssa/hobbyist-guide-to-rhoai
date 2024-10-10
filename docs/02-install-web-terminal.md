@@ -38,6 +38,9 @@ oc apply -f configs/02/web-terminal-tooling.yaml
 > You can `git clone` in the instance and complete the rest of the procedure.
 
 ```sh
+# change to home dir
+cd ~
+
 # clone in the web terminal
 git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
 
@@ -53,7 +56,7 @@ mkdir scratch
 
 ## Validation
 
-![](/assets/02-validation.gif)
+![ ](/assets/02-validation.gif)
 
 ## Automation key (Catch up)
 
