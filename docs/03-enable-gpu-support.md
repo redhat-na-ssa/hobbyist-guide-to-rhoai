@@ -355,12 +355,6 @@ NAME            CSV                              APPROVAL    APPROVED
 install-295r6   gpu-operator-certified.v24.6.1   Automatic   true
 ```
 
-- [ ] (Optional) Approve the install plan if not `Automatic`
-
-```sh
-INSTALL_PLAN=$(oc get installplan -n nvidia-gpu-operator -oname)
-```
-
 - [ ] Create the cluster policy
 
 ```sh
