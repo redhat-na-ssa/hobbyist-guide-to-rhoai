@@ -21,7 +21,38 @@ oc get node -l nvidia.com/gpu.machine -ojsonpath='{range .items[0].spec.taints[*
 > [!NOTE]
 > If the taint keys do not match, you can either edit the AcceleratorProfile or, if no AcceleratorProfile was present at all you can trigger redection by the RHOAI Console. See the steps [here](/docs/info-regenerate-accelerator-profiles.md) for the procedure to do this.
 
-### 10.2 Add serving runtime
+### 10.2 Increasing your non-GPU compute capacity
+
+Some of the workloads that we deploy in the following sections may require more CPU than your cluster has available on non-GPU nodes, if you followed the recommendations in the prerequisites. Scaling your non-GPU MachineSets will enable these workloads to schedule properly
+
+### Steps
+
+- [ ] Verify that you have a non-GPU Worker MachineSet configured. This MachineSet may have zero desired replicas, if you followed the cluster provisioning guidance.
+
+```sh
+oc get machineset -n openshift-machine-api
+```
+
+```sh
+# expected output
+NAME                                        DESIRED   CURRENT   READY   AVAILABLE   AGE
+cluster-qcrdx-dkqx2-gpu-worker-us-east-2a   2         2         2       2           3h52m
+cluster-qcrdx-dkqx2-worker-us-east-2a       0         0                             5h24m
+```
+
+- [ ] Either copy the name of the non-GPU MachineSet you want to scale, or run the following command if you have the tooling available
+
+```sh
+machineset=$(oc get machineset -n openshift-machine-api -ojson | jq -r '.items[] | select(.metadata.name | contains("gpu") | not) | .metadata.name' | head -1)
+```
+
+- [ ] Scale the MachineSet with the following command, or scale it in the web console
+
+```sh
+oc scale machineset --replicas=1 -n openshift-machine-api $machineset
+```
+
+### 10.3 Add serving runtime
 
 ### Steps
 
@@ -47,7 +78,7 @@ oc get node -l nvidia.com/gpu.machine -ojsonpath='{range .items[0].spec.taints[*
 - Data scientists
 - Administrators
 
-#### Pipelines
+### 10.4 Configuring Data Science Pipelines
 
 ##### Configure External DB
 
