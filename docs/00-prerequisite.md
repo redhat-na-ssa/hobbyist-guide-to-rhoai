@@ -33,6 +33,9 @@ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 
 > Refer [Here](/docs/info-create-openshift-cluster.md#get-cluster-url-and-admin-username-and-password) to see how to get user, password, and cluster url
 
+> [!NOTE]
+> Don't forget to run below step
+
 - [ ] Run prerequisites (from this repository's root directory)
 
 ```sh
