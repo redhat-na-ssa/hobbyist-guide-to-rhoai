@@ -199,14 +199,16 @@ step_10(){
 workshop_uninstall(){
   logbanner "Uninstall Workshop"
 
+  oc -n kube-system get secret/kubeadmin || return 1
+
   rm "${DEFAULT_HTPASSWD}"{,.txt}
 
   oc delete datasciencecluster default-dsc
   oc delete dscinitialization default-dsci
-  oc delete -n istio-system --all servicemeshmemberrolls.maistra.io
-  oc delete -n istio-system --all servicemeshcontrolplanes.maistra.io
-  oc delete -A --all servicemeshmembers.maistra.io
-  oc delete -n knative-serving knativeservings.operator.knative.dev knative-serving
+  oc -n istio-system delete --all servicemeshmemberrolls.maistra.io
+  oc -n istio-system delete --all servicemeshcontrolplanes.maistra.io
+  oc -A delete --all servicemeshmembers.maistra.io
+  oc -n knative-serving delete knativeservings.operator.knative.dev knative-serving
 
   oc delete csv -A -l operators.coreos.com/authorino-operator.openshift-operators
   oc delete csv -A -l operators.coreos.com/devworkspace-operator.openshift-operators
