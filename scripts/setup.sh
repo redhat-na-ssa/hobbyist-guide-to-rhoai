@@ -251,4 +251,4 @@ setup(){
   done
 }
 
-setup
+is_sourced || setup
