@@ -124,11 +124,11 @@ For NVIDIA GPU there are a few methods to optimize GPU utilization:
   1. The `nvidia.com/gpu.product` label includes a `-SHARED` suffix to the product name.
   1. The `nvidia.com/gpu.replicas` label matches the reported capacity.
 
-     > [!NOTE]
-     > The `-SHARED` product name suffix ensures that you can specify a node selector to assign pods to nodes with time-sliced GPUs.
+> [!NOTE]
+> The `-SHARED` product name suffix ensures that you can specify a node selector to assign pods to nodes with time-sliced GPUs.
 
-          oc get node --selector=nvidia.com/gpu.product=Tesla-T4-SHARED -o json \
-            | jq '.items[0].metadata.labels' | grep nvidia
+      oc get node --selector=nvidia.com/gpu.product=Tesla-T4-SHARED -o json \
+        | jq '.items[0].metadata.labels' | grep nvidia
 
 > Expected output
 >
