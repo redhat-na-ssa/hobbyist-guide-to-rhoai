@@ -6,6 +6,7 @@ adm
 af
 ai
 allocatable
+alm
 amd
 Ansible
 api
@@ -454,6 +455,7 @@ servables
 serverless
 Serverless
 ServiceAccount
+serviceaccounts
 ServiceAccounts
 servicemesh
 serviceMesh
