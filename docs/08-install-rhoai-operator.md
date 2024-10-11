@@ -186,7 +186,7 @@ There are 3x RHOAI Operator dependency states to be set: `Managed`, `Removed`, a
 >
 > `NAME                                                              AGE     PHASE   CREATED AT`\
 > `dscinitialization.dscinitialization.opendatahub.io/default-dsci   7m43s   Ready   2024-10-11T17:49:37Z`
-
+>
 > `NAME                                                                                                            AGE`\
 > `featuretracker.features.opendatahub.io/redhat-ods-applications-enable-proxy-injection-in-authorino-deployment   7m13s`\
 > `featuretracker.features.opendatahub.io/redhat-ods-applications-kserve-external-authz                            85s`\
