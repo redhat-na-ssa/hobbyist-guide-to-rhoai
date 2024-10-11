@@ -189,15 +189,16 @@ step_8(){
 }
 
 step_9(){
-  logbanner "Configure distributed workloads"
-  retry oc apply -f "${GIT_ROOT}"/configs/09
-}
-
-step_10(){
   logbanner "Configure rhoai"
   retry oc apply -f "${GIT_ROOT}"/configs/10/minio
   retry oc apply -f "${GIT_ROOT}"/configs/10
 }
+
+step_10(){
+  logbanner "Configure distributed workloads"
+  retry oc apply -f "${GIT_ROOT}"/configs/09
+}
+
 
 workshop_uninstall(){
   logbanner "Uninstall Workshop"
