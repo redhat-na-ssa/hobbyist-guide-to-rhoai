@@ -86,12 +86,11 @@ Before you install RHOAI, it is important to understand how it's dependencies wi
 > `redhat-ods-operator                                                               Active`
 
 - When you install the RHOAI Operator in the OpenShift cluster, the following new projects are created:
-  1. `redhat-ods-operator` contains the RHOAI Operator.
-  1. `redhat-ods-applications` installs the dashboard and other required components of OpenShift AI.
+  1. `redhat-ods-applications` contains the dashboard and other required components of OpenShift AI. Additionally, this is where the included notebook images are stored as `ImageStreams`.
+  1. `redhat-ods-applications-auth-provider` is where Authorino would be configured to run, in support of authenticating KServe model inference endpoints.
   1. `redhat-ods-monitoring` contains services for monitoring.
-
-> [!NOTE]
-> `rhods-notebooks` is where an individual user notebook environments are deployed by default. You or your data scientists must create additional projects for the applications that will use your machine learning models.
+  1. `redhat-ods-operator` contains the RHOAI Operator itself.
+  1. `rhods-notebooks` is a namespace that will get created later, where an individual user notebook environments are deployed by default. You or your data scientists must create additional projects for the applications that will use your machine learning models.
 
 > [!IMPORTANT]
 > Do not install independent software vendor (ISV) applications in namespaces associated with OpenShift AI.
