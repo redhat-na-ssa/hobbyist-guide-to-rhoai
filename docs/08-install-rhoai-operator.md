@@ -30,120 +30,100 @@ Before you install RHOAI, it is important to understand how it's dependencies wi
 | `AMD GPU Operator`                              | if AMD accelerators exist                                           |
 
 > [!NOTE]
-> `NFD` and `KMM` operators exists with other patterns, these are the most common.  
-> [More Info](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/Install-and-deploying-openshift-ai_install#Install-the-openshift-data-science-operator_operator-install)
+> `NFD` and `KMM` operators exists with other patterns, these are the most common. More information is available [here](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/Install-and-deploying-openshift-ai_install#Install-the-openshift-data-science-operator_operator-install)
 
 ## Steps
 
 - [ ] Check the pre-requisite operators in order to fully deploy RHOAI components.
 
-```sh
-oc get subscriptions -A
-```
+      oc get subscriptions -A
 
-```sh
-# expected output
-NAMESPACE              NAME                                                                PACKAGE                 SOURCE             CHANNEL
-openshift-operators    authorino-operator                                                  authorino-operator      redhat-operators   tech-preview-v1
-openshift-operators    devworkspace-operator-fast-redhat-operators-openshift-marketplace   devworkspace-operator   redhat-operators   fast
-openshift-operators    servicemeshoperator                                                 servicemeshoperator     redhat-operators   stable
-openshift-operators    web-terminal                                                        web-terminal            redhat-operators   fast
-openshift-serverless   serverless-operator                                                 serverless-operator     redhat-operators   stable
-```
+> Expected output
+>
+> `NAMESPACE              NAME                                                                PACKAGE                 SOURCE             CHANNEL`\
+> `openshift-operators    authorino-operator                                                  authorino-operator      redhat-operators   tech-preview-v1`\
+> `openshift-operators    devworkspace-operator-fast-redhat-operators-openshift-marketplace   devworkspace-operator   redhat-operators   fast`\
+> `openshift-operators    servicemeshoperator                                                 servicemeshoperator     redhat-operators   stable`\
+> `openshift-operators    web-terminal                                                        web-terminal            redhat-operators   fast`\
+> `openshift-serverless   serverless-operator                                                 serverless-operator     redhat-operators   stable`
 
 - [ ] Create the namespace in your RHOCP cluster
 
-```sh
-oc create -f configs/08/rhoai-operator-ns.yaml
-```
+      oc create -f configs/08/rhoai-operator-ns.yaml
 
-```sh
-# expected output
-namespace/redhat-ods-operator created
-```
+> Expected output
+>
+> `namespace/redhat-ods-operator created`
 
 - [ ] Create the OperatorGroup object
 
-```sh
-oc create -f configs/08/rhoai-operator-group.yaml
-```
+      oc create -f configs/08/rhoai-operator-group.yaml
 
-```sh
-# expected output
-operatorgroup.operators.coreos.com/rhods-operator created
-```
+> Expected output
+>
+> `operatorgroup.operators.coreos.com/rhods-operator created`
 
-> Understanding `update channels`. We are using `stable` channel as this gives customers access to the stable product features. `fast` can lead to an inconsistent experience as it is only supported for 1 month and it updated every month. [More Info](https://access.redhat.com/articles/rhoai-supported-configs).
+> [!NOTE]
+> We are using `stable` channel as this gives customers access to the stable product features. `fast` can lead to an inconsistent experience as it is only supported for 1 month and it is updated every month. More information about supported versions, channels, and their characteristics is available [here](https://access.redhat.com/articles/rhoai-supported-configs).
 
 - [ ] Create the Subscription object
 
-```sh
-oc create -f configs/08/rhoai-operator-subscription.yaml
-```
+      oc create -f configs/08/rhoai-operator-subscription.yaml
 
-```sh
-# expected output
-subscription.operators.coreos.com/rhods-operator created
-```
+> Expected output
+>
+> `subscription.operators.coreos.com/rhods-operator created`
 
 - [ ] Verify at least these projects are created `redhat-ods-applications|redhat-ods-monitoring|redhat-ods-operator`
 
-```sh
-oc get projects -w | grep -E "redhat-ods|rhods"
-```
+      oc get projects -w | grep -E "redhat-ods|rhods"
 
-```sh
-# expected output
-redhat-ods-applications                                                           Active
-redhat-ods-applications-auth-provider                                             Active
-redhat-ods-monitoring                                                             Active
-redhat-ods-operator                                                               Active
-```
+> Expected output
+>
+> `redhat-ods-applications                                                           Active`\
+> `redhat-ods-applications-auth-provider                                             Active`\
+> `redhat-ods-monitoring                                                             Active`\
+> `redhat-ods-operator                                                               Active`
 
-When you install the RHOAI Operator in the OpenShift cluster, the following new projects are created:
+- When you install the RHOAI Operator in the OpenShift cluster, the following new projects are created:
+  1. `redhat-ods-operator` contains the RHOAI Operator.
+  1. `redhat-ods-applications` installs the dashboard and other required components of OpenShift AI.
+  1. `redhat-ods-monitoring` contains services for monitoring.
 
-1. `redhat-ods-operator` contains the RHOAI Operator.
-1. `redhat-ods-applications` installs the dashboard and other required components of OpenShift AI.
-1. `redhat-ods-monitoring` contains services for monitoring.
+> [!NOTE]
+> `rhods-notebooks` is where an individual user notebook environments are deployed by default. You or your data scientists must create additional projects for the applications that will use your machine learning models.
 
-Note:
-
-- `rhods-notebooks` is where an individual user notebook environments are deployed by default.
-- You or your data scientists must create additional projects for the applications that will use your machine learning models.
-
-> IMPORTANT
+> [!IMPORTANT]
 > Do not install independent software vendor (ISV) applications in namespaces associated with OpenShift AI.
 
-The RHOAI Operator is installed with a `default-dsci` object with the following. Notice how the `serviceMesh` is `Managed`. By default, RHOAI is managing `ServiceMesh`.
+- The RHOAI Operator is installed with a `default-dsci` object with the following. Notice how the `serviceMesh` is `Managed`. By default, RHOAI is managing `ServiceMesh`.
 
 - [ ] Verify `default-dsci` yaml file
 
-```sh
-oc describe DSCInitialization -n redhat-ods-operator
-```
+      oc describe DSCInitialization -n redhat-ods-operator
 
-```yaml
-Name:         default-dsci
-API Version:  dscinitialization.opendatahub.io/v1
-Kind:         DSCInitialization
-Spec:
-  Applications Namespace:  redhat-ods-applications
-  Monitoring:
-    Management State:  Managed
-    Namespace:         redhat-ods-monitoring
-  Service Mesh:
-    Auth:
-      Audiences:
-        https://kubernetes.default.svc
-    Control Plane:
-      Metrics Collection:  Istio
-      Name:                data-science-smcp
-      Namespace:           istio-system
-    Management State:      Unmanaged
-  Trusted CA Bundle:
-    Custom CA Bundle:  
-    Management State:  Managed
-```
+> Expected output
+>
+> `Name:         default-dsci`\
+> `API Version:  dscinitialization.opendatahub.io/v1`\
+> `Kind:         DSCInitialization`\
+> `Spec:`\
+> `  Applications Namespace:  redhat-ods-applications`\
+> `  Monitoring:`\
+> `    Management State:  Managed`\
+> `    Namespace:         redhat-ods-monitoring`\
+> `  Service Mesh:`\
+> `    Auth:`\
+> `      Audiences:`\
+> `        https://kubernetes.default.svc`\
+> `    Control Plane:`\
+> `      Metrics Collection:  Istio`\
+> `      Name:                data-science-smcp`\
+> `      Namespace:           istio-system`\
+> `    Management State:      Unmanaged`\
+> `  Trusted CA Bundle:`\
+> `    Custom CA Bundle:  `\
+> `    Management State:  Managed`
 
 ## 8.1 Install RHOAI components
 
@@ -172,52 +152,44 @@ There are 3x RHOAI Operator dependency states to be set: `Managed`, `Removed`, a
 
 ## Steps
 
-> In order to use the RHOAI Operator, you must create a DataScienceCluster instance.
-> When you manually installed KServe, you set the value of the managementState to `Unmanaged` within the Kserve component in the DataScienceCluster and MUST update the DSCInitialization object.  
+> [!NOTE]
+> In order to use RHOAI functionality, you must create a DataScienceCluster instance.
+> When you manually installed KServe, you set the value of the managementState to `Unmanaged` within the Kserve component in the DataScienceCluster and MUST update the DSCInitialization object.
 > For `Unmanaged` dependencies, see the Install and managing RHOAI components on the \_APPENDIX.md.
 
 - [ ] Create the DSC object
 
-```sh
-oc create -f configs/08/rhoai-operator-dsc.yaml
-```
+      oc create -f configs/08/rhoai-operator-dsc.yaml
 
-```sh
-# expected output
-
-datasciencecluster.datasciencecluster.opendatahub.io/default-dsc created
-```
+> Expected output
+>
+> `datasciencecluster.datasciencecluster.opendatahub.io/default-dsc created`
 
 - [ ] Wait for the DSC to show Ready
 
 > [!NOTE]
 > This may take up to around ten minutes.
 
-```sh
-oc wait --for=jsonpath='{.status.phase}'=Ready datasciencecluster default-dsc
-```
+      oc wait --for=jsonpath='{.status.phase}'=Ready datasciencecluster default-dsc
 
 - [ ] Verify DSC and related object creation
 
-```sh
-oc get DSCInitialization,FeatureTracker -n redhat-ods-operator
-```
+      oc get DSCInitialization,FeatureTracker -n redhat-ods-operator
 
-```sh
-# expected output
-NAME                                                              AGE   PHASE   CREATED AT
-dscinitialization.dscinitialization.opendatahub.io/default-dsci   10m   Ready   2024-07-31T22:35:06Z
-
-NAME                                                                                                   AGE
-featuretracker.features.opendatahub.io/redhat-ods-applications-kserve-external-authz                   94s
-featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-control-plane-creation             10m
-featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-control-plane-external-authz       10m
-featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-metrics-collection                 10m
-featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-shared-configmap                   10m
-featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-net-istio-secret-filtering   101s
-featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-serving-deployment           2m19s
-featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-serving-gateways             97s
-```
+> Expected output
+>
+> `NAME                                                              AGE   PHASE   CREATED AT`\
+> `dscinitialization.dscinitialization.opendatahub.io/default-dsci   10m   Ready   2024-07-31T22:35:06Z`
+>
+> `NAME                                                                                                   AGE`\
+> `featuretracker.features.opendatahub.io/redhat-ods-applications-kserve-external-authz                   94s`\
+> `featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-control-plane-creation             10m`\
+> `featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-control-plane-external-authz       10m`\
+> `featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-metrics-collection                 10m`\
+> `featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-shared-configmap                   10m`\
+> `featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-net-istio-secret-filtering   101s`\
+> `featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-serving-deployment           2m19s`\
+> `featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-serving-gateways             97s`
 
 ## Validation
 
