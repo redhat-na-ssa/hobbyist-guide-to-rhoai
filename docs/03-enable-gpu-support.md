@@ -180,20 +180,6 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 | `1002` | AMD    |
 | `8086` | Intel  |
 
-- [ ] Verify the GPU device (NVIDIA uses the PCI ID `10de`) is discovered on the GPU node. This mean the NFD Operator correctly identified the node from the GPU-enabled MachineSet.
-
-      oc describe node | egrep 'Roles|pci' | grep -v master
-
-> Expected output
->
-> `Roles:              worker`\
-> `feature.node.kubernetes.io/pci-10de.present=true`\
-> `feature.node.kubernetes.io/pci-1d0f.present=true`\
-> `feature.node.kubernetes.io/pci-1d0f.present=true`\
-> `Roles:              worker`\
-> `feature.node.kubernetes.io/pci-10de.present=true`\
-> `feature.node.kubernetes.io/pci-1d0f.present=true`
-
 - [ ] Verify the NFD pods are `Running` on the cluster nodes polling for devices
 
       oc get pods -n openshift-nfd
@@ -207,25 +193,28 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 > `nfd-worker-d7wgh                          1/1     Running   0          25s`\
 > `nfd-worker-l6sqx                          1/1     Running   0          25s`
 
-- [ ] Verify the NVIDIA GPU is discovered
+- [ ] Verify the GPU device (NVIDIA uses the PCI ID `10de`) is discovered on the GPU node. This means the NFD Operator correctly identified the node from the GPU-enabled MachineSet.
 
-      # list your nodes
-      oc get nodes
-
-      # display the role feature list of a gpu node
-      oc describe node <NODE_NAME> | egrep 'Roles|pci'
+      oc describe node | egrep 'Roles|pci' | grep -v master
 
 > Expected output
 >
 > `Roles:              worker`\
-> `feature.node.kubernetes.io/pci-10de.present=true`\
-> `feature.node.kubernetes.io/pci-1d0f.present=true`
+> `                    feature.node.kubernetes.io/pci-10de.present=true`\
+> `                    feature.node.kubernetes.io/pci-1d0f.present=true`\
+> `                    feature.node.kubernetes.io/pci-1d0f.present=true`\
+> `Roles:              worker`\
+> `                    feature.node.kubernetes.io/pci-10de.present=true`\
+> `                    feature.node.kubernetes.io/pci-1d0f.present=true`
+
+> [!NOTE]
+> You may have to rerun the command over a period of time as NFD pods come online and apply the labels before they show up.
 
 ## 3.3 Install the NVIDIA GPU Operator
 
 ### Objectives
 
-- Creating the ns, OperatorGroup and subscribing the NVIDIA GPU Operator
+- Creating the Namespace, OperatorGroup and Subscription to the NVIDIA GPU Operator
 
 ### Rationale
 
@@ -306,26 +295,21 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 > [!NOTE]
 > At this point, the GPU Operator proceeds and installs all the required components to set up the NVIDIA GPUs in the OpenShift 4 cluster. Wait at least 10-20 minutes before digging deeper into any form of troubleshooting because this may take a period of time to finish.
 
-- [ ] Verify the successful installation of the NVIDIA GPU Operator
+- [ ] Verify the successful installation of the NVIDIA GPU Operator and deployment of the drivers
 
-      oc get pods,daemonset -n nvidia-gpu-operator
+      oc get pod -l openshift.driver-toolkit -n nvidia-gpu-operator
+
+> [!IMPORTANT]
+> The Nvidia drivers are not loaded and ready for consumption until this command shows both pods at `2/2` ready. You can move on to execute the next steps for labelling, but can't run the GPU application until this process is completed
 
 > Expected output
 >
-> `NAME                                                           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                                                                                                         AGE`\
-> `daemonset.apps/gpu-feature-discovery                           0         0         0       0            0           nvidia.com/gpu.deploy.gpu-feature-discovery=true                                                                      22s`\
-> `daemonset.apps/nvidia-container-toolkit-daemonset              0         0         0       0            0           nvidia.com/gpu.deploy.container-toolkit=true                                                                          22s`\
-> `daemonset.apps/nvidia-dcgm                                     0         0         0       0            0           nvidia.com/gpu.deploy.dcgm=true                                                                                       22s`\
-> `daemonset.apps/nvidia-dcgm-exporter                            0         0         0       0            0           nvidia.com/gpu.deploy.dcgm-exporter=true                                                                              22s`\
-> `daemonset.apps/nvidia-device-plugin-daemonset                  0         0         0       0            0           nvidia.com/gpu.deploy.device-plugin=true                                                                              22s`\
-> `daemonset.apps/nvidia-device-plugin-mps-control-daemon         0         0         0       0            0           nvidia.com/gpu.deploy.device-plugin=true,nvidia.com/mps.capable=true                                                  22s`\
-> `daemonset.apps/nvidia-driver-daemonset-415.92.202406251950-0   2         2         0       2            0           feature.node.kubernetes.io/system-os_release.OSTREE_VERSION=415.92.202406251950-0,nvidia.com/gpu.deploy.driver=true   22s`\
-> `daemonset.apps/nvidia-mig-manager                              0         0         0       0            0           nvidia.com/gpu.deploy.mig-manager=true                                                                                22s`\
-> `daemonset.apps/nvidia-node-status-exporter                     2         2         2       2            2           nvidia.com/gpu.deploy.node-status-exporter=true                                                                       22s`\
-> `daemonset.apps/nvidia-operator-validator                       0         0         0       0            0           nvidia.com/gpu.deploy.operator-validator=true                                                                         22s`
+> `NAME                                                  READY   STATUS    RESTARTS   AGE`\
+> `nvidia-driver-daemonset-416.94.202409191851-0-8mzb2   2/2     Running   0          5m34s`\
+> `nvidia-driver-daemonset-416.94.202409191851-0-q5r7d   2/2     Running   0          5m34s`
 
-> [!TIP]
-> With the daemonset deployed, NVIDIA GPUs have the `nvidia-device-plugin` and can be requested by a container using the `nvidia.com/gpu` resource type. The [NVIDIA device plugin](https://github.com/NVIDIA/k8s-device-plugin?tab=readme-ov-file#shared-access-to-gpus) has a number of options, like MIG Strategy, that can be configured for it.
+> [!NOTE]
+> With the daemonset deployed, NVIDIA GPUs have the `nvidia-device-plugin` and can be requested by a container using the `nvidia.com/gpu` resource type. The [NVIDIA device plugin](https://github.com/NVIDIA/k8s-device-plugin?tab=readme-ov-file#shared-access-to-gpus) has a number of options, like MIG Strategy, that can be configured for it. We will do this in a later step.
 
 ## 3.4 Label GPU Nodes
 
