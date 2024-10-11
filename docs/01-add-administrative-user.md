@@ -26,64 +26,44 @@ For this bootcamp, we are using HTpasswd as the Identity Provider (IdP). To lear
 
 - [ ] Create an htpasswd file to store the user and password information
 
-```sh
-htpasswd -c -B -b scratch/users.htpasswd <username> <password>
-```
+      htpasswd -c -B -b scratch/users.htpasswd <username> <password>
 
-```sh
-# expected output
-
-Adding password for user <username>
-```
+> Expected output
+>
+> `Adding password for user <username>`
 
 - [ ] Create a secret to represent the htpasswd file
 
-```sh
-oc create secret generic htpasswd-local --from-file=htpasswd=scratch/users.htpasswd -n openshift-config
-```
+      oc create secret generic htpasswd-local --from-file=htpasswd=scratch/users.htpasswd -n openshift-config
 
-```sh
-# expected output
-
-secret/htpasswd-local created
-```
+> Expected output
+>
+> `secret/htpasswd-local created`
 
 - [ ] Verify you created a `secret/htpasswd-local` object in `openshift-config` project
 
-```sh
-oc get secret/htpasswd-local -n openshift-config
-```
+      oc get secret/htpasswd-local -n openshift-config
 
-```sh
-# expected output
-
-NAME              TYPE     DATA   AGE
-htpasswd-local   Opaque   1      4m46s
-```
+> Expected output
+>
+> `NAME              TYPE     DATA   AGE`
+> `htpasswd-local   Opaque   1      4m46s`
 
 - [ ] Apply the resource to the default OAuth configuration to add the identity provider
 
-```sh
-oc apply -f configs/01/htpasswd-cr.yaml
-```
+      oc apply -f configs/01/htpasswd-cr.yaml
 
-```sh
-# expected output
-
-oauth.config.openshift.io/cluster configured
-```
+> Expected output
+>
+> `oauth.config.openshift.io/cluster configured`
 
 - [ ] Verify the identity provider
 
-```sh
-oc get oauth/cluster -o yaml
-```
+      oc get oauth/cluster -o yaml
 
 - [ ] Watch for the cluster operator to cycle
 
-```sh
-oc get co authentication -w
-```
+      oc get co authentication -w
 
 > [!WARNING]
 > Ensure that you wait for the authentication ClusterOperator to become degraded, and then show Available with the "SINCE" column in a period of time related to you applying the OAuth configuration.
@@ -92,28 +72,20 @@ oc get co authentication -w
 
 - [ ] As kubeadmin, assign the cluster-admin role to perform administrator level tasks
 
-```sh
-oc adm policy add-cluster-role-to-user cluster-admin <username>
-```
+      oc adm policy add-cluster-role-to-user cluster-admin <username>
 
-```sh
-# expected output
-
-clusterrole.rbac.authorization.k8s.io/cluster-admin added: "<username>"
-```
+> Expected output
+>
+> `clusterrole.rbac.authorization.k8s.io/cluster-admin added: "<username>"`
 
 - [ ] Log in to the cluster as a user from your identity provider, entering the password when prompted.
 
-```sh
-oc cluster-info
-```
+      oc cluster-info
 
 > [!NOTE]
 > You may need to add the parameter `--insecure-skip-tls-verify=true` if your clusters api endpoint does not have a trusted cert.
 
-```sh
-oc login https://api.cluster-<id>.<id>.sandbox.opentlc.com:6443 --insecure-skip-tls-verify=true -u <username> -p <password>
-```
+      oc login https://api.cluster-<id>.<id>.sandbox.opentlc.com:6443 --insecure-skip-tls-verify=true -u <username> -p <password>
 
 > [!NOTE]
 > The remainder of the procedure should be completed with the new cluster-admin `<username>`.
