@@ -177,22 +177,26 @@ There are 3x RHOAI Operator dependency states to be set: `Managed`, `Removed`, a
 
 - [ ] Verify DSC and related object creation
 
-      oc get DSCInitialization,FeatureTracker -n redhat-ods-operator
+      oc get DataScienceCluster,DSCInitialization,FeatureTracker -n redhat-ods-operator
 
 > Expected output
 >
-> `NAME                                                              AGE   PHASE   CREATED AT`\
-> `dscinitialization.dscinitialization.opendatahub.io/default-dsci   10m   Ready   2024-07-31T22:35:06Z`
+> `NAME                                                               AGE`\
+> `datasciencecluster.datasciencecluster.opendatahub.io/default-dsc   4m31s`
 >
-> `NAME                                                                                                   AGE`\
-> `featuretracker.features.opendatahub.io/redhat-ods-applications-kserve-external-authz                   94s`\
-> `featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-control-plane-creation             10m`\
-> `featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-control-plane-external-authz       10m`\
-> `featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-metrics-collection                 10m`\
-> `featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-shared-configmap                   10m`\
-> `featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-net-istio-secret-filtering   101s`\
-> `featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-serving-deployment           2m19s`\
-> `featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-serving-gateways             97s`
+> `NAME                                                              AGE     PHASE   CREATED AT`\
+> `dscinitialization.dscinitialization.opendatahub.io/default-dsci   7m43s   Ready   2024-10-11T17:49:37Z`
+
+> `NAME                                                                                                            AGE`\
+> `featuretracker.features.opendatahub.io/redhat-ods-applications-enable-proxy-injection-in-authorino-deployment   7m13s`\
+> `featuretracker.features.opendatahub.io/redhat-ods-applications-kserve-external-authz                            85s`\
+> `featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-control-plane-creation                      7m39s`\
+> `featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-control-plane-external-authz                7m17s`\
+> `featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-metrics-collection                          7m19s`\
+> `featuretracker.features.opendatahub.io/redhat-ods-applications-mesh-shared-configmap                            7m17s`\
+> `featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-net-istio-secret-filtering            92s`\
+> `featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-serving-deployment                    112s`\
+> `featuretracker.features.opendatahub.io/redhat-ods-applications-serverless-serving-gateways                      88s`
 
 ## Validation
 
