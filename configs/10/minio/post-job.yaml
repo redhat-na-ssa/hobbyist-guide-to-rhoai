@@ -20,7 +20,7 @@ spec:
         app: minio-job
         release: minio
     spec:
-      restartPolicy: OnFailure 
+      restartPolicy: OnFailure
       volumes:
         - name: etc-path
           emptyDir: {}
@@ -38,7 +38,7 @@ spec:
         - name: minio-make-bucket
           image: "quay.io/minio/mc:RELEASE.2024-04-18T16-45-29Z"
           imagePullPolicy: IfNotPresent
-          command: [ "/bin/sh", "/config/initialize" ]
+          command: ["/bin/sh", "/config/initialize"]
           env:
             - name: MINIO_ENDPOINT
               value: minio
@@ -57,7 +57,7 @@ spec:
         - name: minio-make-user
           image: "quay.io/minio/mc:RELEASE.2024-04-18T16-45-29Z"
           imagePullPolicy: IfNotPresent
-          command: [ "/bin/sh", "/config/add-user" ]
+          command: ["/bin/sh", "/config/add-user"]
           env:
             - name: MINIO_ENDPOINT
               value: minio

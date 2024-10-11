@@ -72,7 +72,7 @@ ocp_aws_cluster(){
 ocp_aws_get_key(){
   # get aws creds
   ocp_aws_cluster || return 1
- 
+
   AWS_ACCESS_KEY_ID=$(oc -n kube-system extract secret/aws-creds --keys=aws_access_key_id --to=-)
   AWS_SECRET_ACCESS_KEY=$(oc -n kube-system extract secret/aws-creds --keys=aws_secret_access_key --to=-)
   AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-2}
@@ -201,7 +201,7 @@ ocp_aws_create_metal_machineset(){
   # https://aws.amazon.com/ec2/instance-types/m5zn
   # m5.metal
   # m5n.metal
- 
+
   INSTANCE_TYPE=${1:-m5n.metal}
 
   ocp_aws_clone_worker_machineset "${INSTANCE_TYPE}"
@@ -243,7 +243,7 @@ ocp_aws_create_gpu_machineset(){
   oc -n openshift-machine-api \
     patch "${MACHINE_SET_TYPE}" \
     --type=merge --patch '{"spec":{"template":{"spec":{"metadata":{"labels":{"node-role.kubernetes.io/gpu":""}}}}}}'
- 
+
   # should use the default profile
   # oc -n openshift-machine-api \
   #   patch "${MACHINE_SET_TYPE}" \
@@ -253,15 +253,15 @@ ocp_aws_create_gpu_machineset(){
   oc -n openshift-machine-api \
     patch "${MACHINE_SET_TYPE}" \
     --type=merge --patch '{"spec":{"template":{"spec":{"metadata":{"labels":{"cluster-api/accelerator":"nvidia-gpu"}}}}}}'
- 
+
   oc -n openshift-machine-api \
     patch "${MACHINE_SET_TYPE}" \
     --type=merge --patch '{"metadata":{"labels":{"cluster-api/accelerator":"nvidia-gpu"}}}'
- 
+
   oc -n openshift-machine-api \
     patch "${MACHINE_SET_TYPE}" \
     --type=merge --patch '{"spec":{"template":{"spec":{"providerSpec":{"value":{"instanceType":"'"${INSTANCE_TYPE}"'"}}}}}}'
- 
+
 #  # fix storage
 
 # cat << YAML > /tmp/patch.yaml
@@ -459,7 +459,7 @@ ocp_mirror_set_pull_secret(){
   oc -n openshift-config \
     extract secret/pull-secret \
     --to=- | tee "${GIT_ROOT}/scratch/pull-secret" > "${DOCKER_CONFIG}/config.json"
- 
+
   # cat scratch/pull-secret | jq .
 }
 
@@ -515,7 +515,7 @@ ocp_mirror_operator_catalog_list(){
   echo "INDEX: ${INDEX}"
 
   oc mirror list operators --catalog "${INDEX}"
- 
+
   echo ""
 }
 
@@ -548,7 +548,7 @@ ocp_aro_get_key(){
   # get az creds
   ocp_aro_cluster || return
   AZ_TENANT_ID=redhat0.onmicrosoft.com
- 
+
   AZ_CLIENT_ID=$(oc -n kube-system extract secret/azure-credentials --keys=azure_client_id --to=-)
   AZ_CLIENT_SECRET=$(oc -n kube-system extract secret/azure-credentials --keys=azure_client_secret --to=-)
   AZ_DEFAULT_REGION=$(oc -n kube-system extract secret/azure-credentials --keys=azure_region --to=-)
@@ -631,7 +631,7 @@ metadata:
 ocp_auth_add_to_group(){
   USER=${1:-admin}
   OCP_GROUP=${2:-${DEFAULT_OCP_GROUP}}
- 
+
   ocp_auth_create_group "${OCP_GROUP}"
 
   oc adm groups add-users \

@@ -1,6 +1,6 @@
 ## 5. Adding a CA bundle
 
-A CA bundle is a collection of root certificates that helps establish trust in SSL/TLS connections. When a client, like a web browser, connects to a server using SSL/TLS, the server provides its SSL certificate. The client then uses the CA bundle to verify that the certificate was issued by a trusted CA and that it hasn't been revoked. If the CA bundle can't verify the certificate, the client will usually display a warning or error message indicating that the connection is untrustworthy. 
+A CA bundle is a collection of root certificates that helps establish trust in SSL/TLS connections. When a client, like a web browser, connects to a server using SSL/TLS, the server provides its SSL certificate. The client then uses the CA bundle to verify that the certificate was issued by a trusted CA and that it hasn't been revoked. If the CA bundle can't verify the certificate, the client will usually display a warning or error message indicating that the connection is untrustworthy.
 [More Info](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/working-with-certificates_certs#adding-a-ca-bundle_certs)
 
 ## Steps

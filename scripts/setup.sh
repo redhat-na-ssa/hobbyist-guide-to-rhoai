@@ -122,7 +122,7 @@ done
 
 step_0(){
   validate_setup || return 1
- 
+
   logbanner "Install prerequisites"
   retry oc apply -f "${GIT_ROOT}"/configs/00
 }
@@ -232,7 +232,7 @@ workshop_uninstall(){
     -f "${GIT_ROOT}"/configs/09 \
     -f "${GIT_ROOT}"/configs/10 \
     -f "${GIT_ROOT}"/configs/uninstall
- 
+
   oc apply \
     -f "${GIT_ROOT}"/configs/restore
 

@@ -31,7 +31,6 @@ spec:
         checksum/secrets: d4b349aaebd83eaff9b082a1c40b6f0778cf79cfc06e358891eca5b74afbf08e
         checksum/config: 7e128a2ddf3f7c508a657aaa591396956be0c8bac009ea3b4a20ebf28f888454
     spec:
- 
       serviceAccountName: minio-sa
       containers:
         - name: minio
@@ -46,7 +45,7 @@ spec:
               mountPath: "/tmp/credentials"
               readOnly: true
             - name: export
-              mountPath: /export       
+              mountPath: /export
           ports:
             - name: http
               containerPort: 9000
@@ -67,7 +66,7 @@ spec:
               value: "public"
           resources:
             requests:
-              memory: 16Gi 
+              memory: 16Gi
       volumes:
         - name: export
           emptyDir: {}

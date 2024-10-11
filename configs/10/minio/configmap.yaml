@@ -118,8 +118,6 @@ data:
     scheme=http
     connectToMinio $scheme
 
-
-
     # Create the buckets
     createBucket pipeline-artifacts "none" false false false
 
@@ -206,8 +204,6 @@ data:
     scheme=http
     connectToMinio $scheme
 
-
-
     # Create the users
     echo console > $MINIO_ACCESSKEY_SECRETKEY_TMP
     echo console123 >> $MINIO_ACCESSKEY_SECRETKEY_TMP
@@ -273,8 +269,6 @@ data:
     # Try connecting to MinIO instance
     scheme=http
     connectToMinio $scheme
-
-
 
   add-svcacct: |-
     #!/bin/sh
@@ -354,8 +348,6 @@ data:
     # Try connecting to MinIO instance
     scheme=http
     connectToMinio $scheme
-
-
 
   custom-command: |-
     #!/bin/sh
