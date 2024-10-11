@@ -34,7 +34,7 @@
 > [!NOTE]
 > You can [customize the terminal](https://github.com/redhat-na-ssa/demo-ai-gitops-catalog/tree/main/components/operators/web-terminal) with custom tooling and styles.
 
-- [ ] Reclone the repository inside the web terminal instance to support the rest of the procedures
+- [ ] Clone the repository inside the web terminal instance to support the rest of the procedures
 
       # change to home dir
       cd ~
