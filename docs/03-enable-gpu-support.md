@@ -58,7 +58,7 @@ In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs
   - [ ] ~Line 29 `.spec.template.metadata.labels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
   - [ ] ~Line 51 `.spec.template.spec.providerSpec.value.instanceType` to `g4dn.4xlarge`.
 
-> [!NOTE]
+> [!TIP]
 > You can use `sed` or `yq` commands. However, sed is more limited and error-prone for complex YAML manipulations. If you have yq installed (a powerful YAML processor), it's much easier to handle such updates.
 
 - [ ] Remove the following fields:
@@ -157,7 +157,7 @@ In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs
 > `...`\
 > `nfd-controller-manager-78758c57f7-7xfh4   2/2     Running   0          48s`
 
-> [!TIP]
+> [!NOTE]
 > After installing the NFD Operator, you create instance that installs the `nfd-master` and one `nfd-worker` pod for each compute node. [More Info](https://docs.openshift.com/container-platform/4.15/hardware_enablement/psap-node-feature-discovery-operator.html#Configure-node-feature-discovery-operator-sources_psap-node-feature-discovery-operator)
 
 - [ ] Create the nfd instance object
