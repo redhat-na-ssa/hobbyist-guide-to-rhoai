@@ -300,7 +300,7 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
       oc get pod -l openshift.driver-toolkit -n nvidia-gpu-operator
 
 > [!IMPORTANT]
-> The Nvidia drivers are not loaded and ready for consumption until this command shows both pods at `2/2` ready. You can move on to execute the next steps for labelling, but can't run the GPU application until this process is completed
+> The Nvidia drivers are not loaded and ready for consumption until this command shows both pods at `2/2` ready. This means that the label selector used in the next step for labelling the nodes won't work either.
 
 > Expected output
 >
