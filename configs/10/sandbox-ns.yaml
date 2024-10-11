@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sandbox
+  annotations:
+    openshift.io/description: |
+      Try your ideas here.
+    openshift.io/display-name: Sandbox
