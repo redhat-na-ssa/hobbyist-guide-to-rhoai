@@ -27,9 +27,12 @@
 
 - [ ] Run the following command to enable in-cluster authentication for workbench ServiceAccounts:
 
-```sh
-oc adm policy add-role-to-group edit system:serviceaccounts:sandbox -n sandbox
-```
+      oc adm policy add-role-to-group edit system:serviceaccounts:sandbox -n sandbox
+
+> Expected output
+>
+> `Warning: Group 'system:serviceaccounts:sandbox' not found`\
+> `clusterrole.rbac.authorization.k8s.io/edit added: "system:serviceaccounts:sandbox"`
 
 - [ ] Access the RHOAI Dashboard by clicking the grid of 9 squares in the top right of the OpenShift Console and Selecting `Red Hat OpenShift AI`
 - [ ] Access the `sandbox` project - it may be on the second page, requiring you to use the page selectors at the bottom of the page
@@ -54,9 +57,7 @@ oc adm policy add-role-to-group edit system:serviceaccounts:sandbox -n sandbox
 - [ ] In the JupyterLab interface, click the `Git` log in the left navigation bar (it's the third one down, below the square-in-circle icon) and select `Clone a Repository`
 - [ ] In the "Clone a repo" dialog, enter the following URI:
 
-  ```
-  https://github.com/redhat-na-ssa/codeflare-sdk
-  ```
+      https://github.com/redhat-na-ssa/codeflare-sdk
 
 - [ ] In the JupyterLab interface, in the left navigation pane, double-click the `codeflare-sdk` folder.
 - [ ] Double-click the `demo-notebooks` folder.
@@ -73,11 +74,11 @@ oc adm policy add-role-to-group edit system:serviceaccounts:sandbox -n sandbox
 > [!IMPORTANT]
 > In the cluster_job_client workbench, if your RayCluster does not come ready and hangs on the cell that says `cluster.wait_ready()` on the last line, you can check the pods in your Sandbox namespace to see if they are stuck in a `Pending` state due to an untolerated taint. If it does, you'll need to restart the Kueue controller in the `redhat-ods-applications` namespace by deleting the pod. For more information about this behavior, see [this docs link](https://kueue.sigs.k8s.io/docs/tasks/run/rayclusters/#before-you-begin).
 
-  ```sh
-  # ONLY RUN IF YOUR RAYCLUSTER DOESN'T COME READY
-  oc get pod -n sandbox -l ray.io/is-ray-node -ojsonpath='{range .items[0].status.conditions[*]}{.message}{"\n"}{end}' | grep 'untolerated'
-  oc delete pod -n redhat-ods-applications -l app.opendatahub.io/kueue
-  ```
+- [ ] Run the following to confirm that your RayCluster isn't hung up
+
+      oc get pod -n sandbox -l ray.io/is-ray-node -ojsonpath='{range .items[0].status.conditions[*]}{.message}{"\n"}{end}' 2>/dev/null | grep 'untolerated'
+  - [ ] If, and only if, the above returns a line showing that the GPU taint was untolerated, should you bounce the Kueue pod using the following command (no copy block to prevent mistakes!)
+    - `oc delete pod -n redhat-ods-applications -l app.opendatahub.io/kueue`
 
 ## Steps
 
