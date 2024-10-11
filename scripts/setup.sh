@@ -190,13 +190,13 @@ step_8(){
 
 step_9(){
   logbanner "Configure rhoai"
-  retry oc apply -f "${GIT_ROOT}"/configs/10/minio
-  retry oc apply -f "${GIT_ROOT}"/configs/10
+  retry oc apply -f "${GIT_ROOT}"/configs/09/minio
+  retry oc apply -f "${GIT_ROOT}"/configs/09
 }
 
 step_10(){
   logbanner "Configure distributed workloads"
-  retry oc apply -f "${GIT_ROOT}"/configs/09
+  retry oc apply -f "${GIT_ROOT}"/configs/10
 }
 
 
