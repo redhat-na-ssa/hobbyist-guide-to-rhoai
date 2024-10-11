@@ -168,7 +168,7 @@ In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs
 >
 > `nodefeaturediscovery.nfd.openshift.io/nfd-instance created`
 
-> [IMPORTANT]
+> [!IMPORTANT]
 > The NFD Operator uses vendor PCI IDs to identify hardware in a node.
 
 Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/member-companies?combine=10de):
