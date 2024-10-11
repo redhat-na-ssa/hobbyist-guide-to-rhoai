@@ -315,7 +315,7 @@ Navigate to RHOAI dashboard -> Data Science Pipelines -> Project `pipeline-test`
 
 You should see the `iris-training` pipeline and be able to execute a pipeline run. Use the three dots menu on the right side of the pipeline to instantiate the run.
 
-> [!TODO}
+> [!TODO]
 > Add a gif
 
 ## Automation key (Catch up)
