@@ -45,6 +45,7 @@ cbc
 ccb
 cd
 cdn
+Ceph
 certificateCERTIFICATECERTIFICATESDFCERTIFICATEcertificateCERTIFICATE
 chgln
 chmod
@@ -173,6 +174,7 @@ GiB
 gif
 github
 GitLab
+GitOps
 gitops
 gln
 gmail
@@ -214,6 +216,7 @@ io
 ip
 isaacmuse
 ish
+Isilon
 istio
 Istio
 ISTIO
@@ -298,6 +301,7 @@ mig
 migratedCompleted
 MinIO
 mkdir
+MLOps
 MNIST
 MobileNet
 ModelMesh
@@ -345,6 +349,7 @@ odc
 odh
 ods
 ojson
+onboarding
 onnx
 opendatahub
 OpenID
@@ -372,15 +377,18 @@ Pipfile
 PKGS
 PoC
 PodSecurity
+PowerScale
 pre
 prebuilt
 Prem
 proxyMetadata
+pulldown
 Pwr
 pytorch
 QoS
 qtgln
 queueing
+Rados
 RayCluster
 rayDashboardOauthEnabled
 rayDashboardOAuthEnabled
