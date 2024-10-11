@@ -15,7 +15,7 @@
 - [Single](https://kserve.github.io/website/0.8/modelserving/v1beta1/serving_runtime/) vs. [Multi-Model](https://kserve.github.io/website/0.8/modelserving/mms/multi-model-serving/) Serving
 - [Runtimes](https://kserve.github.io/website/0.8/modelserving/servingruntimes/) vs. Model Servers
 
-## 7.1 Install RHOS Service Mesh Operator
+## 7.1 Install the OpenShift Service Mesh Operator
 
 ### Objectives
 
@@ -37,16 +37,13 @@
 > [!WARNING]
 > Do not create the ServiceMeshControlPlane object, as you would if interactively installing OpenShift Service Mesh in the web console.
 
-Apply the Service Mesh subscription to install the operator
+- [ ] Apply the Service Mesh subscription to install the operator
 
-```sh
-oc create -f configs/07/servicemesh-subscription.yaml
-```
+      oc create -f configs/07/servicemesh-subscription.yaml
 
-```sh
-# expected output
-subscription.operators.coreos.com/servicemeshoperator created
-```
+> Expected output
+>
+> `subscription.operators.coreos.com/servicemeshoperator created`
 
 > [!NOTE]
 > For `Unmanaged` configuration details, see the \_APPENDIX.md.
@@ -72,17 +69,15 @@ subscription.operators.coreos.com/servicemeshoperator created
 
 - [ ] Create the Serverless Operator objects
 
-```sh
-oc create -f configs/07/serverless-operator.yaml
-```
+      oc create -f configs/07/serverless-operator.yaml
 
-```sh
-# expected output
-namespace/openshift-serverless created
-operatorgroup.operators.coreos.com/serverless-operator created
-subscription.operators.coreos.com/serverless-operator created
-```
+> Expected output
+>
+> `namespace/openshift-serverless created`\
+> `operatorgroup.operators.coreos.com/serverless-operator created`\
+> `subscription.operators.coreos.com/serverless-operator created`
 
+> [!NOTE]
 > For `Unmanaged` deployments additional steps need to be executed. See the Define a ServiceMeshMember for Serverless in the \_APPENDIX.md
 
 ## 7.3 Install Red Hat Authorino Operator
@@ -108,15 +103,13 @@ subscription.operators.coreos.com/serverless-operator created
 
 - [ ] Create the Authorino subscription
 
-```sh
-oc create -f configs/07/authorino-subscription.yaml
-```
+      oc create -f configs/07/authorino-subscription.yaml
 
-```sh
-# expected output
-subscription.operators.coreos.com/authorino-operator created
-```
+> Expected output
+>
+> `subscription.operators.coreos.com/authorino-operator created`
 
+> [!NOTE]
 > For `Unmanaged` deployments additional steps need to be executed. See the Configure Authorino for Unmanaged deployments in the \_APPENDIX.md
 
 ## Validation
