@@ -171,6 +171,10 @@ There are 3x RHOAI Operator dependency states to be set: `Managed`, `Removed`, a
 
     oc wait --for=jsonpath='{.status.phase}'=Ready datasciencecluster default-dsc --timeout=15m
 
+> Expected output
+>
+> `datasciencecluster.datasciencecluster.opendatahub.io/default-dsc condition met`
+
 - [ ] Verify DSC and related object creation
 
       oc get DSCInitialization,FeatureTracker -n redhat-ods-operator
