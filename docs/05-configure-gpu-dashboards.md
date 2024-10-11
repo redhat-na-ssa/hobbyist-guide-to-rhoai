@@ -23,70 +23,56 @@
   - GPU SM Clocks - SM clock frequency in hertz.
   - GPU Utilization - GPU utilization, percent.
   - GPU Framebuffer Mem Used - Frame buffer memory used in MB.
-    Tensor Core Utilization - Ratio of cycles the tensor (HMMA) pipe is active, percent.
+  - Tensor Core Utilization - Ratio of cycles the tensor (HMMA) pipe is active, percent.
 
-> Refer [Here](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/enable-gpu-monitoring-dashboard.html) for details
+> [!NOTE]
+> [Refer here](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/enable-gpu-monitoring-dashboard.html) for details on the GPU monitoring dashboard
 
 ## Steps
 
 - [ ] Download the latest NVIDIA DCGM Exporter Dashboard from the DCGM Exporter repository on GitHub:
 
-```sh
-curl -Lf https://github.com/NVIDIA/dcgm-exporter/raw/main/grafana/dcgm-exporter-dashboard.json -o scratch/dcgm-exporter-dashboard.json
-```
+      curl -Lf https://github.com/NVIDIA/dcgm-exporter/raw/main/grafana/dcgm-exporter-dashboard.json -o scratch/dcgm-exporter-dashboard.json
 
-```sh
-# expected output
-% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                Dload  Upload   Total   Spent    Left  Speed
-0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-100 18114  100 18114    0     0  23496      0 --:--:-- --:--:-- --:--:-- 23496
-```
+> Expected output
+>
+> `% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current`\
+> `                                Dload  Upload   Total   Spent    Left  Speed`\
+> `0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0`\
+> `100 18114  100 18114    0     0  23496      0 --:--:-- --:--:-- --:--:-- 23496`
 
 - [ ] Create a config map from the downloaded file in the openshift-config-managed namespace
 
-```sh
-oc create configmap -n openshift-config-managed nvidia-dcgm-exporter-dashboard --from-file=nvidia-dcgm-dashboard.json=scratch/dcgm-exporter-dashboard.json
-```
+      oc create configmap -n openshift-config-managed nvidia-dcgm-exporter-dashboard --from-file=nvidia-dcgm-dashboard.json=scratch/dcgm-exporter-dashboard.json
 
-```sh
-# expected output
-configmap/nvidia-dcgm-exporter-dashboard created
-```
+> Expected output
+>
+> `configmap/nvidia-dcgm-exporter-dashboard created`
 
 - [ ] Label the config map to expose the dashboard in the Administrator perspective of the web console `dashboard`:
 
-```sh
-oc label configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed "console.openshift.io/dashboard=true"
-```
+      oc label configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed "console.openshift.io/dashboard=true"
 
-```sh
-# expected output
-configmap/nvidia-dcgm-exporter-dashboard labeled
-```
+> Expected output
+>
+> `configmap/nvidia-dcgm-exporter-dashboard labeled`
 
 - [ ] Optional: Label the config map to expose the dashboard in the Developer perspective of the web console `odc-dashboard`:
 
-```sh
-oc label configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed "console.openshift.io/odc-dashboard=true"
-```
+      oc label configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed "console.openshift.io/odc-dashboard=true"
 
-```sh
-# expected output
-configmap/nvidia-dcgm-exporter-dashboard labeled
-```
+> Expected output
+>
+> `configmap/nvidia-dcgm-exporter-dashboard labeled`
 
 - [ ] View the created resource and verify the labels for the `dashboard` and `odc-dashboard`
 
-```sh
-oc -n openshift-config-managed get cm nvidia-dcgm-exporter-dashboard --show-labels
-```
+      oc -n openshift-config-managed get cm nvidia-dcgm-exporter-dashboard --show-labels
 
-```sh
-# expected output
-NAME                             DATA   AGE     LABELS
-nvidia-dcgm-exporter-dashboard   1      3m28s   console.openshift.io/dashboard=true,console.openshift.io/odc-dashboard=true
-```
+> Expected output
+>
+> `NAME                             DATA   AGE     LABELS`\
+> `nvidia-dcgm-exporter-dashboard   1      3m28s   console.openshift.io/dashboard=true,console.openshift.io/odc-dashboard=true`
 
 - [ ] View the NVIDIA DCGM Exporter Dashboard from the OCP UI from Administrator and Developer
 
