@@ -1,4 +1,4 @@
-# 10. Administrative Configurations for RHOAI
+# 09. Administrative Configurations for RHOAI / Data Science Pipelines
 
 ### Objectives
 
