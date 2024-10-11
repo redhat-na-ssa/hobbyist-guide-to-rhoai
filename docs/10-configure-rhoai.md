@@ -86,6 +86,10 @@
 
       oc scale machineset --replicas=1 -n openshift-machine-api $machineset
 
+> Example output
+>
+> `machineset.machine.openshift.io/cluster-5mgxv-42f4t-worker-us-east-2b scaled`
+
 ## 10.3 Add a custom serving runtime
 
 ### Objectives
@@ -118,6 +122,7 @@
 
 > Expected output
 >
+> `template.template.openshift.io/triton created`
 
 ## Validation
 
@@ -149,7 +154,11 @@
 
 - [ ] Create a new project for the database
 
-      oc new-project database
+      oc project database || oc new-project database
+
+> Expected output
+>
+> `Now using project "database" on server "https://api.cluster-5mgxv.5mgxv.sandbox3005.opentlc.com:6443".`
 
 - [ ] Create the database instance
 
@@ -170,9 +179,44 @@
       -e MYSQL_USER=$MYSQL_USER \
       -e MYSQL_PASSWORD=$MYSQL_PASSWORD
 
+> Expected output
+>
+> `--> Found image cd3719d (3 weeks old) in image stream "openshift/mysql" under tag "8.0-el9" for "mysql:8.0-el9"`
+>
+> `    MySQL 8.0`\
+> `    ---------`\
+> `    MySQL is a multi-user, multi-threaded SQL database server. The container image provides a containerized packaging of the MySQL mysqld daemon and client application. The mysqld server daemon accepts connections from clients and provides access to content from MySQL databases on behalf of the clients.`
+>
+> `    Tags: database, mysql, mysql80, mysql-80`
+>
+>
+> `--> Found image 8fcde26 (7 days old) in image stream "openshift/mysql" under tag "8.0-el8" for "mysql"`
+>
+> `    MySQL 8.0`\
+> `    ---------`\
+> `    MySQL is a multi-user, multi-threaded SQL database server. The container image provides a containerized packaging of the MySQL mysqld daemon and client application. The mysqld server daemon accepts connections from clients and provides access to content from MySQL databases on behalf of the clients.`
+>
+> `    Tags: database, mysql, mysql80, mysql-80`
+>
+>
+> `--> Creating resources ...`\
+> `    deployment.apps "mysql" created`\
+> `    deployment.apps "mysql-1" created`\
+> `    service "mysql" created`\
+> `    service "mysql-1" created`\
+> `--> Success`\
+> `    Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:`\
+> `     'oc expose service/mysql'`\
+> `     'oc expose service/mysql-1'`\
+> `    Run 'oc status' to view your app.`
+
 - [ ] Wait for the database to install
 
       oc wait --for=jsonpath='{.status.replicas}'=1 deploy mysql -n database
+
+> Expected output
+>
+> `deployment.apps/mysql condition met`
 
 - [ ] Create a project for MinIO and set env vars.
 
@@ -180,9 +224,29 @@
       MINIO_ROOT_USER=rootuser
       MINIO_ROOT_PASSWORD=rootuser123
 
+> Expected output
+>
+> `Now using project "minio" on server "https://api.cluster-5mgxv.5mgxv.sandbox3005.opentlc.com:6443".`
+>
+> `You can add applications to this project with the 'new-app' command. For example, try:`
+>
+> `    oc new-app rails-postgresql-example`
+>
+> `to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:`
+>
+> `    kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.43 -- /agnhost serve-hostname`
+
 - [ ] Configure the MinIO Helm repository
 
       helm repo add minio https://charts.min.io/
+
+> Expected output
+>
+> `"minio" has been added to your repositories`
+>
+> Or, potentially
+>
+> `"minio" already exists with the same configuration, skipping`
 
 - [ ] Deploy MinIO via the Helm chart in its own namespace with a bucket for pipelines
 
@@ -196,22 +260,51 @@
         --set 'buckets[0].name=pipeline-artifacts,buckets[0].policy=none,buckets[0].purge=false' \
         minio/minio
 
+> Expected output
+>
+> `NAME: minio`\
+> `LAST DEPLOYED: Fri Oct 11 15:23:20 2024`\
+> `NAMESPACE: minio`\
+> `STATUS: deployed`\
+> `...`
+
 - [ ] Create data science projects for use with these pipelines
 
       oc new-project pipeline-test
       oc label ns pipeline-test opendatahub.io/dashboard=true
+
+> Expected output
+>
+> `Now using project "pipeline-test" on server "https://api.cluster-5mgxv.5mgxv.sandbox3005.opentlc.com:6443".`
+>
+> `You can add applications to this project with the 'new-app' command. For example, try:`
+>
+> `    oc new-app rails-postgresql-example`
+>
+> `to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:`
+>
+> `    kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.43 -- /agnhost serve-hostname`
 
 - [ ] Create required secrets for pipeline server
 
       oc create secret generic dbpassword --from-literal=dbpassword=$MYSQL_PASSWORD -n pipeline-test
       oc create secret generic dspa-secret --from-literal=AWS_ACCESS_KEY_ID=$MINIO_ROOT_USER --from-literal=AWS_SECRET_ACCESS_KEY=$MINIO_ROOT_PASSWORD -n pipeline-test
 
+> Expected output
+>
+> `secret/dbpassword created`\
+> `secret/dspa-secret created`
+
 - [ ] Create the pipeline server
 
 > [!NOTE]
 > The sample MySQL deployment does not have SSL configured so we need to add a `customExtraParams` field to disable the TLS check. For a production MySQL deployment, you can remove this parameter to enable the TLS check.
 
-    oc apply -f configs/10/rhoa-test-pipeline-server.yaml
+    oc apply -f configs/10/rhoai-test-pipeline-server.yaml
+
+> Expected output
+>
+> `datasciencepipelinesapplication.datasciencepipelinesapplications.opendatahub.io/dspa created`
 
 > [!NOTE]
 > The pipeline server was configured with an example pipeline using the parameter `enableSamplePipeline`.
@@ -221,6 +314,9 @@
 Navigate to RHOAI dashboard -> Data Science Pipelines -> Project `pipeline-test`
 
 You should see the `iris-training` pipeline and be able to execute a pipeline run. Use the three dots menu on the right side of the pipeline to instantiate the run.
+
+> [!TODO}
+> Add a gif
 
 ## Automation key (Catch up)
 
