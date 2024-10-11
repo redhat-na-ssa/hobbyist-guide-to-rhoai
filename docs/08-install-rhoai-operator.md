@@ -169,7 +169,7 @@ There are 3x RHOAI Operator dependency states to be set: `Managed`, `Removed`, a
 > [!NOTE]
 > This may take up to around ten minutes.
 
-      oc wait --for=jsonpath='{.status.phase}'=Ready datasciencecluster default-dsc
+    oc wait --for=jsonpath='{.status.phase}'=Ready datasciencecluster default-dsc --timeout=15m
 
 - [ ] Verify DSC and related object creation
 
