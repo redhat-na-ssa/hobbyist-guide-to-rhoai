@@ -58,7 +58,7 @@
 > `NAME             READY   STATUS      RESTARTS   AGE`\
 > `cuda-vectoradd   0/1     Completed   0          54s`
 
-- [ ] View the new pods
+- [ ] View the driver pods
 
       oc get pod -o wide -l openshift.driver-toolkit=true -n nvidia-gpu-operator
 
@@ -68,7 +68,7 @@
 > `nvidia-driver-daemonset-415.92.202407091355-0-64sml   2/2     Running   2          21h   10.xxx.0.x    ip-10-0-22-25.us-xxxx-x.compute.internal   <none>           <none>`\
 > `nvidia-driver-daemonset-415.92.202407091355-0-clp7f   2/2     Running   2          21h   10.xxx.0.xx   ip-10-0-22-15.us-xxxx-x.compute.internal   <none>           <none>`
 
-- [ ] With the Pod and node name, run the nvidia-smi on the correct node.
+- [ ] Run the nvidia-smi command to see the GPU reporting in
 
       oc exec -itn nvidia-gpu-operator $(oc get pod -n nvidia-gpu-operator -l openshift.driver-toolkit=true -ojsonpath='{.items[0].metadata.name}') -- nvidia-smi
 
