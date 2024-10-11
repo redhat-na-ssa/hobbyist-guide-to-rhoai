@@ -221,6 +221,10 @@ For NVIDIA GPU there are a few methods to optimize GPU utilization:
         patch "${MACHINE_SET_TYPE}" \
         --type=merge --patch '{"spec":{"template":{"spec":{"taints":[{"key":"nvidia.com/gpu","value":"","effect":"NoSchedule"}]}}}}'
 
+> Expected output
+>
+> `machineset.machine.openshift.io/cluster-xxxx-xxxx-worker-us-xxxx-gpu patched`
+
 > [!IMPORTANT]
 > Tolerations will be set in the RHOAI accelerator profiles that match the Taint key.
 
