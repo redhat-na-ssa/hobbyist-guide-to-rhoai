@@ -38,12 +38,16 @@
 
       # change to home dir
       cd ~
+
       # clone in the web terminal
       git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
+
       # change directory
       cd hobbyist-guide-to-rhoai/
+
       # checkout below branch
       git checkout hshishir-25ba6c
+
       # make scratch dir
       mkdir scratch
 
