@@ -19,7 +19,7 @@
 
 - [ ] Create a test project
 
-      oc new-project sandbox
+      oc project sandbox || oc new-project sandbox
 
 > Expected output
 >
