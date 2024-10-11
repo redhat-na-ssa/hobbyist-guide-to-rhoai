@@ -22,37 +22,30 @@
 
 - [ ] Apply the subscription object
 
-```sh
-# Install web terminal operator
-oc apply -f configs/02/web-terminal-subscription.yaml
+      oc apply -f configs/02/web-terminal-subscription.yaml
 
-# CRDs may take a few minutes to get setup by the operator
-# Re-run the following command until it completes successfully
-oc apply -f configs/02/web-terminal-tooling.yaml
-```
+  - CRDs may take a few minutes to get setup by the operator
+  - Re-run the following command until it completes successfully
 
-> From the OCP Web Console, Refresh the browser and click the `>_` icon in the top right of the window. This can serve as your browser based CLI.
+        oc apply -f configs/02/web-terminal-tooling.yaml
 
-> Note: you can [customize the terminal](https://github.com/redhat-na-ssa/demo-ai-gitops-catalog/tree/main/components/operators/web-terminal) with custom tooling and styles.
+- [ ] From the OpenShift Web Console, Refresh the browser and click the `>_` icon in the top right of the window. This can serve as your browser based CLI.
 
-> You can `git clone` in the instance and complete the rest of the procedure.
+> [!NOTE]
+> You can [customize the terminal](https://github.com/redhat-na-ssa/demo-ai-gitops-catalog/tree/main/components/operators/web-terminal) with custom tooling and styles.
 
-```sh
-# change to home dir
-cd ~
+- [ ] Reclone the repository inside the web terminal instance to support the rest of the procedures
 
-# clone in the web terminal
-git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
-
-# change directory
-cd hobbyist-guide-to-rhoai/
-
-# checkout below branch
-git checkout hshishir-25ba6c
-
-# make scratch dir
-mkdir scratch
-```
+      # change to home dir
+      cd ~
+      # clone in the web terminal
+      git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
+      # change directory
+      cd hobbyist-guide-to-rhoai/
+      # checkout below branch
+      git checkout hshishir-25ba6c
+      # make scratch dir
+      mkdir scratch
 
 ## Validation
 
