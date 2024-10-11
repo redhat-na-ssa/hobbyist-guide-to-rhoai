@@ -211,11 +211,11 @@ For NVIDIA GPU there are a few methods to optimize GPU utilization:
 > `node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal uncordoned`\
 > `node/ip-10-x-xx-xxx.us-xxxx-x.compute.internal uncordoned`\
 
-- [ ] Get the name of the gpu node
+- [ ] Get the name of the GPU node MachineSet
 
       MACHINE_SET_TYPE=$(oc get machineset -n openshift-machine-api -o name |  egrep gpu)
 
-- [ ] Taint the machineset for any new nodes that get added to be tainted with `nvidia.com/gpu`
+- [ ] Taint the MachineSet for any new nodes that get added to be tainted with `nvidia.com/gpu`
 
       oc -n openshift-machine-api \
         patch "${MACHINE_SET_TYPE}" \
