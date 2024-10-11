@@ -12,11 +12,10 @@
 
 ### Takeaways
 
-- Best practice routing to the internal service versus the external route
-- Notebook #1 and the concept of Ray and Kueue
-  - Running and pod on CPU and job on 3 pods on GPUs
-- Notebook #2 "batch" job
-- Notebook #2 "interactive" job
+- Distributed Workloads functionalities of RHOAI enable use of many resources and large amounts of chunked work
+- Multi-tenancy and smart resource utilization is built into the multi-stage scheduler design
+- Distributed workloads can be interacted with by submitting jobs, including through the Kubernetes API, or by interactively working within Python code
+- S3-compatible object storage facilitates synchronizing work across multiple workers and should be expected to be available for these use cases
 
 ## Prerequisites
 
