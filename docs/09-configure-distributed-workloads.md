@@ -115,7 +115,7 @@ In this example, the kueue.x-k8s.io/default-queue: "true" annotation defines thi
 > Expected output
 >
 > `NAME               CLUSTERQUEUE    PENDING WORKLOADS   ADMITTED WORKLOADS`\
-> `local-queue-test   cluster-queue   0`
+> `local-queue-test   cluster-queue   0                   0`
 
 ## Automation key (Catch up)
 
