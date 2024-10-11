@@ -46,7 +46,7 @@ For this bootcamp, we are using HTpasswd as the Identity Provider (IdP). To lear
 
 > Expected output
 >
-> `NAME              TYPE     DATA   AGE`
+> `NAME              TYPE     DATA   AGE`\
 > `htpasswd-local   Opaque   1      4m46s`
 
 - [ ] Apply the resource to the default OAuth configuration to add the identity provider
