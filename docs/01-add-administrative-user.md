@@ -74,6 +74,9 @@ For this bootcamp, we are using HTpasswd as the Identity Provider (IdP). To lear
 
       oc adm policy add-cluster-role-to-user cluster-admin <username>
 
+> [!NOTE]
+> You may see a line saying `Warning: User '<username>' not found`. This is expected and okay. The `User` object that derives from the login with your `htpasswd` credentials isn't created until the first time that user attempts to log in, and the policy will apply to that `User` object the first time it's created.
+
 > Expected output
 >
 > `clusterrole.rbac.authorization.k8s.io/cluster-admin added: "<username>"`
