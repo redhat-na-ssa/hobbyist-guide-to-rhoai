@@ -91,6 +91,7 @@ daemonset
 datasciencecluster
 DataScienceCluster
 datasciencepipelines
+dataset
 dcgm
 DCGM
 dcgmExporter
@@ -197,6 +198,7 @@ https
 HTTPS
 hugepages
 HuggingFace
+hyperparameter
 IdP
 IDPs
 InferenceServices
@@ -296,6 +298,7 @@ mig
 migratedCompleted
 MinIO
 mkdir
+MNIST
 MobileNet
 ModelMesh
 modelmeshserving
@@ -426,6 +429,8 @@ Servable
 servables
 serverless
 Serverless
+ServiceAccount
+ServiceAccounts
 servicemesh
 serviceMesh
 ServiceMesh
@@ -494,6 +499,7 @@ Uncorr
 unixODBC
 Unmanaged
 untolerated
+URI
 url
 Util
 UTIL
@@ -518,6 +524,7 @@ xc
 XDS
 Xferd
 xfh
+XGBoost
 xlarge
 xxxx
 xxxxx
