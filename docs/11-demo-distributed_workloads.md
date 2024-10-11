@@ -74,7 +74,7 @@
 > [!IMPORTANT]
 > In the cluster_job_client workbench, if your RayCluster does not come ready and hangs on the cell that says `cluster.wait_ready()` on the last line, you can check the pods in your Sandbox namespace to see if they are stuck in a `Pending` state due to an untolerated taint. If it does, you'll need to restart the Kueue controller in the `redhat-ods-applications` namespace by deleting the pod. For more information about this behavior, see [this docs link](https://kueue.sigs.k8s.io/docs/tasks/run/rayclusters/#before-you-begin).
 
-- [ ] Run the following to confirm that your RayCluster isn't hung up
+- [ ] If you're running 1_cluster_job_client and you're in the above situation, run the following to confirm that your RayCluster isn't hung up
 
       oc get pod -n sandbox -l ray.io/is-ray-node -ojsonpath='{range .items[0].status.conditions[*]}{.message}{"\n"}{end}' 2>/dev/null | grep 'untolerated'
   - [ ] If, and only if, the above returns a line showing that the GPU taint was untolerated, should you bounce the Kueue pod using the following command (no copy block to prevent mistakes!)
