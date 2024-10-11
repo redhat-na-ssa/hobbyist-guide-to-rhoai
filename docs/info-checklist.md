@@ -70,7 +70,7 @@ This is checklist of the technical steps needed to complete the installation and
 
 ## Tutorials
 
-- [ ] Demonstrate Fraud Detection Demo
+- [ ] Demonstrate Fraud Detection Dem
   - [ ] Create workbench
   - [ ] Clone in repo
   - [ ] Train model
