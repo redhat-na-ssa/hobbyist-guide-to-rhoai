@@ -171,6 +171,10 @@ For NVIDIA GPU there are a few methods to optimize GPU utilization:
 
       oc patch clusterpolicy gpu-cluster-policy --type=merge --patch '{"spec":{"daemonsets":{"tolerations":[{"effect":"NoSchedule","operator":"Exists","key":"nvidia.com/gpu"}]}}}'
 
+> Expected output
+>
+> `clusterpolicy.nvidia.com/gpu-cluster-policy patched`
+
 - [ ] Cordon the GPU node, drain the GPU tainted nodes and terminate workloads
 
       oc adm drain -l nvidia.com/gpu.machine --ignore-daemonsets --delete-emptydir-data
