@@ -122,7 +122,7 @@ done
 
 step_0(){
   validate_setup || return 1
-  
+ 
   logbanner "Install prerequisites"
   retry oc apply -f "${GIT_ROOT}"/configs/00
 }
@@ -133,7 +133,7 @@ step_1(){
 
   if [ -f "${DEFAULT_ADMIN_PASS}" ]; then
     HT_PASSWORD=$(cat "${DEFAULT_ADMIN_PASS}")
-    
+
     htpasswd_validate_user "${HT_USERNAME}" "${HT_PASSWORD}"
 
     echo "Delete ${DEFAULT_ADMIN_PASS} to recreate password
@@ -141,7 +141,7 @@ step_1(){
     return
   else
     retry oc apply -f "${GIT_ROOT}"/configs/01
-    add_admin_user admin    
+    add_admin_user admin
   fi
 }
 
@@ -219,7 +219,7 @@ workshop_uninstall(){
   oc delete csv -A -l operators.coreos.com/servicemeshoperator.openshift-operators
   oc delete csv -A -l operators.coreos.com/web-terminal.openshift-operators
 
-  oc delete -n openshift-operators deploy devworkspace-webhook-server 
+  oc delete -n openshift-operators deploy devworkspace-webhook-server
 
   oc delete \
     -f "${GIT_ROOT}"/configs/00 \
@@ -232,7 +232,7 @@ workshop_uninstall(){
     -f "${GIT_ROOT}"/configs/09 \
     -f "${GIT_ROOT}"/configs/10 \
     -f "${GIT_ROOT}"/configs/uninstall
-  
+ 
   oc apply \
     -f "${GIT_ROOT}"/configs/restore
 

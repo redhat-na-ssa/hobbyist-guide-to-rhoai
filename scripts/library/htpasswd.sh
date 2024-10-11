@@ -65,7 +65,7 @@ htpasswd_validate_user(){
 
   retry oc --kubeconfig "${TMP_CONFIG}" login \
     -u "${USER}" -p "${PASS}" > /dev/null 2>&1 || return 1
-  
+ 
   # verify user is present
   oc get user "${USER}" || return 1
 
