@@ -13,8 +13,9 @@
 - This does demonstrate a way for researchers/DS to schedule work on the cluster without any additional subs.
 - The nvidia-smi output is valuable and familiar for a variety of data points (CUDA Version, and Driver Version) that the operator handles install/config.
 
-> Refer [(Here)](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/install-gpu-ocp.html#running-a-sample-gpu-application)
-> for details
+> Refer [(Here)](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/install-gpu-ocp.html#running-a-sample-gpu-application) for details
+
+## Steps
 
 - [ ] Create a test project
 

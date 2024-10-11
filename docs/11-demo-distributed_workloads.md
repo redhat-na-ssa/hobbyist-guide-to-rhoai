@@ -1,4 +1,4 @@
-# Demo - Distributed Workloads
+# 11. Demo - Distributed Workloads
 
 ### Objectives
 
@@ -20,6 +20,8 @@
 ## Prerequisites
 
 - Cluster setup steps 0 - 10 are completed
+
+## 11.1 Configuring the demo workbench
 
 ## Steps
 
@@ -66,6 +68,8 @@ oc adm policy add-role-to-group edit system:serviceaccounts:sandbox -n sandbox
 > [!NOTE]
 > The `[*]` indicator to the left of a cell means it's waiting to start or complete execution. The indicator will change to a number, like `[5]` on `cluster.status()` in this notebook if you used the ⏩ button and came back to read this note, when it has completed execution. The numbers indicate the order that the cell was executed in Python.
 
+## 11.2 Running the distributed workloads demos
+
 > [!IMPORTANT]
 > In the cluster_job_client workbench, if your RayCluster does not come ready and hangs on the cell that says `cluster.wait_ready()` on the last line, you can check the pods in your Sandbox namespace to see if they are stuck in a `Pending` state due to an untolerated taint. If it does, you'll need to restart the Kueue controller in the `redhat-ods-applications` namespace by deleting the pod. For more information about this behavior, see [this docs link](https://kueue.sigs.k8s.io/docs/tasks/run/rayclusters/#before-you-begin).
 
@@ -74,6 +78,8 @@ oc adm policy add-role-to-group edit system:serviceaccounts:sandbox -n sandbox
   oc get pod -n sandbox -l ray.io/is-ray-node -ojsonpath='{range .items[0].status.conditions[*]}{.message}{"\n"}{end}' | grep 'untolerated'
   oc delete pod -n redhat-ods-applications -l app.opendatahub.io/kueue
   ```
+
+## Steps
 
 - [ ] Run the following notebooks, reading the notes and text as you go, and understanding the code blocks as they are executed alongside their output. If you have questions, your presenter should be able to help.
 

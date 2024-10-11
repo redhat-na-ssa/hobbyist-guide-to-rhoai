@@ -27,6 +27,8 @@
 
 > Refer [Here](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/enable-gpu-monitoring-dashboard.html) for details
 
+## Steps
+
 - [ ] Download the latest NVIDIA DCGM Exporter Dashboard from the DCGM Exporter repository on GitHub:
 
 ```sh

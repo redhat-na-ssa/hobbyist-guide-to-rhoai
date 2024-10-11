@@ -372,6 +372,7 @@ oc apply -f scratch/nvidia-gpu-clusterpolicy.json
 clusterpolicy.nvidia.com/gpu-cluster-policy created
 ```
 
+> [!NOTE]
 > At this point, the GPU Operator proceeds and installs all the required components to set up the NVIDIA GPUs in the OpenShift 4 cluster. Wait at least 10-20 minutes before digging deeper into any form of troubleshooting because this may take a period of time to finish.
 
 - [ ] Verify the successful installation of the NVIDIA GPU Operator
