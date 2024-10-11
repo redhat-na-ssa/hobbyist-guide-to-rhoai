@@ -2,8 +2,10 @@
 acceleratorprofile
 AcceleratorProfile
 acceleratorprofiles
+adm
 af
 ai
+allocatable
 amd
 Ansible
 api
@@ -73,6 +75,7 @@ controlPlane
 coreos
 cpu
 CPUs
+cr
 CRB
 CRDs
 creationTimestamp
@@ -89,10 +92,12 @@ customCABundle
 customizable
 cxm
 daemonset
+daemonsets
 datasciencecluster
 DataScienceCluster
 datasciencepipelines
 dataset
+dbpassword
 dcgm
 DCGM
 dcgmExporter
@@ -107,6 +112,8 @@ dev
 devFlags
 deviceClassWhitelist
 deviceLabelFields
+deviceplugin
+devicePlugin
 devworkspace
 DevWorkspace
 df
@@ -129,6 +136,7 @@ DSCI
 dscinitialization
 DSCInitialization
 DSP
+dspa
 eae
 ECC
 ef
@@ -137,6 +145,7 @@ egressgateway
 el
 Elyra
 embeddings
+emptydir
 Enablement
 enablePrometheusMerge
 enablerepo
@@ -174,8 +183,8 @@ GiB
 gif
 github
 GitLab
-GitOps
 gitops
+GitOps
 gln
 gmail
 gpu
@@ -223,6 +232,7 @@ ISTIO
 istiod
 ISV
 ISVs
+itn
 Jaeger
 Jira
 jq
@@ -299,6 +309,7 @@ microservice
 microservices
 mig
 migratedCompleted
+minio
 MinIO
 mkdir
 MLOps
@@ -349,6 +360,7 @@ odc
 odh
 ods
 ojson
+ojsonpath
 onboarding
 onnx
 opendatahub
@@ -393,6 +405,7 @@ RayCluster
 rayDashboardOauthEnabled
 rayDashboardOAuthEnabled
 rbac
+Reclone
 recommender
 reconfigurability
 redhat
@@ -416,6 +429,9 @@ rhods
 rnm
 rollout
 rootNamespace
+rootPassword
+rootuser
+rootUser
 RPC
 rsa
 RStudio
@@ -502,6 +518,7 @@ tsngh
 UI
 uid
 UID
+uncordon
 uncordoned
 Uncorr
 unixODBC
