@@ -49,7 +49,7 @@ Before you install RHOAI, it is important to understand how it's dependencies wi
 
 - [ ] Create the namespace in your RHOCP cluster
 
-      oc create -f configs/08/rhoai-operator-ns.yaml
+      oc create -f configs/07/rhoai-operator-ns.yaml
 
 > Expected output
 >
@@ -57,7 +57,7 @@ Before you install RHOAI, it is important to understand how it's dependencies wi
 
 - [ ] Create the OperatorGroup object
 
-      oc create -f configs/08/rhoai-operator-group.yaml
+      oc create -f configs/07/rhoai-operator-group.yaml
 
 > Expected output
 >
@@ -68,7 +68,7 @@ Before you install RHOAI, it is important to understand how it's dependencies wi
 
 - [ ] Create the Subscription object
 
-      oc create -f configs/08/rhoai-operator-subscription.yaml
+      oc create -f configs/07/rhoai-operator-subscription.yaml
 
 > Expected output
 >
@@ -158,7 +158,7 @@ There are 3x RHOAI Operator dependency states to be set: `Managed`, `Removed`, a
 
 - [ ] Create the DSC object
 
-      oc create -f configs/08/rhoai-operator-dsc.yaml
+      oc create -f configs/07/rhoai-operator-dsc.yaml
 
 > Expected output
 >
@@ -200,7 +200,7 @@ There are 3x RHOAI Operator dependency states to be set: `Managed`, `Removed`, a
 
 ## Validation
 
-![](/assets/08-validation.gif)
+![](/assets/07-validation.gif)
 
 ## Automation key (Catch up)
 

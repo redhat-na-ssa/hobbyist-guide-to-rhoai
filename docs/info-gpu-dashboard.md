@@ -161,5 +161,5 @@ oc -n nvidia-gpu-operator get all -l app.kubernetes.io/name=console-plugin-nvidi
 - [ ] From this repository's root directory, run below command
 
 ```sh
-oc apply -k configs/05/console-plugin
+oc apply -k configs/04/console-plugin
 ```

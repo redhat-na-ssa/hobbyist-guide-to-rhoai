@@ -14,9 +14,6 @@ git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
 
 # change into the repo directory
 cd hobbyist-guide-to-rhoai
-
-# checkout below branch
-git checkout hshishir-25ba6c
 ```
 
 - [ ] Create scratch directory
@@ -41,3 +38,6 @@ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 ```sh
 ./scripts/setup.sh -s 0
 ```
+
+> [!NOTE]
+> This will automatically setup the [web terminal](/docs/info-install-web-terminal.md).

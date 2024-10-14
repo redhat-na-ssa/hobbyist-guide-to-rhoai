@@ -61,6 +61,8 @@ check_cluster_version(){
 
 validate_cli(){
   bin_check oc
+  bin_check helm
+  bin_check jq
   echo ""
 }
 
@@ -100,15 +102,14 @@ help(){
   loginfo " -s, --step   step number (required)"
   loginfo "        0       - Install prerequisites"
   loginfo "        1       - Add administrative user"
-  loginfo "        2       - (Optional) Install web terminal"
-  loginfo "        3       - Enable gpu support"
-  loginfo "        4       - Run sample gpu application"
-  loginfo "        5       - Configure gpu dashboards"
-  loginfo "        6       - Configure gpu sharing method"
-  loginfo "        7       - Install kserve dependencies"
-  loginfo "        8       - Install RHOAI operator"
-  loginfo "        9       - Configure distributed workloads"
-  loginfo "        10      - Configure rhoai / All"
+  loginfo "        2       - Enable gpu support"
+  loginfo "        3       - Run sample gpu application"
+  loginfo "        4       - Configure gpu dashboards"
+  loginfo "        5       - Configure gpu sharing method"
+  loginfo "        6       - Install kserve dependencies"
+  loginfo "        7       - Install RHOAI operator"
+  loginfo "        8       - Configure distributed workloads"
+  loginfo "        9       - Configure rhoai / All"
   return 0
 }
 
@@ -134,10 +135,11 @@ step_1(){
   if [ -f "${DEFAULT_ADMIN_PASS}" ]; then
     HT_PASSWORD=$(cat "${DEFAULT_ADMIN_PASS}")
 
+    loginfo "Delete ${DEFAULT_ADMIN_PASS} to create a NEW password
+    "
+
     htpasswd_validate_user "${HT_USERNAME}" "${HT_PASSWORD}"
 
-    echo "Delete ${DEFAULT_ADMIN_PASS} to recreate password
-    "
     return
   else
     retry oc apply -f "${GIT_ROOT}"/configs/01
@@ -146,12 +148,6 @@ step_1(){
 }
 
 step_2(){
-  logbanner "(Optional) Install web terminal"
-  loginfo "Web Terminal"
-  retry oc apply -f "${GIT_ROOT}"/configs/02
-}
-
-step_3(){
   logbanner "Enable gpu support"
   loginfo "Create a GPU machineset"
   ocp_aws_create_gpu_machineset
@@ -159,21 +155,27 @@ step_3(){
   ocp_aws_taint_gpu_machineset
   ocp_scale_machineset
   # ocp_control_nodes_not_schedulable
+  retry oc apply -f "${GIT_ROOT}"/configs/02
+}
+
+step_3(){
+  logbanner "Run sample gpu application"
   retry oc apply -f "${GIT_ROOT}"/configs/03
 }
 
 step_4(){
-  logbanner "Run sample gpu application"
+  logbanner "Configure gpu dashboards"
   retry oc apply -f "${GIT_ROOT}"/configs/04
 }
 
 step_5(){
-  logbanner "Configure gpu dashboards"
+  logbanner "Configure gpu sharing method"
   retry oc apply -f "${GIT_ROOT}"/configs/05
+
 }
 
 step_6(){
-  logbanner "Configure gpu sharing method"
+  logbanner "Install kserve dependencies"
   retry oc apply -f "${GIT_ROOT}"/configs/06
 
   loginfo "Patch cluster policy to use device-plugin-config"
@@ -188,24 +190,19 @@ step_6(){
 }
 
 step_7(){
-  logbanner "Install kserve dependencies"
+  logbanner "Install RHOAI operator"
   retry oc apply -f "${GIT_ROOT}"/configs/07
 }
 
 step_8(){
-  logbanner "Install RHOAI operator"
+  logbanner "Configure rhoai"
+  retry oc apply -f "${GIT_ROOT}"/configs/08/minio
   retry oc apply -f "${GIT_ROOT}"/configs/08
 }
 
 step_9(){
-  logbanner "Configure rhoai"
-  retry oc apply -f "${GIT_ROOT}"/configs/09/minio
-  retry oc apply -f "${GIT_ROOT}"/configs/09
-}
-
-step_10(){
   logbanner "Configure distributed workloads"
-  retry oc apply -f "${GIT_ROOT}"/configs/10
+  retry oc apply -f "${GIT_ROOT}"/configs/09
 }
 
 
@@ -214,7 +211,7 @@ workshop_uninstall(){
 
   oc -n kube-system get secret/kubeadmin || return 1
 
-  rm "${DEFAULT_HTPASSWD}"{,.txt}
+  rm "${DEFAULT_HTPASSWD}"{,.txt} "${DEFAULT_ADMIN_PASS}"
 
   oc delete datasciencecluster default-dsc
   oc delete dscinitialization default-dsci
@@ -229,6 +226,12 @@ workshop_uninstall(){
   oc delete csv -A -l operators.coreos.com/servicemeshoperator.openshift-operators
   oc delete csv -A -l operators.coreos.com/web-terminal.openshift-operators
 
+  GPU_MACHINE_SET=$(oc -n openshift-machine-api get machinesets -o name | grep -E 'gpu|g4dn' | head -n1)
+  for set in ${GPU_MACHINE_SET}
+  do
+    oc -n openshift-machine-api delete "$set"
+  done
+
   oc delete -n openshift-operators deploy devworkspace-webhook-server
 
   oc delete \
@@ -237,10 +240,11 @@ workshop_uninstall(){
     -f "${GIT_ROOT}"/configs/02 \
     -f "${GIT_ROOT}"/configs/03 \
     -f "${GIT_ROOT}"/configs/04 \
+    -f "${GIT_ROOT}"/configs/05 \
+    -f "${GIT_ROOT}"/configs/06 \
     -f "${GIT_ROOT}"/configs/07 \
     -f "${GIT_ROOT}"/configs/08 \
     -f "${GIT_ROOT}"/configs/09 \
-    -f "${GIT_ROOT}"/configs/10 \
     -f "${GIT_ROOT}"/configs/uninstall
 
   oc apply \

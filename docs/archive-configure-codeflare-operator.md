@@ -17,7 +17,7 @@ In the `codeflare-operator-config`, data:config.yaml:kuberay section, you can pa
 - Recommended to keep default. If needed, apply the configuration to update the object
 
   - ```sh
-    oc apply -f configs/12/rhoai-codeflare-operator-config.yaml
+    oc apply -f configs/11/rhoai-codeflare-operator-config.yaml
     ```
 
 ## Automation key (Catch up)

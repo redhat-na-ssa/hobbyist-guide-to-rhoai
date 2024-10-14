@@ -124,7 +124,7 @@ In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs
 
 - [ ] Apply the Namespace object
 
-      oc apply -f configs/03/nfd-operator-ns.yaml
+      oc apply -f configs/02/nfd-operator-ns.yaml
 
 > Expected output
 >
@@ -132,7 +132,7 @@ In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs
 
 - [ ] Apply the OperatorGroup object
 
-      oc apply -f configs/03/nfd-operator-group.yaml
+      oc apply -f configs/02/nfd-operator-group.yaml
 
 > Expected output
 >
@@ -140,7 +140,7 @@ In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs
 
 - [ ] Apply the Subscription object
 
-      oc apply -f configs/03/nfd-operator-sub.yaml
+      oc apply -f configs/02/nfd-operator-sub.yaml
 
 > Expected output
 >
@@ -162,7 +162,7 @@ In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs
 
 - [ ] Create the nfd instance object
 
-      oc apply -f configs/03/nfd-instance.yaml
+      oc apply -f configs/02/nfd-instance.yaml
 
 > Expected output
 >
@@ -247,7 +247,7 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 
 - [ ] Apply the Namespace object YAML file
 
-      oc apply -f configs/03/nvidia-gpu-operator-ns.yaml
+      oc apply -f configs/02/nvidia-gpu-operator-ns.yaml
 
 > Expected output
 >
@@ -255,7 +255,7 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 
 - [ ] Apply the OperatorGroup YAML file
 
-      oc apply -f configs/03/nvidia-gpu-operator-group.yaml
+      oc apply -f configs/02/nvidia-gpu-operator-group.yaml
 
 > Expected output
 >
@@ -263,7 +263,7 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 
 - [ ] Apply the Subscription CR
 
-      oc apply -f configs/03/nvidia-gpu-operator-subscription.yaml
+      oc apply -f configs/02/nvidia-gpu-operator-subscription.yaml
 
 > Expected output
 >
@@ -369,7 +369,7 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 
 ## Validation
 
-![](/assets/03-validation.gif)
+![](/assets/02-validation.gif)
 
 ## Automation key (Catch up)
 
