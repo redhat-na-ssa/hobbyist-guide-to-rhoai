@@ -205,11 +205,16 @@ workshop_uninstall(){
 
   oc delete datasciencecluster default-dsc
   oc delete dscinitialization default-dsci
-  oc -n istio-system delete --all servicemeshmemberrolls.maistra.io
+
+  sleep 8
+
   oc -n istio-system delete --all servicemeshcontrolplanes.maistra.io
+  oc -n istio-system delete --all servicemeshmemberrolls.maistra.io
   oc delete --all -A servicemeshmembers.maistra.io
+
   oc -n knative-serving delete knativeservings.operator.knative.dev knative-serving
   oc delete consoleplugin console-plugin-nvidia-gpu
+  oc -n pipeline-test delete --all datasciencepipelinesapplications
 
   oc delete csv -A -l operators.coreos.com/authorino-operator.openshift-operators
   oc delete csv -A -l operators.coreos.com/devworkspace-operator.openshift-operators
@@ -221,8 +226,6 @@ workshop_uninstall(){
   do
     oc -n openshift-machine-api delete "$set"
   done
-
-  oc delete project minio
 
   oc delete -n openshift-operators deploy devworkspace-webhook-server
 
