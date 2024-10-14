@@ -7,9 +7,10 @@ htpasswd_add_user(){
   PASS=${2:-$(genpass)}
   HTPASSWD_FILE=${3:-${DEFAULT_HTPASSWD}}
 
-  if ! which htpasswd >/dev/null; then
-    echo "Error: install htpasswd"
-    return 1
+  if ! which htpasswd >/dev/null 2>&1; then
+    echo "NOTICE: install htpasswd"
+    echo "Attempting to use oc to generate ${HTPASSWD_FILE}
+    "
   fi
 
   echo "
@@ -23,7 +24,11 @@ htpasswd_add_user(){
   touch "${HTPASSWD_FILE}" "${HTPASSWD_FILE}".txt
   sed -i '/# '"${USER}"'/d' "${HTPASSWD_FILE}".txt
   echo "# ${USER} - ${PASS}" >> "${HTPASSWD_FILE}.txt"
-  htpasswd -bB -C 10 "${HTPASSWD_FILE}" "${USER}" "${PASS}"
+
+  htpasswd -b -B -C10 "${HTPASSWD_FILE}" "${USER}" "${PASS}" || \
+    oc run \
+      --image httpd \
+      -q --rm -i minion -- /bin/sh -c 'sleep 2; htpasswd -n -b -B -C10 '"${USER}" "${PASS}"'' > "${HTPASSWD_FILE}" 2>/dev/null
 }
 
 htpasswd_ocp_get_file(){
