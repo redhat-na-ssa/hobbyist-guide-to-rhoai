@@ -21,7 +21,6 @@ OpenShift AI provides an environment to develop, train, serve, test, and monitor
 
 0. [Prerequisite](/docs/00-prerequisite.md)
 1. [Add administrative user](/docs/01-add-administrative-user.md)
-1. [(Optional) Install the web terminal](/docs/02-install-web-terminal.md)
 1. [Enable GPU support for RHOAI](/docs/03-enable-gpu-support.md)
 1. [(Optional) Run sample GPU application](/docs/04-run-sample-gpu-application.md)
 1. [Configure GPU dashboards](/docs/05-configure-gpu-dashboards.md)

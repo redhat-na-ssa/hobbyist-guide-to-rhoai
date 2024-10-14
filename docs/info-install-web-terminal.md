@@ -53,7 +53,7 @@
 
 ## Validation
 
-![ ](/assets/02-validation.gif)
+![ ](/assets/web-terminal.gif)
 
 ## Automation key (Catch up)
 
