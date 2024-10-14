@@ -61,6 +61,8 @@ check_cluster_version(){
 
 validate_cli(){
   bin_check oc
+  bin_check helm
+  bin_check jq
   echo ""
 }
 
