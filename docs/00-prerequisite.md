@@ -5,9 +5,10 @@
 - [ ] Git clone this repository
 - [ ] Have `cluster-admin` access to an OpenShift 4.14+ cluster
   - [Create an OpenShift 4.14+ cluster](/docs/info-create-openshift-cluster.md)
-- [ ] [Install OpenShift CLI](https://docs.openshift.com/container-platform/4.16/cli_reference/openshift_cli/getting-started-cli.html)
-  - Have `oc` in your `$PATH`
-- [ ] Install [jq](https://jqlang.github.io/jq/download/) and [helm](https://helm.sh/docs/intro/install/)
+- Verify commands `helm`, `jq`, and `oc` are in your `$PATH`
+  - [ ] [Install `helm`](https://helm.sh/docs/intro/install)
+  - [ ] [Install `jq`](https://jqlang.github.io/jq/download/)
+  - [ ] [Install OpenShift CLI - `oc`](https://docs.openshift.com/container-platform/4.16/cli_reference/openshift_cli/getting-started-cli.html)
 
 ```sh
 # git clone repo
