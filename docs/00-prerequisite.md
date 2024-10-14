@@ -16,7 +16,7 @@ git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
 cd hobbyist-guide-to-rhoai
 ```
 
-- [ ] Run prereqs check
+- [ ] Run prerequisites check
 
 ```sh
 ./scripts/setup.sh -s 0
