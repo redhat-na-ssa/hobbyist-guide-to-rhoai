@@ -22,7 +22,6 @@ htpasswd_add_user(){
   if which htpasswd >/dev/null 2>&1; then
     echo "using local htpasswd..."
     htpasswd -b -B -C10 "${HTPASSWD_FILE}" "${USER}" "${PASS}"
-
   else
     echo "using oc to run pod..."
     oc run \
