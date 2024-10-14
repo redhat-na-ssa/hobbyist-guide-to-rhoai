@@ -60,6 +60,8 @@ check_cluster_version(){
 }
 
 validate_cli(){
+  echo ""
+  echo "Validating requirements..."
   bin_check oc
   bin_check helm
   bin_check jq
@@ -69,14 +71,6 @@ validate_cli(){
 validate_cluster(){
   ocp_check_login
   check_cluster_version
-}
-
-validate_setup(){
-  echo ""
-  echo "Validating requirements..."
-
-  validate_cli
-  validate_cluster
 }
 
 add_admin_user(){
@@ -122,10 +116,13 @@ while getopts ":h:s:" flag; do
 done
 
 step_0(){
-  validate_setup || return 1
-
   logbanner "Install prerequisites"
+
+  validate_cluster || return 1
+
   retry oc apply -f "${GIT_ROOT}"/configs/00
+
+  validate_cli || return 1
 }
 
 step_1(){
