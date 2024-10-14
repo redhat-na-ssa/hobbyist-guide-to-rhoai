@@ -232,6 +232,8 @@ workshop_uninstall(){
     oc -n openshift-machine-api delete "$set"
   done
 
+  oc delete project minio
+
   oc delete -n openshift-operators deploy devworkspace-webhook-server
 
   oc delete \
@@ -244,6 +246,7 @@ workshop_uninstall(){
     -f "${GIT_ROOT}"/configs/06 \
     -f "${GIT_ROOT}"/configs/07 \
     -f "${GIT_ROOT}"/configs/08 \
+    -f "${GIT_ROOT}"/configs/08/minio \
     -f "${GIT_ROOT}"/configs/09 \
     -f "${GIT_ROOT}"/configs/uninstall
 
