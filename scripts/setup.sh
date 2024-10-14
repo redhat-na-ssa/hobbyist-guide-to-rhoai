@@ -186,7 +186,7 @@ step_6(){
         --selector=nvidia.com/gpu.product=Tesla-T4 \
         nvidia.com/device-plugin.config=time-sliced-8
 
-  loginfo "Patch cluster policy to use time-sliced-8 timislicing configuration"
+  loginfo "Patch cluster policy to use time-sliced-8 timeslicing configuration"
   oc patch clusterpolicy gpu-cluster-policy \
         -n nvidia-gpu-operator --type merge \
         -p '{"spec": {"devicePlugin": {"config": {"default": "time-sliced-8"}}}}'
