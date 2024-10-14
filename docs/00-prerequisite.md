@@ -41,3 +41,4 @@ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 
 > [!NOTE]
 > This will automatically setup the [web terminal](/docs/info-install-web-terminal.md).
+> You will have to manuall 'Refresh' the console page to be able to invoke the web terminal.
