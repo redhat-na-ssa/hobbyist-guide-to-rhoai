@@ -62,7 +62,7 @@ For NVIDIA GPU there are a few methods to optimize GPU utilization:
 
 - [ ] Apply the device plugin configuration
 
-      oc apply -f configs/06/nvidia-gpu-deviceplugin-cm.yaml
+      oc apply -f configs/05/nvidia-gpu-deviceplugin-cm.yaml
 
 > Expected output
 >

@@ -21,14 +21,14 @@ OpenShift AI provides an environment to develop, train, serve, test, and monitor
 
 0. [Prerequisite](/docs/00-prerequisite.md)
 1. [Add administrative user](/docs/01-add-administrative-user.md)
-1. [Enable GPU support for RHOAI](/docs/03-enable-gpu-support.md)
-1. [(Optional) Run sample GPU application](/docs/04-run-sample-gpu-application.md)
-1. [Configure GPU dashboards](/docs/05-configure-gpu-dashboards.md)
-1. [Configure GPU sharing method](/docs/06-configure-gpu-sharing-method.md)
-1. [Install RHOAI Kserve dependencies](/docs/07-install-kserve-dependencies.md)
-1. [Install RHOAI Operator and Components](/docs/08-install-rhoai-operator.md)
-1. [Configure RHOAI / Data Science Pipelines](/docs/09-configure-rhoai.md)
-1. [Configure distributed workloads](/docs/10-configure-distributed-workloads.md)
+1. [Enable GPU support for RHOAI](/docs/02-enable-gpu-support.md)
+1. [(Optional) Run sample GPU application](/docs/03-run-sample-gpu-application.md)
+1. [Configure GPU dashboards](/docs/04-configure-gpu-dashboards.md)
+1. [Configure GPU sharing method](/docs/05-configure-gpu-sharing-method.md)
+1. [Install RHOAI Kserve dependencies](/docs/06-install-kserve-dependencies.md)
+1. [Install RHOAI Operator and Components](/docs/07-install-rhoai-operator.md)
+1. [Configure RHOAI / Data Science Pipelines](/docs/08-configure-rhoai.md)
+1. [Configure distributed workloads](/docs/09-configure-distributed-workloads.md)
 
 ### Automation Key
 
@@ -47,6 +47,6 @@ To run all steps, from this repo's root directory, run below command
 
 ## Demo Instructions
 
-1. [Distributed Workloads](/docs/11-demo-distributed_workloads.md)
+1. [Distributed Workloads](/docs/10-demo-distributed_workloads.md)
 
-1. [Fraud Detection](/docs/12-demo-fraud-detection.md)
+1. [Fraud Detection](/docs/11-demo-fraud-detection.md)

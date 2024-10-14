@@ -39,7 +39,7 @@
 
 - [ ] Apply the Service Mesh subscription to install the operator
 
-      oc create -f configs/07/servicemesh-subscription.yaml
+      oc create -f configs/06/servicemesh-subscription.yaml
 
 > Expected output
 >
@@ -69,7 +69,7 @@
 
 - [ ] Create the Serverless Operator objects
 
-      oc create -f configs/07/serverless-operator.yaml
+      oc create -f configs/06/serverless-operator.yaml
 
 > Expected output
 >
@@ -103,7 +103,7 @@
 
 - [ ] Create the Authorino subscription
 
-      oc create -f configs/07/authorino-subscription.yaml
+      oc create -f configs/06/authorino-subscription.yaml
 
 > Expected output
 >
@@ -114,7 +114,7 @@
 
 ## Validation
 
-![](/assets/07-validation.gif)
+![](/assets/06-validation.gif)
 
 ## Automation key (Catch up)
 
