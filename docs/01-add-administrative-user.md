@@ -24,18 +24,27 @@ For this bootcamp, we are using HTpasswd as the Identity Provider (IdP). To lear
 
 ## Steps
 
-- [ ] (Alternative) Create an htpasswd file in a container on OpenShift
+- [ ] Create an htpasswd using a container on OpenShift
 
-      oc run --image httpd --rm -it htpasswd -- /bin/bash
+      # using oc to create htpasswd
+      oc run \
+        --image httpd \
+        -q --rm -i minion -- /bin/sh -c 'sleep 2; htpasswd -n -b -B -C10 <username> <password> > scratch/users.htpasswd
+      
+      # verify users.htpasswd
+      cat scratch/users.htpasswd
 
-- [ ] Create an htpasswd file to store the user and password information
+> Expected output
+>
+> `admin:$2y$10$yOTVCummnCCwCPQf4MkawusPab6h5zoYMHZjqmI7cQiHWKLaCEaCW`
 
-      htpasswd -c -B -b scratch/users.htpasswd <username> <password>
+- Alternative: local command example
+
+      htpasswd -b -B -C10 -c scratch/users.htpasswd <username> <password>
 
 > Expected output
 >
 > `Adding password for user <username>`
-
 
 - [ ] Create a secret to represent the htpasswd file
 
