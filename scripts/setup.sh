@@ -176,6 +176,20 @@ step_6(){
   logbanner "Configure gpu sharing method"
   retry oc apply -f "${GIT_ROOT}"/configs/06
 
+  loginfo "Patch cluster policy to use device-plugin-config"
+  oc patch clusterpolicy gpu-cluster-policy \
+        -n nvidia-gpu-operator --type merge \
+        -p '{"spec": {"devicePlugin": {"config": {"name": "device-plugin-config"}}}}'
+
+  loginfo "Label nodes with gpu product"
+  oc label --overwrite node \
+        --selector=nvidia.com/gpu.product=Tesla-T4 \
+        nvidia.com/device-plugin.config=time-sliced-8
+
+  loginfo "Patch cluster policy to use time-sliced-8 timislicing configuration"
+  oc patch clusterpolicy gpu-cluster-policy \
+        -n nvidia-gpu-operator --type merge \
+        -p '{"spec": {"devicePlugin": {"config": {"default": "time-sliced-8"}}}}'
 }
 
 step_7(){
