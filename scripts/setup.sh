@@ -181,11 +181,6 @@ step_6(){
         -n nvidia-gpu-operator --type merge \
         -p '{"spec": {"devicePlugin": {"config": {"name": "device-plugin-config"}}}}'
 
-  loginfo "Label nodes with gpu product"
-  oc label --overwrite node \
-        --selector=nvidia.com/gpu.product=Tesla-T4 \
-        nvidia.com/device-plugin.config=time-sliced-8
-
   loginfo "Patch cluster policy to use time-sliced-8 timeslicing configuration"
   oc patch clusterpolicy gpu-cluster-policy \
         -n nvidia-gpu-operator --type merge \
