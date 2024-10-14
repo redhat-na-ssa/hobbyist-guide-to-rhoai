@@ -209,7 +209,7 @@ workshop_uninstall(){
 
   oc -n kube-system get secret/kubeadmin || return 1
 
-  rm "${DEFAULT_HTPASSWD}"{,.txt}
+  rm "${DEFAULT_HTPASSWD}"{,.txt} "${DEFAULT_ADMIN_PASS}"
 
   oc delete datasciencecluster default-dsc
   oc delete dscinitialization default-dsci
@@ -223,6 +223,12 @@ workshop_uninstall(){
   oc delete csv -A -l operators.coreos.com/devworkspace-operator.openshift-operators
   oc delete csv -A -l operators.coreos.com/servicemeshoperator.openshift-operators
   oc delete csv -A -l operators.coreos.com/web-terminal.openshift-operators
+
+  GPU_MACHINE_SET=$(oc -n openshift-machine-api get machinesets -o name | grep -E 'gpu|g4dn' | head -n1)
+  for set in ${GPU_MACHINE_SET}
+  do
+    oc -n openshift-machine-api delete "$set"
+  done
 
   oc delete -n openshift-operators deploy devworkspace-webhook-server
 
