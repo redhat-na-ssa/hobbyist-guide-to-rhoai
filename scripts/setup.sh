@@ -133,10 +133,11 @@ step_1(){
   if [ -f "${DEFAULT_ADMIN_PASS}" ]; then
     HT_PASSWORD=$(cat "${DEFAULT_ADMIN_PASS}")
 
+    loginfo "Delete ${DEFAULT_ADMIN_PASS} to create a NEW password
+    "
+
     htpasswd_validate_user "${HT_USERNAME}" "${HT_PASSWORD}"
 
-    echo "Delete ${DEFAULT_ADMIN_PASS} to recreate password
-    "
     return
   else
     retry oc apply -f "${GIT_ROOT}"/configs/01
@@ -197,7 +198,7 @@ step_8(){
   retry oc apply -f "${GIT_ROOT}"/configs/08
 }
 
-step_09(){
+step_9(){
   logbanner "Configure distributed workloads"
   retry oc apply -f "${GIT_ROOT}"/configs/09
 }
@@ -229,8 +230,9 @@ workshop_uninstall(){
     -f "${GIT_ROOT}"/configs/00 \
     -f "${GIT_ROOT}"/configs/01 \
     -f "${GIT_ROOT}"/configs/02 \
-    -f "${GIT_ROOT}"/configs/02 \
     -f "${GIT_ROOT}"/configs/03 \
+    -f "${GIT_ROOT}"/configs/04 \
+    -f "${GIT_ROOT}"/configs/05 \
     -f "${GIT_ROOT}"/configs/06 \
     -f "${GIT_ROOT}"/configs/07 \
     -f "${GIT_ROOT}"/configs/08 \
