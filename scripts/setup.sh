@@ -177,19 +177,6 @@ step_5(){
 step_6(){
   logbanner "Install kserve dependencies"
   retry oc apply -f "${GIT_ROOT}"/configs/06
-
-  loginfo "Patch cluster policy to use device-plugin-config"
-  oc patch clusterpolicy gpu-cluster-policy \
-        -n nvidia-gpu-operator --type merge \
-        -p '{"spec": {"devicePlugin": {"config": {"name": "device-plugin-config"}}}}'
-
-  loginfo "Patch cluster policy to use time-sliced-8 timeslicing configuration"
-  oc patch clusterpolicy gpu-cluster-policy \
-        -n nvidia-gpu-operator --type merge \
-        -p '{"spec": {"devicePlugin": {"config": {"default": "time-sliced-8"}}}}'
-
-  loginfo "Patch the ClusterPolicy in the NVIDIA GPU Operator to tolerate the taints that we applied"
-  oc patch clusterpolicy gpu-cluster-policy --type=merge --patch '{"spec":{"daemonsets":{"tolerations":[{"effect":"NoSchedule","operator":"Exists","key":"nvidia.com/gpu"}]}}}'
 }
 
 step_7(){
