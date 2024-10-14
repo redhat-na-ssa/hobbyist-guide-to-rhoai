@@ -1,4 +1,4 @@
-# 2. (Optional) Install the web terminal
+# (Optional) Install the web terminal
 
 ### Objectives
 
@@ -60,5 +60,5 @@
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 2
+./scripts/setup.sh -s 0
 ```
