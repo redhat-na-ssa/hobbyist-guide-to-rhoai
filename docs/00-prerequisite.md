@@ -7,6 +7,7 @@
   - [Create an OpenShift 4.14+ cluster](/docs/info-create-openshift-cluster.md)
 - [ ] [Install OpenShift CLI](https://docs.openshift.com/container-platform/4.16/cli_reference/openshift_cli/getting-started-cli.html)
   - Have `oc` in your `$PATH`
+- [ ] Install [jq](https://jqlang.github.io/jq/download/) and [helm](https://helm.sh/docs/intro/install/)
 
 ```sh
 # git clone repo
