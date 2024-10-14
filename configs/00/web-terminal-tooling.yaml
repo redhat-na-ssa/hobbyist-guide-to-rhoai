@@ -20,13 +20,9 @@ spec:
             echo "
             GIT_REPO=https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
 
-            if [ -e ~/hobbyist-guide-to-rhoai ]; then
-              cd ~/hobbyist-guide-to-rhoai
-            else
-              cd ~
-              git clone \${GIT_REPO}
-              cd ~/hobbyist-guide-to-rhoai
-            fi
+            [ -e ~/hobbyist-guide-to-rhoai ] || git clone \${GIT_REPO} 
+            [ -e ~/hobbyist-guide-to-rhoai ] && cd ~/hobbyist-guide-to-rhoai
+            
             " >> /home/user/.bashrc
 
             . /home/user/.bashrc
