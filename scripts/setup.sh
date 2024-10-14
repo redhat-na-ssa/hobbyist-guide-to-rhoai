@@ -187,6 +187,9 @@ step_6(){
   oc patch clusterpolicy gpu-cluster-policy \
         -n nvidia-gpu-operator --type merge \
         -p '{"spec": {"devicePlugin": {"config": {"default": "time-sliced-8"}}}}'
+
+  loginfo "Patch the ClusterPolicy in the NVIDIA GPU Operator to tolerate the taints that we applied"
+  oc patch clusterpolicy gpu-cluster-policy --type=merge --patch '{"spec":{"daemonsets":{"tolerations":[{"effect":"NoSchedule","operator":"Exists","key":"nvidia.com/gpu"}]}}}'
 }
 
 step_7(){
