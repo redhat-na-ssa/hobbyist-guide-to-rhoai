@@ -30,21 +30,22 @@ For this bootcamp, we are using HTpasswd as the Identity Provider (IdP). To lear
       oc run \
         --image httpd \
         -q --rm -i minion -- /bin/sh -c 'sleep 2; htpasswd -n -b -B -C10 <username> <password> > scratch/users.htpasswd
-      
-      # verify users.htpasswd
-      cat scratch/users.htpasswd
 
-> Expected output
->
-> `admin:$2y$10$yOTVCummnCCwCPQf4MkawusPab6h5zoYMHZjqmI7cQiHWKLaCEaCW`
-
-- Alternative: local command example
+- Alternative: local command example (if you have htpasswd installed locally)
 
       htpasswd -b -B -C10 -c scratch/users.htpasswd <username> <password>
 
 > Expected output
 >
 > `Adding password for user <username>`
+
+- [ ] Verify `htpasswd` file
+
+      cat scratch/users.htpasswd
+
+> Expected output
+>
+> `admin:$2y$10$yOTVCummnCCwCPQf4MkawusPab6h5zoYMHZjqmI7cQiHWKLaCEaCW`
 
 - [ ] Create a secret to represent the htpasswd file
 
