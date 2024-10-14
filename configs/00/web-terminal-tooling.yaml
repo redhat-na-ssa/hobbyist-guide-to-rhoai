@@ -17,6 +17,18 @@ spec:
           - |
             #!/bin/bash
 
+            echo "
+            GIT_REPO=https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
+
+            if [ -e ~/hobbyist-guide-to-rhoai ]; then
+              cd ~/hobbyist-guide-to-rhoai
+            else
+              cd ~
+              git clone \${GIT_REPO}
+              cd ~/hobbyist-guide-to-rhoai
+            fi
+            " >> /home/user/.bashrc
+
             . /home/user/.bashrc
 
             sleep infinity  # just in case
