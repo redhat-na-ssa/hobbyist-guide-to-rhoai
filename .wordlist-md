@@ -206,6 +206,7 @@ htpasswd
 HTpasswd
 HTPasswd
 http
+httpd
 https
 HTTPS
 hugepages
