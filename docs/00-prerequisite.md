@@ -14,15 +14,12 @@ git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
 
 # change into the repo directory
 cd hobbyist-guide-to-rhoai
-
-# checkout below branch
-git checkout hshishir-25ba6c
 ```
 
-- [ ] Create scratch directory
+- [ ] Run prereqs check
 
 ```sh
-mkdir -p scratch
+./scripts/setup.sh -s 0
 ```
 
 - [ ] Login to the cluster via terminal
@@ -32,12 +29,3 @@ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 ```
 
 > Refer [Here](/docs/info-create-openshift-cluster.md#get-cluster-url-and-admin-username-and-password) to see how to get user, password, and cluster url
-
-> [!IMPORTANT]
-> Don't forget to run below step
-
-- [ ] Run prerequisites (from this repository's root directory)
-
-```sh
-./scripts/setup.sh -s 0
-```

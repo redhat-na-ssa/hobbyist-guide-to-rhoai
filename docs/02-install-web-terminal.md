@@ -22,12 +22,15 @@
 
 - [ ] Apply the subscription object
 
-      oc apply -f configs/02/web-terminal-subscription.yaml
+      oc apply -f configs/00/web-terminal-subscription.yaml
+  
+- [ ] Run / Re-run the following command until it completes successfully
 
-  - CRDs may take a few minutes to get setup by the operator
-  - Re-run the following command until it completes successfully
+        oc apply -f configs/00/web-terminal-tooling.yaml
 
-        oc apply -f configs/02/web-terminal-tooling.yaml
+> [!NOTE]
+> If you see `ensure CRDs are installed first` re-run the command above \
+> CRDs may take a few minutes to get setup by the operator - be patient.
 
 - [ ] From the OpenShift Web Console, Refresh the browser and click the `>_` icon in the top right of the window. This can serve as your browser based CLI.
 
@@ -45,11 +48,8 @@
       # change directory
       cd hobbyist-guide-to-rhoai/
 
-      # checkout below branch
-      git checkout hshishir-25ba6c
-
       # make scratch dir
-      mkdir scratch
+      mkdir -p scratch
 
 ## Validation
 
