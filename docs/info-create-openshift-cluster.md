@@ -4,7 +4,7 @@ Your cluster must have at least **2 worker nodes with at least 8 CPUs and 32 GiB
 
 ### Steps
 
-- Go to redhat demo site and order **"AWS with OpenShift Open Environment"** [LINK](https://demo.redhat.com/catalog?category=Open_Environments&item=babylon-catalog-prod%2Fsandboxes-gpte.sandbox-ocp.prod)
+- Go to redhat demo site and order [AWS with OpenShift Open Environment](https://demo.redhat.com/catalog?category=Open_Environments&item=babylon-catalog-prod%2Fsandboxes-gpte.sandbox-ocp.prod)
 
 - Choose below options:
 
