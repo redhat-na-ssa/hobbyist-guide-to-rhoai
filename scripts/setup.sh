@@ -200,6 +200,8 @@ workshop_uninstall(){
 
   rm "${DEFAULT_HTPASSWD}"{,.txt} "${DEFAULT_ADMIN_PASS}"
 
+  oc -n pipeline-test delete --all datasciencepipelinesapplications
+
   oc delete datasciencecluster default-dsc
   oc delete dscinitialization default-dsci
 
@@ -211,20 +213,19 @@ workshop_uninstall(){
 
   oc -n knative-serving delete knativeservings.operator.knative.dev knative-serving
   oc delete consoleplugin console-plugin-nvidia-gpu
-  oc -n pipeline-test delete --all datasciencepipelinesapplications
 
   oc delete csv -A -l operators.coreos.com/authorino-operator.openshift-operators
   oc delete csv -A -l operators.coreos.com/devworkspace-operator.openshift-operators
   oc delete csv -A -l operators.coreos.com/servicemeshoperator.openshift-operators
   oc delete csv -A -l operators.coreos.com/web-terminal.openshift-operators
 
+  oc delete -n openshift-operators deploy devworkspace-webhook-server
+
   GPU_MACHINE_SET=$(oc -n openshift-machine-api get machinesets -o name | grep -E 'gpu|g4dn' | head -n1)
   for set in ${GPU_MACHINE_SET}
   do
     oc -n openshift-machine-api delete "$set"
   done
-
-  oc delete -n openshift-operators deploy devworkspace-webhook-server
 
   oc delete \
     -f "${GIT_ROOT}"/configs/00 \
