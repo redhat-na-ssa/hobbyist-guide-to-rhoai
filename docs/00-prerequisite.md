@@ -2,13 +2,10 @@
 
 > Intended commands to be executed from the root directory of this repository. The majority of the configurations to be applied are already created, with the exception of the ones that prompts you for specifics that are either created in the command or dumped to a `scratch` dir that is ignored in the `.gitignore`.
 
-- [ ] Git clone this repository
 - [ ] Have `cluster-admin` access to an OpenShift 4.14+ cluster
   - [Create an OpenShift 4.14+ cluster](/docs/info-create-openshift-cluster.md)
-- Verify commands `helm`, `jq`, and `oc` are in your `$PATH`
-  - [ ] [Install `helm`](https://helm.sh/docs/intro/install)
-  - [ ] [Install `jq`](https://jqlang.github.io/jq/download/)
-  - [ ] [Install OpenShift CLI - `oc`](https://docs.openshift.com/container-platform/4.16/cli_reference/openshift_cli/getting-started-cli.html)
+- [ ] Open a `bash` terminal on your local machine
+- [ ] Git clone this repository
 
 ```sh
 # git clone repo
@@ -42,8 +39,11 @@ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 ```
 
 > [!NOTE]
-> This will automatically setup the [web terminal](/docs/info-install-web-terminal.md).
+> This will automatically setup the [web terminal](/docs/info-install-web-terminal.md).  
 > You will have to manually 'Refresh' the console page to be able to invoke the web terminal.  
-> Refer below to see how to launch the web terminal
+> For running the remaining steps you can:
+>
+> - Use the `bash` terminal on your local machine
+> - Invoke web terminal (Refer below image)
 
 ![](/assets/00-web-terminal.gif)
