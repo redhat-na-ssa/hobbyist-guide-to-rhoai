@@ -1,5 +1,11 @@
 # 3. Enabling GPU support for RHOAI
 
+<p align="right">
+<a href="/docs/01-add-administrative-user.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/03-run-sample-gpu-application.md">Next</a>
+</p>
+
 In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs for RHOCP](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/enabling-gpu-support_install). Once completed, RHOAI requires an Accelerator Profile custom resource definition in the `redhat-ods-applications`. Currently, NVIDIA and Intel Gaudi are the supported [accelerator profiles](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/working_with_accelerators/overview-of-accelerators_accelerators#overview-of-accelerators_accelerators).
 
 ## 3.1 Adding a GPU node to an existing RHOCP cluster
@@ -378,3 +384,9 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 ```sh
 ./scripts/setup.sh -s 3
 ```
+
+<p align="right">
+<a href="/docs/01-add-administrative-user.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/03-run-sample-gpu-application.md">Next</a>
+</p>

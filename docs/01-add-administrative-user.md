@@ -1,5 +1,11 @@
 # 1. Add an administrative user
 
+<p align="right">
+<a href="/docs/00-prerequisite.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/02-enable-gpu-support.md">Next</a>
+</p>
+
 ### Objectives
 
 - Creating an admin user, with cluster-admin RB using HTpasswd as the IdP.
@@ -119,3 +125,9 @@ For this bootcamp, we are using HTpasswd as the Identity Provider (IdP). To lear
 ```sh
 ./scripts/setup.sh -s 1
 ```
+
+<p align="right">
+<a href="/docs/00-prerequisite.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/02-enable-gpu-support.md">Next</a>
+</p>
