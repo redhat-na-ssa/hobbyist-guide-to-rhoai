@@ -19,7 +19,7 @@
 
 ## Prerequisites
 
-- Cluster setup steps 0 - 10 are completed
+- Cluster setup steps 0 - 9 are completed
 
 ## 11.1 Configuring the demo workbench
 
@@ -43,7 +43,7 @@
   - [ ] Leave `Container size` set to `Small` as we will be using minimal resources for Jupyter and letting Ray consume the bulk of our resources
   - [ ] Leave `Accelerator` unset, reading `Select...` as we will be using Ray to manage our workload accelerators
   - [ ] Leave the `Cluster storage` section with its defaults of `20 Gi` of storage, named similarly to your workbench instance
-  - [ ] Check the box to use a `Data connection`, leave the radio button set to `Create new data connection`, and use the following options to align with the MinIO configuration we set up in section 10: "Administrative Configurations for RHOAI." If you deviated from those values, set them appropriately here
+  - [ ] Check the box to use a `Data connection`, leave the radio button set to `Create new data connection`, and use the following options to align with the MinIO configuration we set up in section `8: Administrative Configurations for RHOAI` If you deviated from those values, set them appropriately here
     1. `Name` = `minio`
     1. `Access key` = `rootuser`
     1. `Secret Key` = `rootuser123`
