@@ -20,7 +20,7 @@
 
 - Installing OpenShift AI is not the last step in preparing for data science users
 
-## 10.1 Ensure you have an Accelerator Profile
+## 8.1 Ensure you have an Accelerator Profile
 
 ### Objectives
 
@@ -57,7 +57,7 @@
 > [!NOTE]
 > If the taint keys do not match, you can either edit the AcceleratorProfile or, if no AcceleratorProfile was present at all you can trigger regeneration by the RHOAI Console. See the steps [here](/docs/info-regenerate-accelerator-profiles.md) for the procedure to do this.
 
-## 10.2 Increasing your non-GPU compute capacity
+## 8.2 Increasing your non-GPU compute capacity
 
 ### Objectives
 
@@ -96,7 +96,7 @@
 >
 > `machineset.machine.openshift.io/cluster-5mgxv-42f4t-worker-us-east-2b scaled`
 
-## 10.3 Add a custom serving runtime
+## 8.3 Add a custom serving runtime
 
 ### Objectives
 
@@ -138,7 +138,7 @@
 - Deploy a model server using the `Multi-model serving platform` by clicking the `Add model server` button
 - Grab the pulldown for `Serving runtime` and confirm that `Nvidia Triton Model Server` is visible from the options
 
-## 10.4 Configuring Data Science Pipelines
+## 8.4 Configuring Data Science Pipelines
 
 ### Objectives
 
@@ -327,7 +327,7 @@ You should see the `iris-training` pipeline and be able to execute a pipeline ru
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 10
+./scripts/setup.sh -s 8
 ```
 
 <p align="center">

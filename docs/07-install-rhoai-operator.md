@@ -129,7 +129,7 @@ Before you install RHOAI, it is important to understand how it's dependencies wi
 > `  Custom CA Bundle:`\
 > `    Management State:  Managed`
 
-## 8.1 Install RHOAI components
+## 7.1 Install RHOAI components
 
 ### Objectives
 
@@ -212,7 +212,7 @@ There are 3x RHOAI Operator dependency states to be set: `Managed`, `Removed`, a
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 8
+./scripts/setup.sh -s 7
 ```
 
 <p align="center">

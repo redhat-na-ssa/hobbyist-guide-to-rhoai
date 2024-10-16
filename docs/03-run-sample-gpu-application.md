@@ -109,7 +109,7 @@
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 4
+./scripts/setup.sh -s 3
 ```
 
 <p align="center">

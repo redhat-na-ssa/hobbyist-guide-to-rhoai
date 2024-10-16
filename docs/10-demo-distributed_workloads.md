@@ -21,7 +21,7 @@
 
 - Cluster setup steps 0 - 9 are completed
 
-## 11.1 Configuring the demo workbench
+## 10.1 Configuring the demo workbench
 
 ## Steps
 
@@ -69,7 +69,7 @@
 > [!NOTE]
 > The `[*]` indicator to the left of a cell means it's waiting to start or complete execution. The indicator will change to a number, like `[5]` on `cluster.status()` in this notebook if you used the ⏩ button and came back to read this note, when it has completed execution. The numbers indicate the order that the cell was executed in Python.
 
-## 11.2 Running the distributed workloads demos
+## 10.2 Running the distributed workloads demos
 
 > [!IMPORTANT]
 > In the cluster_job_client workbench, if your RayCluster does not come ready and hangs on the cell that says `cluster.wait_ready()` on the last line, you can check the pods in your Sandbox namespace to see if they are stuck in a `Pending` state due to an untolerated taint. If it does, you'll need to restart the Kueue controller in the `redhat-ods-applications` namespace by deleting the pod. For more information about this behavior, see [this docs link](https://kueue.sigs.k8s.io/docs/tasks/run/rayclusters/#before-you-begin).

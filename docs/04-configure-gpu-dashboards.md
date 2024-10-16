@@ -6,7 +6,7 @@
 <a href="/docs/05-configure-gpu-sharing-method.md">Next</a>
 </p>
 
-## 5.1 Enabling the GPU Monitoring Dashboard
+## 4.1 Enabling the GPU Monitoring Dashboard
 
 ### Objectives
 
@@ -93,7 +93,7 @@ There are other tools of varying levels of support from other vendors, including
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 5
+./scripts/setup.sh -s 4
 ```
 
 <p align="center">

@@ -382,7 +382,7 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 3
+./scripts/setup.sh -s 2
 ```
 
 <p align="center">

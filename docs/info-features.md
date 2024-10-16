@@ -1,4 +1,8 @@
-# Notes - OVERVIEW
+# OpenShift AI Overview
+
+![](/assets/openshift-ai-1.png)
+
+![](/assets/openshift-ai-2.png)
 
 Overview of the features in Red Hat OpenShift dependencies.
 

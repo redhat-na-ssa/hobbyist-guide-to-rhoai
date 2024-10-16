@@ -21,7 +21,7 @@
 - [Single](https://kserve.github.io/website/0.8/modelserving/v1beta1/serving_runtime/) vs. [Multi-Model](https://kserve.github.io/website/0.8/modelserving/mms/multi-model-serving/) Serving
 - [Runtimes](https://kserve.github.io/website/0.8/modelserving/servingruntimes/) vs. Model Servers
 
-## 7.1 Install the OpenShift Service Mesh Operator
+## 6.1 Install the OpenShift Service Mesh Operator
 
 ### Objectives
 
@@ -54,7 +54,7 @@
 > [!NOTE]
 > For `Unmanaged` configuration details, see the \_APPENDIX.md.
 
-## 7.2 Install Red Hat OpenShift Serverless Operator
+## 6.2 Install Red Hat OpenShift Serverless Operator
 
 ### Objectives
 
@@ -86,7 +86,7 @@
 > [!NOTE]
 > For `Unmanaged` deployments additional steps need to be executed. See the Define a ServiceMeshMember for Serverless in the \_APPENDIX.md
 
-## 7.3 Install Red Hat Authorino Operator
+## 6.3 Install Red Hat Authorino Operator
 
 ### Objectives
 
@@ -127,7 +127,7 @@
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 7
+./scripts/setup.sh -s 6
 ```
 
 <p align="center">
