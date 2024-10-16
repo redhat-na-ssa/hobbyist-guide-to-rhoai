@@ -1,5 +1,11 @@
 # 7. Install RHOAI operator
 
+<p align="center">
+<a href="/docs/06-install-kserve-dependencies.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/08-configure-rhoai.md">Next</a>
+</p>
+
 ### Objectives
 
 - Creating the Namespace, OperatorGroup and subscribing Serverless Operator
@@ -120,7 +126,7 @@ Before you install RHOAI, it is important to understand how it's dependencies wi
 > `      Namespace:           istio-system`\
 > `    Management State:      Unmanaged`\
 > `  Trusted CA Bundle:`\
-> `   Custom CA Bundle: `\
+> `  Custom CA Bundle:`\
 > `    Management State:  Managed`
 
 ## 8.1 Install RHOAI components
@@ -208,3 +214,9 @@ There are 3x RHOAI Operator dependency states to be set: `Managed`, `Removed`, a
 ```sh
 ./scripts/setup.sh -s 8
 ```
+
+<p align="center">
+<a href="/docs/06-install-kserve-dependencies.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/08-configure-rhoai.md">Next</a>
+</p>

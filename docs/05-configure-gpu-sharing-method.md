@@ -1,5 +1,11 @@
 # 5. GPU sharing methods
 
+<p align="center">
+<a href="/docs/04-configure-gpu-dashboards.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/06-install-kserve-dependencies.md">Next</a>
+</p>
+
 ### Objectives
 
 - Configuring the GPU so we can fully utilize the resources
@@ -239,3 +245,9 @@ For NVIDIA GPU there are a few methods to optimize GPU utilization:
 ```sh
 ./scripts/setup.sh -s 6
 ```
+
+<p align="center">
+<a href="/docs/04-configure-gpu-dashboards.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/06-install-kserve-dependencies.md">Next</a>
+</p>

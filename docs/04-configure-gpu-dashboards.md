@@ -1,5 +1,11 @@
 # 4. Configure GPU dashboards
 
+<p align="center">
+<a href="/docs/03-run-sample-gpu-application.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/05-configure-gpu-sharing-method.md">Next</a>
+</p>
+
 ## 5.1 Enabling the GPU Monitoring Dashboard
 
 ### Objectives
@@ -89,3 +95,9 @@ There are other tools of varying levels of support from other vendors, including
 ```sh
 ./scripts/setup.sh -s 5
 ```
+
+<p align="center">
+<a href="/docs/03-run-sample-gpu-application.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/05-configure-gpu-sharing-method.md">Next</a>
+</p>

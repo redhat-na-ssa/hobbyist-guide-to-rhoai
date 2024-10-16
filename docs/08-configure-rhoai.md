@@ -1,5 +1,11 @@
 # 8. Administrative Configurations for RHOAI / Data Science Pipelines
 
+<p align="center">
+<a href="/docs/07-install-rhoai-operator.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/09-configure-distributed-workloads.md">Next</a>
+</p>
+
 ### Objectives
 
 - Ensure that OpenShift AI workload-related dependencies are configured
@@ -323,3 +329,9 @@ You should see the `iris-training` pipeline and be able to execute a pipeline ru
 ```sh
 ./scripts/setup.sh -s 10
 ```
+
+<p align="center">
+<a href="/docs/07-install-rhoai-operator.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/09-configure-distributed-workloads.md">Next</a>
+</p>

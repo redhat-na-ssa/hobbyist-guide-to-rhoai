@@ -1,5 +1,11 @@
 # 3. (Optional) Running a sample GPU Application
 
+<p align="center">
+<a href="/docs/02-enable-gpu-support.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/04-configure-gpu-dashboards.md">Next</a>
+</p>
+
 ### Objectives
 
 - Run a simple CUDA VectorAdd that adds two vectors together
@@ -105,3 +111,9 @@
 ```sh
 ./scripts/setup.sh -s 4
 ```
+
+<p align="center">
+<a href="/docs/02-enable-gpu-support.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/04-configure-gpu-dashboards.md">Next</a>
+</p>

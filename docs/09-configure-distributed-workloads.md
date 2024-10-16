@@ -1,5 +1,11 @@
 # 9. Configure distributed workloads
 
+<p align="center">
+<a href="/docs/08-configure-rhoai.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/README.md">Next</a>
+</p>
+
 ### Objectives
 
 - Discussing the relation between Ray, CodeFlare, MCAD, InstaScale, and Kueue (ResourcesFlavor, ClusterQueue and LocalQueue)
@@ -124,3 +130,9 @@ In this example, the kueue.x-k8s.io/default-queue: "true" annotation defines thi
 ```sh
 ./scripts/setup.sh -s 9
 ```
+
+<p align="center">
+<a href="/docs/08-configure-rhoai.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/README.md">Next</a>
+</p>

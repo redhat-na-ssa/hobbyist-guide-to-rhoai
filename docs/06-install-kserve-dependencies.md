@@ -1,5 +1,11 @@
 # 6. Install RHOAI Kserve Dependencies
 
+<p align="center">
+<a href="/docs/05-configure-gpu-sharing-method.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/07-install-rhoai-operator.md">Next</a>
+</p>
+
 ### Objectives
 
 - Understanding where we [deploy models](/docs/info-deploy-model.md) to and [ways to do it](/docs/info-model-serving.md)
@@ -123,3 +129,9 @@
 ```sh
 ./scripts/setup.sh -s 7
 ```
+
+<p align="center">
+<a href="/docs/05-configure-gpu-sharing-method.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/07-install-rhoai-operator.md">Next</a>
+</p>
