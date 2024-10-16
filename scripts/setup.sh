@@ -122,7 +122,7 @@ step_0(){
 
   retry oc apply -f "${GIT_ROOT}"/configs/00
 
-  validate_cli || return 1
+  validate_cli || echo "!!!NOTICE: you are missing cli tools needed!!!"
 }
 
 step_1(){
