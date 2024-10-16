@@ -119,12 +119,12 @@
 - From RHOAI, Settings > Serving runtimes > Click Add Serving Runtime.
 - Select `Multi-model serving`
 - Select `Start from scratch`
-- Review, Copy and Paste in the content from `configs/09/other/rhoai-add-serving-runtime.yaml`
+- Review, Copy and Paste in the content from `configs/08/other/rhoai-add-serving-runtime.yaml`
 - Add and confirm the runtime can be selected in a Data Science Project
 
 **Option 2**:
 
-    oc apply -f configs/09/rhoai-add-serving-runtime-template.yaml -n redhat-ods-applications
+    oc apply -f configs/08/rhoai-add-serving-runtime-template.yaml -n redhat-ods-applications
 
 > Expected output
 >
@@ -304,7 +304,7 @@
 > [!NOTE]
 > The sample MySQL deployment does not have SSL configured so we need to add a `customExtraParams` field to disable the TLS check. For a production MySQL deployment, you can remove this parameter to enable the TLS check.
 
-    oc apply -f configs/09/rhoai-test-pipeline-server.yaml
+    oc apply -f configs/08/rhoai-test-pipeline-server.yaml
 
 > Expected output
 >
