@@ -1,4 +1,4 @@
-# 7. Install RHOAI Kserve Dependencies
+# 6. Install RHOAI Kserve Dependencies
 
 ### Objectives
 

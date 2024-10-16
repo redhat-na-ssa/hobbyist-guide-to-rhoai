@@ -1,4 +1,4 @@
-# 09. Administrative Configurations for RHOAI / Data Science Pipelines
+# 8. Administrative Configurations for RHOAI / Data Science Pipelines
 
 ### Objectives
 
@@ -189,7 +189,6 @@
 >
 > `    Tags: database, mysql, mysql80, mysql-80`
 >
->
 > `--> Found image 8fcde26 (7 days old) in image stream "openshift/mysql" under tag "8.0-el8" for "mysql"`
 >
 > `    MySQL 8.0`\
@@ -197,7 +196,6 @@
 > `    MySQL is a multi-user, multi-threaded SQL database server. The container image provides a containerized packaging of the MySQL mysqld daemon and client application. The mysqld server daemon accepts connections from clients and provides access to content from MySQL databases on behalf of the clients.`
 >
 > `    Tags: database, mysql, mysql80, mysql-80`
->
 >
 > `--> Creating resources ...`\
 > `    deployment.apps "mysql" created`\

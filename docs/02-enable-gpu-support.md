@@ -1,4 +1,4 @@
-# 3. Enabling GPU support for RHOAI
+# 2. Enabling GPU support for RHOAI
 
 <p align="right">
 <a href="/docs/01-add-administrative-user.md">Prev</a>

@@ -1,4 +1,4 @@
-# 11. Demo - Distributed Workloads
+# 10. Demo - Distributed Workloads
 
 ### Objectives
 
@@ -77,6 +77,7 @@
 - [ ] If you're running 1_cluster_job_client and you're in the above situation, run the following to confirm that your RayCluster isn't hung up
 
       oc get pod -n sandbox -l ray.io/is-ray-node -ojsonpath='{range .items[0].status.conditions[*]}{.message}{"\n"}{end}' 2>/dev/null | grep 'untolerated'
+
   - [ ] If, and only if, the above returns a line showing that the GPU taint was untolerated, should you bounce the Kueue pod using the following command (no copy block to prevent mistakes!)
     - `oc delete pod -n redhat-ods-applications -l app.opendatahub.io/kueue`
 

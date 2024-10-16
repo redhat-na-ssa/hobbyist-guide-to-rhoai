@@ -1,4 +1,4 @@
-# Demo - Fraud Detection
+# 11. Demo - Fraud Detection
 
 In this tutorial, you learn how to incorporate data science and artificial intelligence and machine learning (AI/ML) into an OpenShift development workflow.
 

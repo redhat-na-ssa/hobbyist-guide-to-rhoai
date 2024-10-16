@@ -1,4 +1,4 @@
-# 4. (Optional) Running a sample GPU Application
+# 3. (Optional) Running a sample GPU Application
 
 ### Objectives
 

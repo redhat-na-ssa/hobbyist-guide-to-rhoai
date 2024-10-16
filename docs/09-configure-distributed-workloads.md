@@ -1,4 +1,4 @@
-# 10. Configure distributed workloads
+# 9. Configure distributed workloads
 
 ### Objectives
 

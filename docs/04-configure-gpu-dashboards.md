@@ -1,4 +1,4 @@
-# 5. Configure GPU dashboards
+# 4. Configure GPU dashboards
 
 ## 5.1 Enabling the GPU Monitoring Dashboard
 
@@ -25,8 +25,7 @@
   - GPU Framebuffer Mem Used - Frame buffer memory used in MB.
   - Tensor Core Utilization - Ratio of cycles the tensor (HMMA) pipe is active, percent.
 
-> [!NOTE]
-> [Refer here](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/enable-gpu-monitoring-dashboard.html) for details on the GPU monitoring dashboard
+> [!NOTE] > [Refer here](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/enable-gpu-monitoring-dashboard.html) for details on the GPU monitoring dashboard
 
 ## Steps
 
