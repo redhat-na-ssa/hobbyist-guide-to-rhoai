@@ -8,9 +8,10 @@ Your cluster must have at least **2 worker nodes with at least 8 CPUs and 32 GiB
 
 - Choose below options:
 
-  - Activity = Practice/Enablement
-  - Purpose = Conduct internal training/enablement
-  - Control Plane Instance Type = m6a.4xlarge
+  - Activity = `Practice/Enablement`
+  - Purpose = `Conduct internal training/enablement`
+  - OpenShift Version = `4.16`
+  - Control Plane Instance Type = `m6a.4xlarge`
 
 ![](/assets/create-openshift-cluster.gif)
 
