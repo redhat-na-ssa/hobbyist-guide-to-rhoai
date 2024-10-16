@@ -62,7 +62,7 @@ In RHOAI, Red Hat supports only a single cluster queue per cluster (that is, hom
 
 - [ ] Apply the configuration to create the `default-flavor`
 
-      oc apply -f configs/08/rhoai-kueue-default-flavor.yaml
+      oc apply -f configs/09/rhoai-kueue-default-flavor.yaml
 
 > Expected output
 >
@@ -85,7 +85,7 @@ What is this cluster-queue doing? The example configures a cluster queue to assi
 
 - [ ] Apply the configuration to create the `cluster-queue`
 
-      oc apply -f configs/08/rhoai-kueue-cluster-queue.yaml
+      oc apply -f configs/09/rhoai-kueue-cluster-queue.yaml
 
 > Expected output
 >
@@ -105,7 +105,7 @@ In this example, the kueue.x-k8s.io/default-queue: "true" annotation defines thi
       oc project sandbox || oc new-project sandbox
 
       # create local queue
-      oc apply -f configs/08/rhoai-kueue-local-queue.yaml
+      oc apply -f configs/09/rhoai-kueue-local-queue.yaml
 
 > Expected output
 >
