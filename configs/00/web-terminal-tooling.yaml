@@ -20,9 +20,9 @@ spec:
             echo "
             GIT_REPO=https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
 
-            [ -e ~/hobbyist-guide-to-rhoai ] || git clone \${GIT_REPO} 
+            [ -e ~/hobbyist-guide-to-rhoai ] || git clone \${GIT_REPO}
             [ -e ~/hobbyist-guide-to-rhoai ] && cd ~/hobbyist-guide-to-rhoai
-            
+
             " >> /home/user/.bashrc
 
             . /home/user/.bashrc
