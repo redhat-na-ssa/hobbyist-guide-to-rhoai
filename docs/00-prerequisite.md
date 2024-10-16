@@ -1,6 +1,6 @@
 # 0. Prerequisite
 
-<p align="right">
+<p align="center">
 <a href="/README.md">Prev</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/docs/01-add-administrative-user.md">Next</a>
@@ -54,7 +54,7 @@ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 
 ![](/assets/00-web-terminal.gif)
 
-<p align="right">
+<p align="center">
 <a href="/README.md">Prev</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/docs/01-add-administrative-user.md">Next</a>

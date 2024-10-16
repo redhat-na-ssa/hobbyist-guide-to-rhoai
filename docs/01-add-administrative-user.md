@@ -1,6 +1,6 @@
 # 1. Add an administrative user
 
-<p align="right">
+<p align="center">
 <a href="/docs/00-prerequisite.md">Prev</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/docs/02-enable-gpu-support.md">Next</a>
@@ -126,7 +126,7 @@ For this bootcamp, we are using HTpasswd as the Identity Provider (IdP). To lear
 ./scripts/setup.sh -s 1
 ```
 
-<p align="right">
+<p align="center">
 <a href="/docs/00-prerequisite.md">Prev</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/docs/02-enable-gpu-support.md">Next</a>

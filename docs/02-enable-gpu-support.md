@@ -1,6 +1,6 @@
 # 2. Enabling GPU support for RHOAI
 
-<p align="right">
+<p align="center">
 <a href="/docs/01-add-administrative-user.md">Prev</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/docs/03-run-sample-gpu-application.md">Next</a>
@@ -385,7 +385,7 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 ./scripts/setup.sh -s 3
 ```
 
-<p align="right">
+<p align="center">
 <a href="/docs/01-add-administrative-user.md">Prev</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/docs/03-run-sample-gpu-application.md">Next</a>
