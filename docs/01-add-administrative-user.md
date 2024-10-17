@@ -22,7 +22,7 @@
 - Once you have a new account delete kubeadmin
 - RHOAI stipulates 'Access to the cluster as a user with the cluster-admin role; the kubeadmin user is not allowed.'
 
-> You may be logged into the cluster as user `kubeadmin`, which is an automatically generated temporary user that should not be used as a best practice. See \_APPENDIX.md for more details on best practices and patching if needed.
+> You may be logged into the cluster as user `kubeadmin`, which is an automatically generated temporary user that should not be used as a best practice.
 
 For this bootcamp, we are using HTpasswd as the Identity Provider (IdP). To learn more about supported IDPs refer [Here](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/authentication_and_authorization/understanding-identity-provider#supported-identity-providers).
 
@@ -112,7 +112,8 @@ For this bootcamp, we are using HTpasswd as the Identity Provider (IdP). To lear
       oc login https://api.cluster-<id>.<id>.sandbox.opentlc.com:6443 --insecure-skip-tls-verify=true -u <username> -p <password>
 
 > [!NOTE]
-> The remainder of the procedure should be completed with the new cluster-admin `<username>`.
+> The remainder of the procedure should be completed with the new cluster-admin `<username>`.  
+> After creating a new cluster-admin user, you can remove the `kubeadmin` user to improve cluster security. Refer [Here](https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/authentication_and_authorization/understanding-identity-provider#removing-kubeadmin_understanding-identity-provider) for details.
 
 ## Validation
 
