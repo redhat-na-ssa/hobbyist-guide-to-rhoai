@@ -104,7 +104,7 @@ For this bootcamp, we are using HTpasswd as the Identity Provider (IdP). To lear
 
 - [ ] Log in to the cluster as a user from your identity provider, entering the password when prompted.
 
-      oc cluster-info
+      oc login -u <username> -p <password>
 
 > [!NOTE]
 > You may need to add the parameter `--insecure-skip-tls-verify=true` if your clusters api endpoint does not have a trusted cert.
