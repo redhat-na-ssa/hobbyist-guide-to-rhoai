@@ -1,5 +1,9 @@
 ## Create OpenShift cluster for bootcamp
 
+<p align="center">
+<a href="/docs/00-prerequisite.md">Back</a>
+</p>
+
 Your cluster must have at least **2 worker nodes with at least 8 CPUs and 32 GiB RAM available for OpenShift AI** to use when you install the Operator. To ensure that OpenShift AI is usable, additional cluster resources are required beyond the minimum requirements.
 
 ### Steps

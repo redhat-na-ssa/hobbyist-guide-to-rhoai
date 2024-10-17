@@ -1,5 +1,9 @@
 # 10. Demo - Distributed Workloads
 
+<p align="center">
+<a href="/README.md">Home</a>
+</p>
+
 ### Objectives
 
 - Demo to showcase distributed workloads on OpenShift AI
