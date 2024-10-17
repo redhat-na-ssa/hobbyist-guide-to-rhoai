@@ -56,7 +56,7 @@
 
 - [ ] Edit the downloaded machineset.yaml and update the following fields:
 
-  - [ ] ~Line 13`.metadata.name` to a name containing `-gpu`.
+  - [ ] ~Line 13`.metadata.name` prepend the name with `gpu-`.
   - [ ] ~Line 18 `.spec.replicas` from `0` to `2`
   - [ ] ~Line 22`.spec.selector.matchLabels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
   - [ ] ~Line 29 `.spec.template.metadata.labels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
@@ -95,6 +95,9 @@
 >
 > `cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu-29whc   Running   g4dn.4xlarge   us-xxxx-x   us-xxxx-xc   7m59s`\
 > `cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu-nr59d   Running   g4dn.4xlarge   us-xxxx-x   us-xxxx-xc   7m59s`
+
+> [!NOTE]
+> Exit out (CTRL+C) of the above command when you see the expected output
 
 ## 2.2 Deploying the Node Feature Discovery Operator (takes time)
 
