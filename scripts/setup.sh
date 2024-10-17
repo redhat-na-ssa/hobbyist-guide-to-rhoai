@@ -60,6 +60,8 @@ check_cluster_version(){
 }
 
 validate_cli(){
+  echo ""
+  echo "Validating command requirements..."
   bin_check oc
   bin_check helm
   bin_check jq
@@ -69,14 +71,6 @@ validate_cli(){
 validate_cluster(){
   ocp_check_login
   check_cluster_version
-}
-
-validate_setup(){
-  echo ""
-  echo "Validating requirements..."
-
-  validate_cli
-  validate_cluster
 }
 
 add_admin_user(){
@@ -122,10 +116,13 @@ while getopts ":h:s:" flag; do
 done
 
 step_0(){
-  validate_setup || return 1
-
   logbanner "Install prerequisites"
+
+  validate_cluster || return 1
+
   retry oc apply -f "${GIT_ROOT}"/configs/00
+
+  validate_cli || echo "!!!NOTICE: you are missing cli tools needed!!!"
 }
 
 step_1(){
@@ -177,16 +174,6 @@ step_5(){
 step_6(){
   logbanner "Install kserve dependencies"
   retry oc apply -f "${GIT_ROOT}"/configs/06
-
-  loginfo "Patch cluster policy to use device-plugin-config"
-  oc patch clusterpolicy gpu-cluster-policy \
-        -n nvidia-gpu-operator --type merge \
-        -p '{"spec": {"devicePlugin": {"config": {"name": "device-plugin-config"}}}}'
-
-  loginfo "Patch cluster policy to use time-sliced-8 timeslicing configuration"
-  oc patch clusterpolicy gpu-cluster-policy \
-        -n nvidia-gpu-operator --type merge \
-        -p '{"spec": {"devicePlugin": {"config": {"default": "time-sliced-8"}}}}'
 }
 
 step_7(){
@@ -213,11 +200,17 @@ workshop_uninstall(){
 
   rm "${DEFAULT_HTPASSWD}"{,.txt} "${DEFAULT_ADMIN_PASS}"
 
+  oc -n pipeline-test delete --all datasciencepipelinesapplications
+
   oc delete datasciencecluster default-dsc
   oc delete dscinitialization default-dsci
-  oc -n istio-system delete --all servicemeshmemberrolls.maistra.io
+
+  sleep 8
+
   oc -n istio-system delete --all servicemeshcontrolplanes.maistra.io
+  oc -n istio-system delete --all servicemeshmemberrolls.maistra.io
   oc delete --all -A servicemeshmembers.maistra.io
+
   oc -n knative-serving delete knativeservings.operator.knative.dev knative-serving
   oc delete consoleplugin console-plugin-nvidia-gpu
 
@@ -226,13 +219,13 @@ workshop_uninstall(){
   oc delete csv -A -l operators.coreos.com/servicemeshoperator.openshift-operators
   oc delete csv -A -l operators.coreos.com/web-terminal.openshift-operators
 
+  oc delete -n openshift-operators deploy devworkspace-webhook-server
+
   GPU_MACHINE_SET=$(oc -n openshift-machine-api get machinesets -o name | grep -E 'gpu|g4dn' | head -n1)
   for set in ${GPU_MACHINE_SET}
   do
     oc -n openshift-machine-api delete "$set"
   done
-
-  oc delete -n openshift-operators deploy devworkspace-webhook-server
 
   oc delete \
     -f "${GIT_ROOT}"/configs/00 \
@@ -244,6 +237,7 @@ workshop_uninstall(){
     -f "${GIT_ROOT}"/configs/06 \
     -f "${GIT_ROOT}"/configs/07 \
     -f "${GIT_ROOT}"/configs/08 \
+    -f "${GIT_ROOT}"/configs/08/minio \
     -f "${GIT_ROOT}"/configs/09 \
     -f "${GIT_ROOT}"/configs/uninstall
 

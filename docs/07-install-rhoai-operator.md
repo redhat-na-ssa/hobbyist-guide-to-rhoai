@@ -1,4 +1,10 @@
-# 8. Install RHOAI operator
+# 7. Install RHOAI operator
+
+<p align="center">
+<a href="/docs/06-install-kserve-dependencies.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/08-configure-rhoai.md">Next</a>
+</p>
 
 ### Objectives
 
@@ -29,8 +35,7 @@ Before you install RHOAI, it is important to understand how it's dependencies wi
 | `HabanaAI Operator`                             | if Intel Gaudi accelerators exist                                   |
 | `AMD GPU Operator`                              | if AMD accelerators exist                                           |
 
-> [!NOTE]
-> `NFD` and `KMM` operators exists with other patterns, these are the most common. More information is available [here](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/Install-and-deploying-openshift-ai_install#Install-the-openshift-data-science-operator_operator-install)
+> [!NOTE] > `NFD` and `KMM` operators exists with other patterns, these are the most common. More information is available [here](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/Install-and-deploying-openshift-ai_install#Install-the-openshift-data-science-operator_operator-install)
 
 ## Steps
 
@@ -121,10 +126,10 @@ Before you install RHOAI, it is important to understand how it's dependencies wi
 > `      Namespace:           istio-system`\
 > `    Management State:      Unmanaged`\
 > `  Trusted CA Bundle:`\
-> `    Custom CA Bundle:  `\
+> `  Custom CA Bundle:`\
 > `    Management State:  Managed`
 
-## 8.1 Install RHOAI components
+## 7.1 Install RHOAI components
 
 ### Objectives
 
@@ -207,5 +212,11 @@ There are 3x RHOAI Operator dependency states to be set: `Managed`, `Removed`, a
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 8
+./scripts/setup.sh -s 7
 ```
+
+<p align="center">
+<a href="/docs/06-install-kserve-dependencies.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/08-configure-rhoai.md">Next</a>
+</p>

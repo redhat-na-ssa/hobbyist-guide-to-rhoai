@@ -1,4 +1,10 @@
-# 09. Administrative Configurations for RHOAI / Data Science Pipelines
+# 8. Administrative Configurations for RHOAI / Data Science Pipelines
+
+<p align="center">
+<a href="/docs/07-install-rhoai-operator.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/09-configure-distributed-workloads.md">Next</a>
+</p>
 
 ### Objectives
 
@@ -14,7 +20,7 @@
 
 - Installing OpenShift AI is not the last step in preparing for data science users
 
-## 10.1 Ensure you have an Accelerator Profile
+## 8.1 Ensure you have an Accelerator Profile
 
 ### Objectives
 
@@ -51,7 +57,7 @@
 > [!NOTE]
 > If the taint keys do not match, you can either edit the AcceleratorProfile or, if no AcceleratorProfile was present at all you can trigger regeneration by the RHOAI Console. See the steps [here](/docs/info-regenerate-accelerator-profiles.md) for the procedure to do this.
 
-## 10.2 Increasing your non-GPU compute capacity
+## 8.2 Increasing your non-GPU compute capacity
 
 ### Objectives
 
@@ -90,7 +96,7 @@
 >
 > `machineset.machine.openshift.io/cluster-5mgxv-42f4t-worker-us-east-2b scaled`
 
-## 10.3 Add a custom serving runtime
+## 8.3 Add a custom serving runtime
 
 ### Objectives
 
@@ -113,12 +119,12 @@
 - From RHOAI, Settings > Serving runtimes > Click Add Serving Runtime.
 - Select `Multi-model serving`
 - Select `Start from scratch`
-- Review, Copy and Paste in the content from `configs/09/other/rhoai-add-serving-runtime.yaml`
+- Review, Copy and Paste in the content from `configs/08/other/rhoai-add-serving-runtime.yaml`
 - Add and confirm the runtime can be selected in a Data Science Project
 
 **Option 2**:
 
-    oc apply -f configs/09/rhoai-add-serving-runtime-template.yaml -n redhat-ods-applications
+    oc apply -f configs/08/rhoai-add-serving-runtime-template.yaml -n redhat-ods-applications
 
 > Expected output
 >
@@ -132,7 +138,7 @@
 - Deploy a model server using the `Multi-model serving platform` by clicking the `Add model server` button
 - Grab the pulldown for `Serving runtime` and confirm that `Nvidia Triton Model Server` is visible from the options
 
-## 10.4 Configuring Data Science Pipelines
+## 8.4 Configuring Data Science Pipelines
 
 ### Objectives
 
@@ -189,7 +195,6 @@
 >
 > `    Tags: database, mysql, mysql80, mysql-80`
 >
->
 > `--> Found image 8fcde26 (7 days old) in image stream "openshift/mysql" under tag "8.0-el8" for "mysql"`
 >
 > `    MySQL 8.0`\
@@ -197,7 +202,6 @@
 > `    MySQL is a multi-user, multi-threaded SQL database server. The container image provides a containerized packaging of the MySQL mysqld daemon and client application. The mysqld server daemon accepts connections from clients and provides access to content from MySQL databases on behalf of the clients.`
 >
 > `    Tags: database, mysql, mysql80, mysql-80`
->
 >
 > `--> Creating resources ...`\
 > `    deployment.apps "mysql" created`\
@@ -300,7 +304,7 @@
 > [!NOTE]
 > The sample MySQL deployment does not have SSL configured so we need to add a `customExtraParams` field to disable the TLS check. For a production MySQL deployment, you can remove this parameter to enable the TLS check.
 
-    oc apply -f configs/09/rhoai-test-pipeline-server.yaml
+    oc apply -f configs/08/rhoai-test-pipeline-server.yaml
 
 > Expected output
 >
@@ -323,5 +327,11 @@ You should see the `iris-training` pipeline and be able to execute a pipeline ru
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 10
+./scripts/setup.sh -s 8
 ```
+
+<p align="center">
+<a href="/docs/07-install-rhoai-operator.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/09-configure-distributed-workloads.md">Next</a>
+</p>

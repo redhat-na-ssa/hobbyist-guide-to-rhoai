@@ -1,4 +1,10 @@
-# 4. (Optional) Running a sample GPU Application
+# 3. (Optional) Running a sample GPU Application
+
+<p align="center">
+<a href="/docs/02-enable-gpu-support.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/04-configure-gpu-dashboards.md">Next</a>
+</p>
 
 ### Objectives
 
@@ -103,5 +109,11 @@
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 4
+./scripts/setup.sh -s 3
 ```
+
+<p align="center">
+<a href="/docs/02-enable-gpu-support.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/04-configure-gpu-dashboards.md">Next</a>
+</p>

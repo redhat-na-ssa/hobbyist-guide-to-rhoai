@@ -148,6 +148,7 @@ Elyra
 embeddings
 emptydir
 Enablement
+enablement
 enablePrometheusMerge
 enablerepo
 Ensembling
@@ -195,6 +196,7 @@ gRPC
 gzb
 Habana
 HabanaAI
+helm
 Helming
 hgrz
 HMMA

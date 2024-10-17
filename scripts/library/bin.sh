@@ -6,24 +6,24 @@ OPENSHIFT_CLIENTS_URL=https://mirror.openshift.com/pub/openshift-v4/x86_64/clien
 bin_check(){
   name=${1:-oc}
 
-  which "${name}" && return 0
+  BIN_PATH=${BIN_PATH:-scratch/bin}
+  BASH_COMP=${BASH_COMP:-scratch/bash}
 
   OS="$(uname | tr '[:upper:]' '[:lower:]')"
   ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')"
 
-  echo "
-    CLI:    ${name} (NOT found)
-    OS:     ${OS}
-    ARCH:   ${ARCH}
-  "
-
-  BIN_PATH=${BIN_PATH:-scratch/bin}
-  BASH_COMP=${BASH_COMP:-scratch/bash}
-
   [ -d "${BIN_PATH}" ] || mkdir -p "${BIN_PATH}"
   [ -d "${BASH_COMP}" ] || mkdir -p "${BASH_COMP}"
 
+  which "${name}" && return 0
+ 
   [ -e "${BIN_PATH}/${name}" ] || download_"${name}"
+
+  echo "
+    CLI:    ${name}
+    OS:     ${OS}
+    ARCH:   ${ARCH}
+  "
 
   case ${name} in
     oc|odo|virtctl)
@@ -70,8 +70,8 @@ download_helm(){
 }
 
 download_oc(){
-  BIN_VERSION=stable-4.14
-  DOWNLOAD_URL=${OPENSHIFT_CLIENTS_URL}/ocp/${BIN_VERSION}/openshift-client-${OS}.tar.gz
+  BIN_VERSION=stable-4.16
+  DOWNLOAD_URL=${OPENSHIFT_CLIENTS_URL}/ocp/${BIN_VERSION}/openshift-client-${OS:-linux}.tar.gz
   curl "${DOWNLOAD_URL}" -sL | tar zx -C "${BIN_PATH}/" oc kubectl
 }
 
@@ -114,27 +114,27 @@ download_rhoas(){
 }
 
 download_subctl(){
-  BIN_VERSION=0.17.0
+  BIN_VERSION=0.17.3
   DOWNLOAD_URL=https://github.com/submariner-io/releases/releases/download/v${BIN_VERSION}/subctl-v${BIN_VERSION}-linux-amd64.tar.xz
   curl "${DOWNLOAD_URL}" -sL | tar Jx --strip-components=1 -C "${BIN_PATH}/"
 }
 
 download_virtctl(){
-  BIN_VERSION=1.2.0
+  BIN_VERSION=1.3.1
   DOWNLOAD_URL=https://github.com/kubevirt/kubevirt/releases/download/v${BIN_VERSION}/virtctl-v${BIN_VERSION}-linux-amd64
-  curl "${DOWNLOAD_URL}" -sL -o "${BIN_PATH}/virtctl"
+  curl "${DOWNLOAD_URL}" -sL -o "${BIN_PATH}/virtctl" 
   chmod +x "${BIN_PATH}/virtctl"
 }
 
 download_kustomize(){
-  BIN_VERSION=5.4.1
+  BIN_VERSION=5.5.0
   DOWNLOAD_URL=https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${BIN_VERSION}/kustomize_v${BIN_VERSION}_linux_amd64.tar.gz
   curl "${DOWNLOAD_URL}" -sL | tar zx -C "${BIN_PATH}/" kustomize
 }
 
 download_s2i(){
   # BIN_VERSION=
-  DOWNLOAD_URL=https://github.com/openshift/source-to-image/releases/download/v1.3.2/source-to-image-v1.3.2-78363eee-linux-amd64.tar.gz
+  DOWNLOAD_URL=https://github.com/openshift/source-to-image/releases/download/v1.4.0/source-to-image-v1.4.0-d3544c7e-linux-amd64.tar.gz
   curl "${DOWNLOAD_URL}" -sL | tar zx -C "${BIN_PATH}/"
 }
 
@@ -150,31 +150,38 @@ download_rclone(){
 }
 
 download_restic(){
-  BIN_VERSION=0.16.4
+  BIN_VERSION=0.17.1
   DOWNLOAD_URL=https://github.com/restic/restic/releases/download/v${BIN_VERSION}/restic_${BIN_VERSION}_linux_amd64.bz2
   curl "${DOWNLOAD_URL}" -sL | bzcat > "${BIN_PATH}/restic"
   chmod +x "${BIN_PATH}/restic"
 }
 
 download_sops(){
-  BIN_VERSION=3.8.1
+  BIN_VERSION=3.9.1
   DOWNLOAD_URL=https://github.com/getsops/sops/releases/download/v${BIN_VERSION}/sops-v${BIN_VERSION}.linux.amd64
   curl "${DOWNLOAD_URL}" -sLo "${BIN_PATH}/sops"
   chmod +x "${BIN_PATH}/sops"
 }
 
 download_age(){
-  BIN_VERSION=1.1.1
+  BIN_VERSION=1.2.0
   DOWNLOAD_URL=https://github.com/FiloSottile/age/releases/download/v${BIN_VERSION}/age-v${BIN_VERSION}-linux-amd64.tar.gz
   curl "${DOWNLOAD_URL}" -sL | tar vzx --strip-components=1 -C "${BIN_PATH}/"
   chmod +x "${BIN_PATH}"/age*
 }
 
 download_yq(){
-  BIN_VERSION=4.43.1
+  BIN_VERSION=4.44.3
   DOWNLOAD_URL=https://github.com/mikefarah/yq/releases/download/v${BIN_VERSION}/yq_linux_amd64
   curl "${DOWNLOAD_URL}" -sLo "${BIN_PATH}/yq"
   chmod +x "${BIN_PATH}/yq"
+}
+
+download_jq(){
+  BIN_VERSION=1.7.1
+  DOWNLOAD_URL=https://github.com/jqlang/jq/releases/download/jq-${BIN_VERSION}/jq-linux-amd64
+  curl "${DOWNLOAD_URL}" -sLo "${BIN_PATH}/jq"
+  chmod +x "${BIN_PATH}/jq"
 }
 
 download_krew(){
@@ -188,14 +195,14 @@ download_krew(){
 }
 
 download_kubectl-operator(){
-  BIN_VERSION=0.5.0
+  BIN_VERSION=0.5.1
   DOWNLOAD_URL=https://github.com/operator-framework/kubectl-operator/releases/download/v${BIN_VERSION}/kubectl-operator_v${BIN_VERSION}_linux_amd64.tar.gz
   curl "${DOWNLOAD_URL}" -sL | tar vzx -C "${BIN_PATH}/"
   chmod +x "${BIN_PATH}/kubectl-operator"
 }
 
 download_crane(){
-  BIN_VERSION=0.19.1
+  BIN_VERSION=0.20.2
   DOWNLOAD_URL=https://github.com/google/go-containerregistry/releases/download/v${BIN_VERSION}/go-containerregistry_Linux_x86_64.tar.gz
   curl "${DOWNLOAD_URL}" -sL | tar vzx -C "${BIN_PATH}/" {crane,gcrane}
 }
