@@ -6,8 +6,6 @@
 <a href="/docs/03-run-sample-gpu-application.md">Next</a>
 </p>
 
-In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs for RHOCP](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/enabling-gpu-support_install). Once completed, RHOAI requires an Accelerator Profile custom resource definition in the `redhat-ods-applications`. Currently, NVIDIA and Intel Gaudi are the supported [accelerator profiles](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/working_with_accelerators/overview-of-accelerators_accelerators#overview-of-accelerators_accelerators).
-
 ## 3.1 Adding a GPU node to an existing RHOCP cluster
 
 ### Objectives
@@ -23,9 +21,9 @@ In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs
 - Nodes vs. Machines vs. Machinesets
 - GPUs in other cloud providers and bare metal
 - Once completed, RHOAI requires an Accelerator Profile custom resource definition in the redhat-ods-applications.
-- Currently, NVIDIA and Intel Gaudi are the supported accelerator profiles.
+- Currently, NVIDIA and Intel Gaudi are the supported [accelerator profiles](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.13/html/working_with_accelerators/overview-of-accelerators_accelerators#overview-of-accelerators_accelerators)
 
-> You can copy and modify a default compute machine set configuration to create a GPU-enabled machine set and machines for the AWS EC2 cloud provider. [More Info](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/machine_management/managing-compute-machines-with-the-machine-api#nvidia-gpu-aws-adding-a-gpu-node_creating-machineset-aws)
+> You can copy and modify a default compute machine set configuration to create a GPU-enabled machine set and machines for the AWS EC2 cloud provider. [More Info](https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/machine_management/managing-compute-machines-with-the-machine-api#nvidia-gpu-aws-adding-a-gpu-node_creating-machineset-aws)
 
 ## Steps
 
@@ -115,7 +113,7 @@ In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs
   - sources.pci.deviceClassWhitelist is a list of PCI device class IDs for which to publish a label.
   - sources.pci.deviceLabelFields is the set of PCI ID fields to use when constructing the name of the feature label.
 
-> Refer [Here](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/machine_management/managing-compute-machines-with-the-machine-api#nvidia-gpu-aws-deploying-the-node-feature-discovery-operator_creating-machineset-aws) for more information.
+> Refer [Here](https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/machine_management/managing-compute-machines-with-the-machine-api#nvidia-gpu-aws-deploying-the-node-feature-discovery-operator_creating-machineset-aws) for more information.
 
 ## Steps
 
