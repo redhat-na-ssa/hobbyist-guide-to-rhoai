@@ -6,7 +6,7 @@
 <a href="/docs/03-run-sample-gpu-application.md">Next</a>
 </p>
 
-## 3.1 Adding a GPU node to an existing RHOCP cluster
+## 2.1 Adding a GPU node to an existing RHOCP cluster
 
 ### Objectives
 
@@ -96,7 +96,7 @@
 > `cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu-29whc   Running   g4dn.4xlarge   us-xxxx-x   us-xxxx-xc   7m59s`\
 > `cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu-nr59d   Running   g4dn.4xlarge   us-xxxx-x   us-xxxx-xc   7m59s`
 
-## 3.2 Deploying the Node Feature Discovery Operator (takes time)
+## 2.2 Deploying the Node Feature Discovery Operator (takes time)
 
 ### Objectives
 
@@ -214,7 +214,7 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 > [!NOTE]
 > You may have to rerun the command over a period of time as NFD pods come online and apply the labels before they show up.
 
-## 3.3 Install the NVIDIA GPU Operator
+## 2.3 Install the NVIDIA GPU Operator
 
 ### Objectives
 
@@ -315,7 +315,7 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 > [!NOTE]
 > With the daemonset deployed, NVIDIA GPUs have the `nvidia-device-plugin` and can be requested by a container using the `nvidia.com/gpu` resource type. The [NVIDIA device plugin](https://github.com/NVIDIA/k8s-device-plugin?tab=readme-ov-file#shared-access-to-gpus) has a number of options, like MIG Strategy, that can be configured for it. We will do this in a later step.
 
-## 3.4 Label GPU Nodes
+## 2.4 Label GPU Nodes
 
 ### Objectives
 
