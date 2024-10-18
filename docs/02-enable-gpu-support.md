@@ -165,6 +165,9 @@
 > `nfd-controller-manager-78758c57f7-7xfh4   2/2     Running   0          48s`
 
 > [!NOTE]
+> Exit out (CTRL+C) of the above command when you see the expected output
+
+> [!NOTE]
 > After installing the NFD Operator, you create instance that installs the `nfd-master` and one `nfd-worker` pod for each compute node. [More Info](https://docs.openshift.com/container-platform/4.15/hardware_enablement/psap-node-feature-discovery-operator.html#Configure-node-feature-discovery-operator-sources_psap-node-feature-discovery-operator)
 
 - [ ] Create the nfd instance object
@@ -286,6 +289,9 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 > `NAME            CSV                              APPROVAL    APPROVED`\
 > `...`\
 > `install-295r6   gpu-operator-certified.v24.6.1   Automatic   true`
+
+> [!NOTE]
+> Exit out (CTRL+C) of the above command when you see the expected output
 
 - [ ] Create the cluster policy
 
