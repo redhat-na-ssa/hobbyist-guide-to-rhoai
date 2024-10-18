@@ -31,7 +31,8 @@
   - GPU Framebuffer Mem Used - Frame buffer memory used in MB.
   - Tensor Core Utilization - Ratio of cycles the tensor (HMMA) pipe is active, percent.
 
-> [!NOTE] > [Refer here](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/enable-gpu-monitoring-dashboard.html) for details on the GPU monitoring dashboard
+> [!NOTE]
+> [Refer here](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/enable-gpu-monitoring-dashboard.html) for details on the GPU monitoring dashboard
 
 ## Steps
 
@@ -87,6 +88,10 @@
 ## Additional Information
 
 There are other tools of varying levels of support from other vendors, including Nvidia directly and some efforts that Red Hatters have built and contributed to. You may find references to some of these projects in official documentation. For an example of one of these community supported administration tools, you can check out the information provided [here](/docs/info-gpu-dashboard.md).
+
+## Validation
+
+![](/assets/04-validation.gif)
 
 ## Automation key (Catch up)
 
