@@ -54,8 +54,7 @@
     1. `Endpoint` = `http://minio.minio.svc:9000`
     1. Leave the remaining fields blank
 
-> [!NOTE]
-> TODO: Add a gif for this
+![](/assets/10-validation.gif)
 
 - [ ] When your workbench shows `Running` in the `Status` column, the `Open` hyperlink should be clickable. Click it, log in, and approve the requested permissions.
 - [ ] In the JupyterLab interface, click the `Git` log in the left navigation bar (it's the third one down, below the square-in-circle icon) and select `Clone a Repository`
