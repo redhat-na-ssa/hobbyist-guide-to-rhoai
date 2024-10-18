@@ -20,13 +20,9 @@ spec:
             echo "
             GIT_REPO=https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
 
-            if [ -e ~/hobbyist-guide-to-rhoai ]; then
-              cd ~/hobbyist-guide-to-rhoai
-            else
-              cd ~
-              git clone \${GIT_REPO}
-              cd ~/hobbyist-guide-to-rhoai
-            fi
+            [ -e ~/hobbyist-guide-to-rhoai ] || git clone \${GIT_REPO}
+            [ -e ~/hobbyist-guide-to-rhoai ] && cd ~/hobbyist-guide-to-rhoai
+
             " >> /home/user/.bashrc
 
             . /home/user/.bashrc
@@ -36,7 +32,7 @@ spec:
         cpuLimit: 400m
         cpuRequest: 100m
         image: ghcr.io/redhat-na-ssa/web-terminal-tooling:latest
-        # image: ghcr.io/redhat-na-ssa/web-terminal-tooling@sha256:a29868596b1ab7b56d28e142891a29d6ff9db72ee3d0249dac7c26d6602eadf8
+        # image: registry.redhat.io/web-terminal/web-terminal-tooling-rhel9@sha256:fec15ce394b043ec1e657746b26547c85cca75ac1fd9f5856a80ebe130319091
         memoryLimit: 512Mi
         memoryRequest: 128Mi
         mountSources: false

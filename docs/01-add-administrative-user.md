@@ -1,5 +1,11 @@
 # 1. Add an administrative user
 
+<p align="center">
+<a href="/docs/00-prerequisite.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/02-enable-gpu-support.md">Next</a>
+</p>
+
 ### Objectives
 
 - Creating an admin user, with cluster-admin RB using HTpasswd as the IdP.
@@ -16,7 +22,7 @@
 - Once you have a new account delete kubeadmin
 - RHOAI stipulates 'Access to the cluster as a user with the cluster-admin role; the kubeadmin user is not allowed.'
 
-> You may be logged into the cluster as user `kubeadmin`, which is an automatically generated temporary user that should not be used as a best practice. See \_APPENDIX.md for more details on best practices and patching if needed.
+> You may be logged into the cluster as user `kubeadmin`, which is an automatically generated temporary user that should not be used as a best practice.
 
 For this bootcamp, we are using HTpasswd as the Identity Provider (IdP). To learn more about supported IDPs refer [Here](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/authentication_and_authorization/understanding-identity-provider#supported-identity-providers).
 
@@ -24,12 +30,15 @@ For this bootcamp, we are using HTpasswd as the Identity Provider (IdP). To lear
 
 ## Steps
 
+> [!IMPORTANT]
+> Ensure that you replace `<username>` and `<password>` with your own username and password in the following command.
+
 - [ ] Create an htpasswd using a container on OpenShift
 
       # using oc to create htpasswd
       oc run \
         --image httpd \
-        -q --rm -i minion -- /bin/sh -c 'sleep 2; htpasswd -n -b -B -C10 <username> <password> > scratch/users.htpasswd
+        -q --rm -i minion -- /bin/sh -c 'sleep 2; htpasswd -n -b -B -C10 <username> <password>' > scratch/users.htpasswd
 
 - Alternative: local command example (if you have htpasswd installed)
 
@@ -98,7 +107,7 @@ For this bootcamp, we are using HTpasswd as the Identity Provider (IdP). To lear
 
 - [ ] Log in to the cluster as a user from your identity provider, entering the password when prompted.
 
-      oc cluster-info
+      oc login -u <username> -p <password>
 
 > [!NOTE]
 > You may need to add the parameter `--insecure-skip-tls-verify=true` if your clusters api endpoint does not have a trusted cert.
@@ -106,7 +115,8 @@ For this bootcamp, we are using HTpasswd as the Identity Provider (IdP). To lear
       oc login https://api.cluster-<id>.<id>.sandbox.opentlc.com:6443 --insecure-skip-tls-verify=true -u <username> -p <password>
 
 > [!NOTE]
-> The remainder of the procedure should be completed with the new cluster-admin `<username>`.
+> The remainder of the procedure should be completed with the new cluster-admin `<username>`.  
+> After creating a new cluster-admin user, you can remove the `kubeadmin` user to improve cluster security. Refer [Here](https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/authentication_and_authorization/understanding-identity-provider#removing-kubeadmin_understanding-identity-provider) for details.
 
 ## Validation
 
@@ -119,3 +129,9 @@ For this bootcamp, we are using HTpasswd as the Identity Provider (IdP). To lear
 ```sh
 ./scripts/setup.sh -s 1
 ```
+
+<p align="center">
+<a href="/docs/00-prerequisite.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/02-enable-gpu-support.md">Next</a>
+</p>

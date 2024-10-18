@@ -1,4 +1,10 @@
-# 6. GPU sharing methods
+# 5. GPU sharing methods
+
+<p align="center">
+<a href="/docs/04-configure-gpu-dashboards.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/06-install-kserve-dependencies.md">Next</a>
+</p>
 
 ### Objectives
 
@@ -37,7 +43,7 @@ For NVIDIA GPU there are a few methods to optimize GPU utilization:
 
 > Note: The use of time-slicing and MPS are mutually exclusive.
 
-## 6.1 Configure GPUs with time slicing
+## 5.1 Configure GPUs with time slicing
 
 ### Objectives
 
@@ -139,7 +145,7 @@ For NVIDIA GPU there are a few methods to optimize GPU utilization:
 > `"nvidia.com/gpu.replicas": "8",`\
 > `...`
 
-## 6.2 Configure Taints and Tolerations
+## 5.2 Configure Taints and Tolerations
 
 ### Objectives
 
@@ -237,5 +243,11 @@ For NVIDIA GPU there are a few methods to optimize GPU utilization:
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 6
+./scripts/setup.sh -s 5
 ```
+
+<p align="center">
+<a href="/docs/04-configure-gpu-dashboards.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/06-install-kserve-dependencies.md">Next</a>
+</p>

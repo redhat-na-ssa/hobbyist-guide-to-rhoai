@@ -1,4 +1,8 @@
-# 11. Demo - Distributed Workloads
+# 10. Demo - Distributed Workloads
+
+<p align="center">
+<a href="/README.md">Home</a>
+</p>
 
 ### Objectives
 
@@ -19,9 +23,9 @@
 
 ## Prerequisites
 
-- Cluster setup steps 0 - 10 are completed
+- Cluster setup steps 0 - 9 are completed
 
-## 11.1 Configuring the demo workbench
+## 10.1 Configuring the demo workbench
 
 ## Steps
 
@@ -43,7 +47,7 @@
   - [ ] Leave `Container size` set to `Small` as we will be using minimal resources for Jupyter and letting Ray consume the bulk of our resources
   - [ ] Leave `Accelerator` unset, reading `Select...` as we will be using Ray to manage our workload accelerators
   - [ ] Leave the `Cluster storage` section with its defaults of `20 Gi` of storage, named similarly to your workbench instance
-  - [ ] Check the box to use a `Data connection`, leave the radio button set to `Create new data connection`, and use the following options to align with the MinIO configuration we set up in section 10: "Administrative Configurations for RHOAI." If you deviated from those values, set them appropriately here
+  - [ ] Check the box to use a `Data connection`, leave the radio button set to `Create new data connection`, and use the following options to align with the MinIO configuration we set up in section `8: Administrative Configurations for RHOAI` If you deviated from those values, set them appropriately here
     1. `Name` = `minio`
     1. `Access key` = `rootuser`
     1. `Secret Key` = `rootuser123`
@@ -69,7 +73,7 @@
 > [!NOTE]
 > The `[*]` indicator to the left of a cell means it's waiting to start or complete execution. The indicator will change to a number, like `[5]` on `cluster.status()` in this notebook if you used the ⏩ button and came back to read this note, when it has completed execution. The numbers indicate the order that the cell was executed in Python.
 
-## 11.2 Running the distributed workloads demos
+## 10.2 Running the distributed workloads demos
 
 > [!IMPORTANT]
 > In the cluster_job_client workbench, if your RayCluster does not come ready and hangs on the cell that says `cluster.wait_ready()` on the last line, you can check the pods in your Sandbox namespace to see if they are stuck in a `Pending` state due to an untolerated taint. If it does, you'll need to restart the Kueue controller in the `redhat-ods-applications` namespace by deleting the pod. For more information about this behavior, see [this docs link](https://kueue.sigs.k8s.io/docs/tasks/run/rayclusters/#before-you-begin).
@@ -77,6 +81,7 @@
 - [ ] If you're running 1_cluster_job_client and you're in the above situation, run the following to confirm that your RayCluster isn't hung up
 
       oc get pod -n sandbox -l ray.io/is-ray-node -ojsonpath='{range .items[0].status.conditions[*]}{.message}{"\n"}{end}' 2>/dev/null | grep 'untolerated'
+
   - [ ] If, and only if, the above returns a line showing that the GPU taint was untolerated, should you bounce the Kueue pod using the following command (no copy block to prevent mistakes!)
     - `oc delete pod -n redhat-ods-applications -l app.opendatahub.io/kueue`
 

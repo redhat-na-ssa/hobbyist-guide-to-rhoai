@@ -1,8 +1,12 @@
-# 3. Enabling GPU support for RHOAI
+# 2. Enabling GPU support for RHOAI
 
-In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs for RHOCP](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/enabling-gpu-support_install). Once completed, RHOAI requires an Accelerator Profile custom resource definition in the `redhat-ods-applications`. Currently, NVIDIA and Intel Gaudi are the supported [accelerator profiles](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/working_with_accelerators/overview-of-accelerators_accelerators#overview-of-accelerators_accelerators).
+<p align="center">
+<a href="/docs/01-add-administrative-user.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/03-run-sample-gpu-application.md">Next</a>
+</p>
 
-## 3.1 Adding a GPU node to an existing RHOCP cluster
+## 2.1 Adding a GPU node to an existing RHOCP cluster
 
 ### Objectives
 
@@ -17,9 +21,9 @@ In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs
 - Nodes vs. Machines vs. Machinesets
 - GPUs in other cloud providers and bare metal
 - Once completed, RHOAI requires an Accelerator Profile custom resource definition in the redhat-ods-applications.
-- Currently, NVIDIA and Intel Gaudi are the supported accelerator profiles.
+- Currently, NVIDIA and Intel Gaudi are the supported [accelerator profiles](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.13/html/working_with_accelerators/overview-of-accelerators_accelerators#overview-of-accelerators_accelerators)
 
-> You can copy and modify a default compute machine set configuration to create a GPU-enabled machine set and machines for the AWS EC2 cloud provider. [More Info](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/machine_management/managing-compute-machines-with-the-machine-api#nvidia-gpu-aws-adding-a-gpu-node_creating-machineset-aws)
+> You can copy and modify a default compute machine set configuration to create a GPU-enabled machine set and machines for the AWS EC2 cloud provider. [More Info](https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/machine_management/managing-compute-machines-with-the-machine-api#nvidia-gpu-aws-adding-a-gpu-node_creating-machineset-aws)
 
 ## Steps
 
@@ -52,7 +56,7 @@ In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs
 
 - [ ] Edit the downloaded machineset.yaml and update the following fields:
 
-  - [ ] ~Line 13`.metadata.name` to a name containing `-gpu`.
+  - [ ] ~Line 13`.metadata.name` prepend the name with `gpu-`.
   - [ ] ~Line 18 `.spec.replicas` from `0` to `2`
   - [ ] ~Line 22`.spec.selector.matchLabels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
   - [ ] ~Line 29 `.spec.template.metadata.labels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
@@ -92,7 +96,10 @@ In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs
 > `cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu-29whc   Running   g4dn.4xlarge   us-xxxx-x   us-xxxx-xc   7m59s`\
 > `cluster-xxxxx-xxxxx-worker-us-xxxx-xc-gpu-nr59d   Running   g4dn.4xlarge   us-xxxx-x   us-xxxx-xc   7m59s`
 
-## 3.2 Deploying the Node Feature Discovery Operator (takes time)
+> [!NOTE]
+> Exit out (CTRL+C) of the above command when you see the expected output
+
+## 2.2 Deploying the Node Feature Discovery Operator (takes time)
 
 ### Objectives
 
@@ -109,7 +116,7 @@ In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs
   - sources.pci.deviceClassWhitelist is a list of PCI device class IDs for which to publish a label.
   - sources.pci.deviceLabelFields is the set of PCI ID fields to use when constructing the name of the feature label.
 
-> Refer [Here](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/machine_management/managing-compute-machines-with-the-machine-api#nvidia-gpu-aws-deploying-the-node-feature-discovery-operator_creating-machineset-aws) for more information.
+> Refer [Here](https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/machine_management/managing-compute-machines-with-the-machine-api#nvidia-gpu-aws-deploying-the-node-feature-discovery-operator_creating-machineset-aws) for more information.
 
 ## Steps
 
@@ -156,6 +163,9 @@ In order to enable GPUs for RHOAI, you must follow the procedure to [enable GPUs
 > `NAME                                      READY   STATUS    RESTARTS   AGE`\
 > `...`\
 > `nfd-controller-manager-78758c57f7-7xfh4   2/2     Running   0          48s`
+
+> [!NOTE]
+> Exit out (CTRL+C) of the above command when you see the expected output
 
 > [!NOTE]
 > After installing the NFD Operator, you create instance that installs the `nfd-master` and one `nfd-worker` pod for each compute node. [More Info](https://docs.openshift.com/container-platform/4.15/hardware_enablement/psap-node-feature-discovery-operator.html#Configure-node-feature-discovery-operator-sources_psap-node-feature-discovery-operator)
@@ -210,7 +220,7 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 > [!NOTE]
 > You may have to rerun the command over a period of time as NFD pods come online and apply the labels before they show up.
 
-## 3.3 Install the NVIDIA GPU Operator
+## 2.3 Install the NVIDIA GPU Operator
 
 ### Objectives
 
@@ -280,6 +290,9 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 > `...`\
 > `install-295r6   gpu-operator-certified.v24.6.1   Automatic   true`
 
+> [!NOTE]
+> Exit out (CTRL+C) of the above command when you see the expected output
+
 - [ ] Create the cluster policy
 
       oc get csv -n nvidia-gpu-operator -l operators.coreos.com/gpu-operator-certified.nvidia-gpu-operator -ojsonpath='{.items[0].metadata.annotations.alm-examples}' | jq '.[0]' > scratch/nvidia-gpu-clusterpolicy.json
@@ -311,7 +324,7 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 > [!NOTE]
 > With the daemonset deployed, NVIDIA GPUs have the `nvidia-device-plugin` and can be requested by a container using the `nvidia.com/gpu` resource type. The [NVIDIA device plugin](https://github.com/NVIDIA/k8s-device-plugin?tab=readme-ov-file#shared-access-to-gpus) has a number of options, like MIG Strategy, that can be configured for it. We will do this in a later step.
 
-## 3.4 Label GPU Nodes
+## 2.4 Label GPU Nodes
 
 ### Objectives
 
@@ -376,5 +389,11 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 3
+./scripts/setup.sh -s 2
 ```
+
+<p align="center">
+<a href="/docs/01-add-administrative-user.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/03-run-sample-gpu-application.md">Next</a>
+</p>

@@ -1,6 +1,12 @@
-# 5. Configure GPU dashboards
+# 4. Configure GPU dashboards
 
-## 5.1 Enabling the GPU Monitoring Dashboard
+<p align="center">
+<a href="/docs/03-run-sample-gpu-application.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/05-configure-gpu-sharing-method.md">Next</a>
+</p>
+
+## 4.1 Enabling the GPU Monitoring Dashboard
 
 ### Objectives
 
@@ -25,8 +31,7 @@
   - GPU Framebuffer Mem Used - Frame buffer memory used in MB.
   - Tensor Core Utilization - Ratio of cycles the tensor (HMMA) pipe is active, percent.
 
-> [!NOTE]
-> [Refer here](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/enable-gpu-monitoring-dashboard.html) for details on the GPU monitoring dashboard
+> [!NOTE] > [Refer here](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/enable-gpu-monitoring-dashboard.html) for details on the GPU monitoring dashboard
 
 ## Steps
 
@@ -88,5 +93,11 @@ There are other tools of varying levels of support from other vendors, including
 - [ ] From this repository's root directory, run below command
 
 ```sh
-./scripts/setup.sh -s 5
+./scripts/setup.sh -s 4
 ```
+
+<p align="center">
+<a href="/docs/03-run-sample-gpu-application.md">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/docs/05-configure-gpu-sharing-method.md">Next</a>
+</p>

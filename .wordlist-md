@@ -86,6 +86,7 @@ crt
 csdd
 csv
 CSV
+CTRL
 cuda
 CUDA
 currentCSV
@@ -148,6 +149,7 @@ Elyra
 embeddings
 emptydir
 Enablement
+enablement
 enablePrometheusMerge
 enablerepo
 Ensembling
@@ -195,6 +197,7 @@ gRPC
 gzb
 Habana
 HabanaAI
+helm
 Helming
 hgrz
 HMMA
@@ -395,6 +398,7 @@ PowerScale
 pre
 prebuilt
 Prem
+prepend
 proxyMetadata
 pulldown
 Pwr
