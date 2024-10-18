@@ -51,9 +51,6 @@
 >
 > `subscription.operators.coreos.com/servicemeshoperator created`
 
-> [!NOTE]
-> For `Unmanaged` configuration details, see the \_APPENDIX.md.
-
 ## 6.2 Install Red Hat OpenShift Serverless Operator
 
 ### Objectives
