@@ -30,6 +30,9 @@ For this bootcamp, we are using HTpasswd as the Identity Provider (IdP). To lear
 
 ## Steps
 
+> [!IMPORTANT]
+> Ensure that you replace `<username>` and `<password>` with your own username and password in the following command.
+
 - [ ] Create an htpasswd using a container on OpenShift
 
       # using oc to create htpasswd
