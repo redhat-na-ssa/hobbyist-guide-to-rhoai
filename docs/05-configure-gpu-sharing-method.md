@@ -238,6 +238,10 @@ For NVIDIA GPU there are a few methods to optimize GPU utilization:
 > [!IMPORTANT]
 > Tolerations will be set in the RHOAI accelerator profiles that match the Taint key.
 
+## Validation
+
+![](/assets/05-validation.gif)
+
 ## Automation key (Catch up)
 
 - [ ] From this repository's root directory, run below command

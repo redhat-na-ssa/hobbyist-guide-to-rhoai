@@ -51,9 +51,6 @@
 >
 > `subscription.operators.coreos.com/servicemeshoperator created`
 
-> [!NOTE]
-> For `Unmanaged` configuration details, see the \_APPENDIX.md.
-
 ## 6.2 Install Red Hat OpenShift Serverless Operator
 
 ### Objectives
@@ -83,9 +80,6 @@
 > `operatorgroup.operators.coreos.com/serverless-operator created`\
 > `subscription.operators.coreos.com/serverless-operator created`
 
-> [!NOTE]
-> For `Unmanaged` deployments additional steps need to be executed. See the Define a ServiceMeshMember for Serverless in the \_APPENDIX.md
-
 ## 6.3 Install Red Hat Authorino Operator
 
 ### Objectives
@@ -114,9 +108,6 @@
 > Expected output
 >
 > `subscription.operators.coreos.com/authorino-operator created`
-
-> [!NOTE]
-> For `Unmanaged` deployments additional steps need to be executed. See the Configure Authorino for Unmanaged deployments in the \_APPENDIX.md
 
 ## Validation
 

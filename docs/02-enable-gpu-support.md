@@ -310,7 +310,7 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 
 - [ ] Verify the successful installation of the NVIDIA GPU Operator and deployment of the drivers
 
-      oc get pod -l openshift.driver-toolkit -n nvidia-gpu-operator
+      oc get pod -l openshift.driver-toolkit -n nvidia-gpu-operator -w
 
 > [!IMPORTANT]
 > The Nvidia drivers are not loaded and ready for consumption until this command shows both pods at `2/2` ready. This means that the label selector used in the next step for labelling the nodes won't work either.

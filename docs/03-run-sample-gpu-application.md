@@ -104,6 +104,10 @@
 1. The first table reflects the information about all available GPUs (the example shows one GPU).
 1. The second table provides details on the processes using the GPUs.
 
+## Validation
+
+![](/assets/03-validation.gif)
+
 ## Automation key (Catch up)
 
 - [ ] From this repository's root directory, run below command

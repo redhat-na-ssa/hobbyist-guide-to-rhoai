@@ -1,5 +1,7 @@
 # OpenShift AI Overview
 
+![](/assets/openshift-ai-3.png)
+
 ![](/assets/openshift-ai-1.png)
 
 ![](/assets/openshift-ai-2.png)
