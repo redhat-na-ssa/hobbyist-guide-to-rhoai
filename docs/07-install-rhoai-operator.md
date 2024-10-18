@@ -35,8 +35,6 @@ Before you install RHOAI, it is important to understand how it's dependencies wi
 | `HabanaAI Operator`                             | if Intel Gaudi accelerators exist                                   |
 | `AMD GPU Operator`                              | if AMD accelerators exist                                           |
 
-> [!NOTE] > `NFD` and `KMM` operators exists with other patterns, these are the most common. More information is available [here](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.10/html/Install_and_unInstall_openshift_ai_self-managed/Install-and-deploying-openshift-ai_install#Install-the-openshift-data-science-operator_operator-install)
-
 ## Steps
 
 - [ ] Check the pre-requisite operators in order to fully deploy RHOAI components.
@@ -90,6 +88,9 @@ Before you install RHOAI, it is important to understand how it's dependencies wi
 > `redhat-ods-monitoring                                                             Active`\
 > `redhat-ods-operator                                                               Active`
 
+> [!NOTE]
+> Exit out (CTRL+C) of the above command when you see the expected output
+
 - When you install the RHOAI Operator in the OpenShift cluster, the following new projects are created:
   1. `redhat-ods-applications` contains the dashboard and other required components of OpenShift AI. Additionally, this is where the included notebook images are stored as `ImageStreams`.
   1. `redhat-ods-applications-auth-provider` is where Authorino would be configured to run, in support of authenticating KServe model inference endpoints.
@@ -124,7 +125,7 @@ Before you install RHOAI, it is important to understand how it's dependencies wi
 > `      Metrics Collection:  Istio`\
 > `      Name:                data-science-smcp`\
 > `      Namespace:           istio-system`\
-> `    Management State:      Unmanaged`\
+> `    Management State:      Managed`\
 > `  Trusted CA Bundle:`\
 > `  Custom CA Bundle:`\
 > `    Management State:  Managed`
