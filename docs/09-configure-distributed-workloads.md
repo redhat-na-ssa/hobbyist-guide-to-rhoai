@@ -123,6 +123,10 @@ In this example, the kueue.x-k8s.io/default-queue: "true" annotation defines thi
 > `NAME               CLUSTERQUEUE    PENDING WORKLOADS   ADMITTED WORKLOADS`\
 > `local-queue-test   cluster-queue   0                   0`
 
+## Validation
+
+![](/assets/09-validation.gif)
+
 ## Automation key (Catch up)
 
 - [ ] From this repository's root directory, run below command
