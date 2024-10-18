@@ -9,7 +9,7 @@
 > Intended commands to be executed from the root directory of this repository. The majority of the configurations to be applied are already created, with the exception of the ones that prompts you for specifics that are either created in the command or dumped to a `scratch` dir that is ignored in the `.gitignore`.
 
 - [ ] Have `cluster-admin` access to an OpenShift 4.14+ cluster
-  - [Create an OpenShift 4.14+ cluster](/docs/info-create-openshift-cluster.md)
+  - [Create an OpenShift 4.16+ cluster](/docs/info-create-openshift-cluster.md)
 - [ ] Open a `bash` terminal on your local machine
 - [ ] Git clone this repository
 
