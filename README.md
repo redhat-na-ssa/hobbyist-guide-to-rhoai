@@ -39,9 +39,6 @@ To run all steps, from this repo's root directory, run below command
 ./scripts/setup.sh -s 9
 ```
 
-> [!NOTE]
-> Steps 9 - 10 are NOT fully automated, and might need manual configurations
-
 > For more comprehensive gitops functionality, check out below repository:
 > [**demo-ai-gitops-catalog**](https://github.com/redhat-na-ssa/demo-ai-gitops-catalog)
 
