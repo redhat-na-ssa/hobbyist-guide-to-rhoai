@@ -56,7 +56,7 @@
 
 - [ ] Edit the downloaded machineset.yaml and update the following fields:
 
-  - [ ] ~Line 13`.metadata.name` prepend the name with `-gpu`.
+  - [ ] ~Line 13`.metadata.name` append the name with `-gpu`.
   - [ ] ~Line 18 `.spec.replicas` from `0` to `2`
   - [ ] ~Line 22`.spec.selector.matchLabels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
   - [ ] ~Line 29 `.spec.template.metadata.labels["machine.openshift.io/cluster-api-machineset"]` to match the new `.metadata.name`.
