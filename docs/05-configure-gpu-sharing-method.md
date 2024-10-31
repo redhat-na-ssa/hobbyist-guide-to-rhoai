@@ -87,7 +87,7 @@ For NVIDIA GPU there are a few methods to optimize GPU utilization:
 - [ ] Apply the configuration to all the nodes you have with Tesla T GPUs. GFD, labels the nodes with the GPU product, in this example Tesla-T4, so you can use a node selector to label all of the nodes at once.
 
       oc label --overwrite node \
-        --selector=nvidia.com/gpu.product=Tesla-T4 \
+        --selector=nvidia.com/gpu.product \
         nvidia.com/device-plugin.config=time-sliced-8
 
 > Expected output
@@ -95,7 +95,7 @@ For NVIDIA GPU there are a few methods to optimize GPU utilization:
 > `node/ip-10-0-29-207.us-xxxx-x.compute.internal labeled`\
 > `node/ip-10-0-36-189.us-xxxx-x.compute.internal labeled`
 
-- [ ] Patch the NVIDIA GPU Operator ClusterPolicy to use the timeslicing configuration by default.
+- [ ] Patch the NVIDIA GPU Operator ClusterPolicy to use the time-slicing configuration by default.
 
       oc patch clusterpolicy gpu-cluster-policy \
         -n nvidia-gpu-operator --type merge \
