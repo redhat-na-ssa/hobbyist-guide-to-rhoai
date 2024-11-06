@@ -39,6 +39,12 @@ To run all steps, from this repo's root directory, run below command
 ./scripts/setup.sh -s 9
 ```
 
+The following will setup RHOAI with GPUs on an OpenShift cluster on AWS
+
+```sh
+until oc apply -k https://github.com/redhat-na-ssa/demo-ai-gitops-catalog/demos/rhoai-workshop-ready ; do : ; done
+```
+
 > For more comprehensive gitops functionality, check out below repository:
 > [**demo-ai-gitops-catalog**](https://github.com/redhat-na-ssa/demo-ai-gitops-catalog)
 
