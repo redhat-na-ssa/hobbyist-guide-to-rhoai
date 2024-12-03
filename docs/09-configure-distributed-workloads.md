@@ -101,10 +101,8 @@ In this example, the kueue.x-k8s.io/default-queue: "true" annotation defines thi
 
 - [ ] Apply the configuration to create the local-queue object
 
-      # go to sandbox
       oc project sandbox || oc new-project sandbox
 
-      # create local queue
       oc apply -f configs/09/rhoai-kueue-local-queue.yaml
 
 > Expected output

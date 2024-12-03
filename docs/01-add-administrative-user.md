@@ -35,7 +35,6 @@ For this bootcamp, we are using HTpasswd as the Identity Provider (IdP). To lear
 
 - [ ] Create an htpasswd using a container on OpenShift
 
-      # using oc to create htpasswd
       oc run \
         --image httpd \
         -q --rm -i minion -- /bin/sh -c 'sleep 2; htpasswd -n -b -B -C10 <username> <password>' > scratch/users.htpasswd

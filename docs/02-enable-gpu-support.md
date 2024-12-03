@@ -47,11 +47,12 @@
 
 - [ ] Make a copy of one of the existing compute MachineSet definitions and output the result to a YAML file
 
-      # get your machineset name --no-headers removes the headers from the output. awk '{print $1}'. extracts the first column.
-      # head -n 1 limits the output to the first entry.
+> `--no-headers removes the headers from the output.`  
+> `awk '{print $1}'. extracts the first column.`  
+> `head -n 1 limits the output to the first entry.`
+
       MACHINESET_COPY=$(oc get machinesets -n openshift-machine-api --no-headers | awk '{print $1}' | head -n 1)
 
-      # make a copy of an existing machineset definition
       oc get machineset $MACHINESET_COPY -n openshift-machine-api -o yaml > scratch/machineset.yaml
 
 - [ ] Edit the downloaded machineset.yaml and update the following fields:
@@ -155,7 +156,6 @@
 
 - [ ] Verify the operator is installed and running
 
-      # watch the pods get created in the new project
       oc get pods -n openshift-nfd -w
 
 > Expected output
@@ -281,7 +281,6 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 
 - [ ] Verify an install plan has been created. Be patient.
 
-      # you can watch the installplan instances get created
       oc get installplan -n nvidia-gpu-operator -w
 
 > Expected output
@@ -365,10 +364,8 @@ Below are some of the [PCI vendor ID assignments](https://pcisig.com/membership/
 
 - [ ] Apply this label to new machines/nodes:
 
-      # set an env value
       MACHINE_SET_TYPE=$(oc -n openshift-machine-api get machinesets.machine.openshift.io -o name | grep gpu | head -n1)
 
-      # patch the machineset
       oc -n openshift-machine-api \
         patch "${MACHINE_SET_TYPE}" \
         --type=merge --patch '{"spec":{"template":{"spec":{"metadata":{"labels":{"node-role.kubernetes.io/gpu":""}}}}}}'
