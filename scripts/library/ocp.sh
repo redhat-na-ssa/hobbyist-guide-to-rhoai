@@ -232,8 +232,10 @@ ocp_aws_create_gpu_machineset(){
   # 8 x gaudi:  dl1.24xlarge
 
   INSTANCE_TYPE=${1:-g4dn.4xlarge}
+  GPU_INSTANCE_NAME=${2:-cluster-${INSTANCE_TYPE/./-}-gpu}
 
-  ocp_aws_clone_worker_machineset "${INSTANCE_TYPE}"
+  echo "Creating machineset: ${INSTANCE_TYPE} as ${GPU_INSTANCE_NAME}"
+  ocp_aws_clone_worker_machineset "${INSTANCE_TYPE}" "${GPU_INSTANCE_NAME}"
 
   MACHINE_SET_TYPE=$(oc -n openshift-machine-api get machinesets.machine.openshift.io -o name | grep "${INSTANCE_TYPE%.*}" | head -n1)
 
