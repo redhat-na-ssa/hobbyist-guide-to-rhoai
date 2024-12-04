@@ -14,10 +14,8 @@
 - [ ] Git clone this repository
 
 ```sh
-# git clone repo
 git clone https://github.com/redhat-na-ssa/hobbyist-guide-to-rhoai.git
 
-# change into the repo directory
 cd hobbyist-guide-to-rhoai
 ```
 
